@@ -23,43 +23,64 @@ ll bpowMod(int a, int n){if(n==0) return 1; if(n%2==1) return a*bpowMod(a, n-1)%
 #define all(x) x.begin(), x.end()
 #define pb push_back
 #define endl '\n'
-#define sqr(x) (x) * (x)
+#define M_PI acos(-1)
+#define M_E exp(1)
+#define sqr(x) (x)*(x)
 #define cbr(x) sqr(x) * (x)
+#define toRad(x) (x) * M_PI / 180
 
 const int N=(int)1e6;
 
-vector<double> v;
 int main()
 {
+    //вариант 1
     setlocale(LC_ALL, "Russian");
-    double a, b, c, D, t1, t2;
+    double a, b, c;
     cin>>a>>b>>c;
-    if (a == 0){
-
+    if(a == 0 && b != 0){
+        double q = -c / b;
+        if(q < 0)
+            cout<<"Уравнение не имеет корней";
+        else if(q != 0)
+            cout<<"x1="<<sqrt(q)<<", x2="<<-sqrt(q);
+        else
+            cout<<"x="<<0;
     }
-    D = sqr(b) - 4 * a * c;
-    if(D < 0){
-        cout<<"Нет корней";
-        return 0;
+    else if(b == 0 && a != 0){
+        double q = -c / a;
+        if(q < 0)
+            cout<<"Уравнение не имеет корней";
+        else if(q != 0)
+            cout<<"x1="<<pow(q, 0.25)<<", x2="<<-pow(q, 0.25);
+        else
+            cout<<"x="<<0;
     }
-    t1 = (-b + sqrt(D)) / (2 * a);
-    t2 = (-b - sqrt(D)) / (2 * a);
-    if(t1 >= 0){
-        v.pb(sqrt(t1));
-        v.pb(-sqrt(t1));
+    else if(a != 0 && b != 0 && c != 0){
+        double D = sqr(b) - 4 * a * c;
+        if(D < 0){
+            cout<<"Уравнение не имеет корней";
+            return 0;
+        }
+        double t1 = (-b + sqrt(D)) / (2 * a);
+        double t2 = (-b - sqrt(D)) / (2 * a);
+        if(t1 < t2)
+            swap(t1, t2);
+        if(t1 >= 0){
+            cout<<"x1="<<sqrt(t1)<<", x2="<<-sqrt(t1);
+        }
+        if(t2 >= 0){
+            cout<<", x3="<<sqrt(t2)<<", x4="<<-sqrt(t2);
+        }
     }
-    if(t2 >= 0){
-        v.pb(sqrt(t2));
-        v.pb(-sqrt(t2));
+    else if(a != 0 && b != 0 && c == 0){
+        cout<<"x1=0";
+        double q = -b / a;
+        if(q >= 0)
+            cout<<", x2="<<sqrt(q)<<", x3="<<-sqrt(q);
     }
-    sort(all(v));
-    v.erase(unique(all(v)), v.end());
-    if(v.empty()){
-        cout<<"Нет корней";
-        return 0;
-    }
-    for(auto i : v){
-        cout<<i<<" ";
-    }
+    else if(c == 0)
+        cout<<"x принадлежит R";
+    else
+        cout<<"Уравнение не имеет корней";
     return 0;
 }
