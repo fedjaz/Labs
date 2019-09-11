@@ -28,6 +28,7 @@ const int N=(int)1e6;
 
 int main()
 {
+    //test
     setlocale(LC_ALL, "Russian");
     int G;
     cin>>G;
