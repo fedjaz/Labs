@@ -35,6 +35,7 @@ int main()
 {
     //вариант 1
     setlocale(LC_ALL, "Russian");
+    cout<<"a, b, c=";
     double a, b, c;
     cin>>a>>b>>c;
     if(a == 0 && b != 0){
