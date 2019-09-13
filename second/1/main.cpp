@@ -30,6 +30,7 @@ int main()
 {
     int a, b;
     double c, x, y;
+    cout<<"x, y=";
     cin>>x>>y;
     if(x > y)
         y = 0;
@@ -38,6 +39,7 @@ int main()
     else
         x=y=0;
     cout<<x<<" "<<y<<endl;
+    cout<<"a, b, c=";
     cin>>a>>b>>c;
     if(a > b && a > c)
         a -= 0.3;

@@ -32,6 +32,7 @@ int main()
     double a, b, d;
     char zn;
     bool flag = 1;
+    cout<<"a, b, знак=";
     cin>>a>>b>>zn;
     while(flag){
         switch (zn){

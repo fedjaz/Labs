@@ -32,6 +32,7 @@ int main()
 {
     double a, b, c, Y;
     int N;
+    cout<<"a, b, c, N=";
     cin>>a>>b>>c>>N;
     switch(N){
         case 2:

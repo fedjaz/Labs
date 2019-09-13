@@ -32,6 +32,7 @@ const int N=(int)1e6;
 int main()
 {
     double x1, x2, m, L;
+    cout<<"x1, x2, m, L=";
     cin>>x1>>x2>>m;
     double k = cbr(cos(sqr(x1) * M_PI / 180)) + sqr(sin(cbr(x2) * M_PI / 180));
     if(k < 1){

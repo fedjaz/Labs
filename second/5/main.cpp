@@ -29,6 +29,7 @@ const int N=(int)1e6;
 int main()
 {
     double a, b, c, d, Z;
+    cout<<"a, b, c, d=";
     cin>>a>>b>>c>>d;
     if(c >= d && a < d)
         Z = a + b/c;

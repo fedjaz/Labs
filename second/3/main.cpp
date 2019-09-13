@@ -29,6 +29,7 @@ const int N=(int)1e6;
 int main()
 {
     double a, b;
+    cout<<"a, b=";
     cin>>a>>b;
     bool flag = a > b;
     cout<<(flag ? a : b);
