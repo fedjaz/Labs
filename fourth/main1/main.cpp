@@ -34,6 +34,7 @@ const int N=(int)1e5;
 int a[N];
 int main()
 {
+    //14
     int n, i, sum = 0;
     cout<<"n=";
     cin>>n;

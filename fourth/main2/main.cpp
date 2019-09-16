@@ -33,6 +33,7 @@ const int N=(int)1e3;
 int a[N][N];
 int main()
 {
+    //14
     cout<<"n, m=";
     srand(__rdtsc());
     ll i, j, prod = 1, n, m;
