@@ -30,6 +30,7 @@ int main()
 {
     //test
     setlocale(LC_ALL, "Russian");
+    cout<<"¬ведите возраст ";
     int G;
     cin>>G;
     string ans;

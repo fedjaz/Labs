@@ -34,9 +34,13 @@ const int N=(int)1e6;
 int main()
 {
     double A, B, M, H;
-    cout<<"A, B, M=";
-    cin>>A>>B>>M;
+    //cout<<"A, B, M=";
+    //cin>>A>>B>>M;
+    A = 0;
+    B = M_PI / 2;
+    M = 20;
     H = (B - A) / M;
+    //cout<<endl;
     for(int i = 0; i * H <= B; i++){
         double x = i * H;
         cout<<x<<" - "<<sin(x) - cos(x)<<endl;

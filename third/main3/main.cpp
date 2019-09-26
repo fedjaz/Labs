@@ -37,9 +37,10 @@ double f(double x){
 int main()
 {
     //9
+    cout<<"x"<<"      "<<"f(x)"<<endl;
     for(int i = 0; round((3 + i * 0.2) * 10) / 10 <= 4; i++){
         double x = 3 + i * 0.2;
-        cout<<"x="<<x<<", f("<<x<<")="<<f(x)<<endl;
+        cout<<fixed<<setprecision(1)<<(double)x<<"    "<<f(x)<<endl;
     }
     return 0;
 }
