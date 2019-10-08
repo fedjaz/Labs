@@ -25,32 +25,30 @@ ll bpowMod(int a, int n){if(n==0) return 1; if(n%2==1) return a*bpowMod(a, n-1)%
 #define endl '\n'
 #define M_PI acos(-1)
 #define M_E exp(1)
-#define sqr(x) (x)*(x)
-#define cbr(x) sqr(x) * (x)
+#define sqr(x) ((x)*(x))
+#define cbr(x) (sqr(x) * (x))
 #define toRad(x) (x) * M_PI / 180
 
-const int N=(int)1e3;
-int a[5][5]{{2, 1, -4, 14, 1},
-            {-3, 17, 11, -5, 7},
-            {7, 9, -3, 0, 12},
-            {2, -2, 6, 13, 6},
-            {-3, 5, 21, 4, 15}};
+const int N=(int)1e6;
+
 int main()
 {
     //14
-    //cout<<"n, m=";
-    //srand(__rdtsc());
-    ll i, j, prod = 1, n = 5, m = 5;
-    //cin>>n>>m;
+    ll n, m, i, j, sum = 0, prod = 1;
+    cout<<"n=";
+    cin>>n;
+    int **a = new int*[n];
     for(i = 0; i < n; i++){
-        for(j = 0; j < m; j++){
-            cout<<a[i][j]<<" ";
-            if(!(j & 1)){
+        a[i] = new int[n];
+        for(j = 0; j < n; j++){
+            cin>>a[i][j];
+            int r = (i <= n / 2 ? i : n - i - 1);
+            if(j <= r || n - j - 1 <= r){
+                sum += a[i][j];
                 prod *= a[i][j];
             }
         }
-        cout<<endl;
     }
-    cout<<"prod="<<prod;
+    cout<<"sum="<<sum<<", prod="<<prod;
     return 0;
 }
