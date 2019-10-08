@@ -52,6 +52,7 @@ int main()
             fx = x / 3;
             break;
         default:
+            cout<<"¬веден неправильнный тип функции";
             return 0;
     }
     y = sin(n * fx) + cos(k * x) + log(m * x);
