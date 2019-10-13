@@ -35,36 +35,33 @@ int a[N][N], sizes[N];
 int main()
 {
     int n, m, i, j;
+    umii um;
+    queue<int> q;
     cin>>n>>m;
     int **arr = new int*[n];
     for(i = 0; i < n; i++){
         for(j = 0; j < m; j++){
             cin>>a[i][j];
+            um[a[i][j]]++;
         }
-        sort(a[i], a[i] + m);
         int s = 0, it = 0;
-        if(a[i][0] == a[i][1])
-            s++;
-        for(j = 1; j < m - 1; j++){
-            if(a[i][j] == a[i][j-1] || a[i][j] == a[i][j+1])
+        for(j = 0; j < m; j++){
+            if(um[a[i][j]] > 1){
+                q.push(a[i][j]);
                 s++;
+            }
         }
-        if(a[i][m - 1] == a[i][m - 2])
-            s++;
         sizes[i] = s;
         arr[i] = new int[s];
-        if(a[i][0] == a[i][1])
-            arr[i][it++] = a[i][0];
-        for(j = 1; j < m - 1; j++){
-            if(a[i][j] == a[i][j-1] || a[i][j] == a[i][j+1])
-                arr[i][it++] = a[i][j];
+        while(!q.empty()){
+            arr[i][it++] = q.front();
+            q.pop();
         }
-        if(a[i][m - 1] == a[i][m - 2])
-            arr[i][it++] = a[i][m - 1];
+        um.clear();
     }
     for(i = 0; i < n; i++){
         for(j = 0; j < sizes[i]; j++){
-            cout<<a[i][j]<<" ";
+            cout<<arr[i][j]<<" ";
         }
         cout<<endl;
     }
