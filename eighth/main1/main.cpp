@@ -124,6 +124,7 @@ void printAllAboveScore(double score){
 
 int main()
 {
+    //14
     setlocale(LC_ALL, "Russian");
     int n;
     cout<<"¬ведите тип ввода:\n¬вод n значений - 1\n¬вод до заданного значени€ - 2\n";
