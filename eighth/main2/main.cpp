@@ -170,6 +170,7 @@ int main()
                 break;
             case 5:
                 sort(all(data), comp);
+                break;
             case 6:
                 printOld(curDate);
                 break;
