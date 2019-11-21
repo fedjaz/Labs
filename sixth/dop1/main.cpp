@@ -37,54 +37,95 @@ int main()
     fgets(c, N, stdin);
     string s = "";
     for(int i = 0; c[i] != '\n' && c[i] != 0; i++){
+        bool isUp = c[i] == toupper(c[i]);
         c[i] = tolower(c[i]);
         if(c[i] == 'c'){
             if(c[i + 1] == 'e' || c[i + 1] == 'i' || c[i + 1] == 'y'){
-                s += 's';
+                if(isUp)
+                    s += 'S';
+                else
+                    s += 's';
             }
             else{
-                s += 'k';
+                if(isUp)
+                    s += 'K';
+                else
+                    s += 'k';
             }
         }
         else if(c[i] == 'q'){
-            s += 'k';
+            if(isUp)
+                s += 'K';
+            else
+                s += 'k';
             if(c[i + 1] == 'u'){
                 s += 'v';
                 i++;
             }
         }
         else if(c[i] == 'x'){
-            s += "ks";
+            if(isUp)
+                s += "Ks";
+            else
+                s += "ks";
         }
         else if(c[i] == 'w'){
-            s += 'v';
+            if(isUp)
+                s += 'V';
+            else
+                s += 'v';
         }
         else if(c[i] == 'p' && c[i + 1] == 'h'){
-            s += 'f';
+            if(isUp)
+                s += 'F';
+            else
+                s += 'f';
             i++;
         }
         else if(c[i] == 'o' && c[i + 1] == 'o'){
-            s += 'u';
+            if(isUp)
+                s += 'U';
+            else
+                s += 'u';
             i++;
         }
         else if(c[i] == 'y' && c[i + 1] == 'o' && c[i + 2] == 'u'){
-            s += 'u';
+            if(isUp)
+                s += 'U';
+            else
+                s += 'u';
             i += 2;
         }
         else if(c[i] == 'e' && c[i + 1] == 'e'){
-            s += 'i';
+            if(isUp)
+                s += 'I';
+            else
+                s += 'i';
             i++;
         }
         else if(c[i] == 't' && c[i + 1] == 'h'){
-            s += 'z';
+            if(isUp)
+                s += 'Z';
+            else
+                s += 'z';
             i++;
         }
         else{
-            s += c[i];
+            if(isUp)
+                s += toupper(c[i]);
+            else
+                s += c[i];
         }
     }
 
-    s.erase(unique(all(s)), s.end());
-    cout<<s;
+    string s2;
+    s2 += s[0];
+    for(int i = 1; i < s.length(); i++){
+        if(tolower(s[i]) == tolower(s2[s2.length() - 1]))
+            continue;
+
+        s2 += s[i];
+    }
+    cout<<s2;
     return 0;
 }
