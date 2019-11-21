@@ -32,8 +32,12 @@ ll bpowMod(int a, int n){if(n==0) return 1; if(n%2==1) return a*bpowMod(a, n-1)%
 const int N=(int)1e6;
 
 struct abitur{
+    string name;
     string surname;
     double mean_score;
+    int math_score;
+    int physics_score;
+    int language_score;
 };
 
 vector<abitur> data;
@@ -47,8 +51,15 @@ void addNStructures(int n){
         cout<<"Абитуриент #"<<data.size() + 1<<":\nФамилия: ";
         abitur a;
         cin>>a.surname;
-        cout<<"Средний балл: ";
-        cin>>a.mean_score;
+        cout<<"Имя: ";
+        cin>>a.name;
+        cout<<"Балл по математике: ";
+        cin>>a.math_score;
+        cout<<"Балл по физике: ";
+        cin>>a.physics_score;
+        cout<<"Балл по языку: ";
+        cin>>a.language_score;
+        a.mean_score = (a.math_score + a.physics_score + a.language_score) / (double)3;
         data.pb(a);
     }
 }
@@ -56,30 +67,51 @@ void addNStructures(int n){
 void addUntilStop(){
     cout<<"Для того, чтобы остановить ввод, введите -1"<<endl;
     for(int i = 0; ; i++){
-        cout<<"Абитуриент #"<<i + 1<<":\nФамилия: ";
+        cout<<"Абитуриент #"<<data.size() + 1<<":\nФамилия: ";
         abitur a;
         cin>>a.surname;
-        cout<<"Средний балл: ";
-        cin>>a.mean_score;
-        if(a.surname == "-1" || a.mean_score == -1)
+        cout<<"Имя: ";
+        cin>>a.name;
+        cout<<"Балл по математике: ";
+        cin>>a.math_score;
+        cout<<"Балл по физике: ";
+        cin>>a.physics_score;
+        cout<<"Балл по языку: ";
+        cin>>a.language_score;
+        a.mean_score = (a.math_score + a.physics_score + a.language_score) / (double)3;
+        if(a.surname == "-1")
             return;
         data.pb(a);
     }
 }
 
+void print(abitur a){
+    cout<<a.surname<<" "<<a.name<<" ";
+    cout<<a.math_score<<" "<<a.physics_score<<" "<<a.language_score<<" "<<a.mean_score<<endl;
+}
+
 void printAll(){
     for(int i = 0; i < data.size(); i++){
-        cout<<data[i].surname<<" "<<data[i].mean_score<<endl;
+        print(data[i]);
     }
 }
 
 void editBySurname(string surname){
     for(int i = 0; i < data.size(); i++){
         if(data[i].surname == surname){
+            abitur a;
             cout<<"Фамилия: ";
-            cin>>data[i].surname;
-            cout<<"Средний балл: ";
-            cin>>data[i].mean_score;
+            cin>>a.surname;
+            cout<<"Имя: ";
+            cin>>a.name;
+            cout<<"Балл по математике: ";
+            cin>>a.math_score;
+            cout<<"Балл по физике: ";
+            cin>>a.physics_score;
+            cout<<"Балл по языку: ";
+            cin>>a.language_score;
+            a.mean_score = (a.math_score + a.physics_score + a.language_score) / (double)3;
+            data[i] = a;
             return;
         }
     }
@@ -99,7 +131,7 @@ void deleteBySurname(string surname){
 void searchBySurname(string surname){
     for(int i = 0; i < data.size(); i++){
         if(data[i].surname == surname){
-            cout<<data[i].surname<<" "<<data[i].mean_score<<endl;
+            print(data[i]);
             return;
         }
     }
@@ -117,7 +149,7 @@ double getMeanScore(){
 void printAllAboveScore(double score){
     for(int i = 0; i < data.size(); i++){
         if(data[i].mean_score >= score){
-            cout<<data[i].surname<<" "<<data[i].mean_score<<endl;
+            print(data[i]);
         }
     }
 }
