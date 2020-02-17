@@ -8,16 +8,14 @@ int getAns(long long n, int k){
     return n % 10;
 }
 int main(){
-
-    //28
-    long long a = 1, b = 1, c;
+    long long a = 1, b = 1, c, i;
     int len = 2, k;
     scanf("%d", &k);
     if(k <= 2){
         printf("%d", 1);
         return 0;
     }
-    for(int i = 0; i < 30; i++){
+    for(i = 0; i < 30; i++){
         c = a + b;
         a = b;
         b = c;
