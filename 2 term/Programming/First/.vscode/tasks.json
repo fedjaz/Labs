@@ -12,6 +12,7 @@
                 "main.c",
                 "-o",
                 "main",
+                "-std=c89",
                 "-lm"
             ],
             "presentation": {
