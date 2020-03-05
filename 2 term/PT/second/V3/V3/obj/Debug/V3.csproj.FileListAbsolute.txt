@@ -1,0 +1,7 @@
+C:\Users\Fedjaz\Documents\Labs\2 term\PT\second\V3\V3\bin\Debug\V3.exe.config
+C:\Users\Fedjaz\Documents\Labs\2 term\PT\second\V3\V3\bin\Debug\V3.exe
+C:\Users\Fedjaz\Documents\Labs\2 term\PT\second\V3\V3\bin\Debug\V3.pdb
+C:\Users\Fedjaz\Documents\Labs\2 term\PT\second\V3\V3\obj\Debug\V3.csprojAssemblyReference.cache
+C:\Users\Fedjaz\Documents\Labs\2 term\PT\second\V3\V3\obj\Debug\V3.csproj.CoreCompileInputs.cache
+C:\Users\Fedjaz\Documents\Labs\2 term\PT\second\V3\V3\obj\Debug\V3.exe
+C:\Users\Fedjaz\Documents\Labs\2 term\PT\second\V3\V3\obj\Debug\V3.pdb
