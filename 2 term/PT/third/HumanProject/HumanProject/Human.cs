@@ -33,7 +33,6 @@ namespace HumanProject
             Surname = surname;
             SetDateOfBirth(dateOfBirth);
             Gender = gender;
-            IsAlive = true;
             IsAlive = isAlive;
             Adress = adress;
         }
