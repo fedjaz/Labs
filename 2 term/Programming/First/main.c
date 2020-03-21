@@ -2,9 +2,8 @@
 #include <math.h>
 #include <stdlib.h>
 
-#define N 100
 typedef struct{
-    int num[N];
+    int * num;
     int len;
 } bigInt;
 
@@ -14,11 +13,20 @@ int max(int a, int b){
     return b;
 
 }
-bigInt * newBigInt(int n){
+bigInt * newBigInt(int n, int size){
     bigInt * a = malloc(sizeof(bigInt));
+    if(a == NULL){
+        printf("%s", "Not enough memory!");
+        exit(228);
+    }
+    a->num = calloc(sizeof(int), size);
+    if(a->num == NULL){
+        printf("%s", "Not enough memory!");
+        exit(228);
+    }
     a->len = 0;
     int i;
-    for(i = 0; i < N; i++){
+    for(i = 0; i < size; i++){
         a->num[i] = 0;
     }
     i = 0;
@@ -33,7 +41,7 @@ bigInt * newBigInt(int n){
 
 bigInt * add(bigInt * a, bigInt * b){
     int i = 0;
-    bigInt * c = newBigInt(0);
+    bigInt * c = newBigInt(0, max(a->len, a->len) + 1);
 
     for(i = 0; i < max(a->len, b->len); i++){
         int tmp = a->num[i] + b->num[i];
@@ -56,7 +64,7 @@ void printBigInt(bigInt * a){
 }
 
 int main(){
-    bigInt * a = newBigInt(1), * b = newBigInt(1), * c;
+    bigInt * a = newBigInt(1, 1), * b = newBigInt(1, 1), * c;
     int len = 2, k, i;
     scanf("%d", &k);
     if(k <= 2){
@@ -65,6 +73,7 @@ int main(){
     }
     while(a->len < 1e5){
         c = add(a, b);
+        free(a->num);
         free(a); 
         a = b;
         b = c;
