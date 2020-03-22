@@ -1,0 +1,7 @@
+C:\Users\Fedjaz\Documents\Labs\2 term\PT\fourth\Keylogger(task1)\Keylogger\bin\Debug\Keylogger.exe.config
+C:\Users\Fedjaz\Documents\Labs\2 term\PT\fourth\Keylogger(task1)\Keylogger\bin\Debug\Keylogger.exe
+C:\Users\Fedjaz\Documents\Labs\2 term\PT\fourth\Keylogger(task1)\Keylogger\bin\Debug\Keylogger.pdb
+C:\Users\Fedjaz\Documents\Labs\2 term\PT\fourth\Keylogger(task1)\Keylogger\obj\Debug\Keylogger.csprojAssemblyReference.cache
+C:\Users\Fedjaz\Documents\Labs\2 term\PT\fourth\Keylogger(task1)\Keylogger\obj\Debug\Keylogger.csproj.CoreCompileInputs.cache
+C:\Users\Fedjaz\Documents\Labs\2 term\PT\fourth\Keylogger(task1)\Keylogger\obj\Debug\Keylogger.exe
+C:\Users\Fedjaz\Documents\Labs\2 term\PT\fourth\Keylogger(task1)\Keylogger\obj\Debug\Keylogger.pdb
