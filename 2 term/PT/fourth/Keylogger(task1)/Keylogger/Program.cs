@@ -27,18 +27,12 @@ namespace Keylogger
 
         static void KeyDown(Keys key, string c)
         {
-            KeysConverter kc = new KeysConverter();
-            string keyChar = kc.ConvertToString(key);
-            if(char.IsLetterOrDigit(keyChar[0]))
-                Console.WriteLine(c + " - Down");
+            Console.WriteLine(c + " - Down");
         }
 
         static void KeyUp(Keys key, string c)
         {
-            KeysConverter kc = new KeysConverter();
-            string keyChar = kc.ConvertToString(key);
-            if (char.IsLetterOrDigit(keyChar[0]))
-                Console.WriteLine(c + " - Up");
+            Console.WriteLine(c + " - Up");
         }
     }
 }
