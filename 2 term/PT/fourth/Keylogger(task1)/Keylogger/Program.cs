@@ -25,14 +25,14 @@ namespace Keylogger
             waitHandle.WaitOne();
         }
 
-        static void KeyDown(Keys key, string c)
+        static void KeyDown(CatcherEventArgs args)
         {
-            Console.WriteLine(c + " - Down");
+            Console.WriteLine(args.UnicodeValue + " - Down");
         }
 
-        static void KeyUp(Keys key, string c)
+        static void KeyUp(CatcherEventArgs args)
         {
-            Console.WriteLine(c + " - Up");
+            Console.WriteLine(args.UnicodeValue + " - Up");
         }
     }
 }
