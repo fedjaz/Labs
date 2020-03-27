@@ -35,6 +35,9 @@ int main(){
         exit(0);
     }
     char * s = calloc(10, sizeof(char));
+    if(s == NULL){
+        exit(228);
+    }
     ItoB(n, s, b);
     printf("%s\n", s);
     return 0;

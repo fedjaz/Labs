@@ -7,6 +7,9 @@ int main(){
     scanf("%d", &n);
     printf("%s\n", "Введите перестановку из n чисел:");
     int * arr = calloc(n, sizeof(int));
+    if(arr == NULL){
+        exit(228);
+    }
     for(i = 0; i < n; i++){
         scanf("%d", &arr[i]);
     }

@@ -16,12 +16,14 @@ int main(){
             depth--;
 
         if(depth < 0){
-            exit(0);
+            printf("%s", "Скобочная последовательность не является правильной\n");
+            return 0;
         }
         i++;
     }
     if(depth != 0){
-        exit(0);
+        printf("%s", "Скобочная последовательность не является правильной\n");
+        return 0;
     }
     i = depth = 0;
     while(s[i] != 0){
@@ -40,7 +42,6 @@ int main(){
             s[i] = ']'; 
         i++;
     }
-    FILE * output = fopen("output.txt", "w");
-    fprintf(output, "%s", s);
+    printf("%s\n", s);
     return 0;
 }

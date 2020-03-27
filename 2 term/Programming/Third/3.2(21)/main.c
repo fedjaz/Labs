@@ -9,7 +9,7 @@ void addStrs(float ** matrix, int size, int s1, int s2, float modifier){
     }
 }
 
-incStr(float ** matrix, int size, int s, float modifier){
+void incStr(float ** matrix, int size, int s, float modifier){
     int i;
     for(i = 0; i < size; i++){
         matrix[s][i] *= modifier;
@@ -42,9 +42,15 @@ int main(){
     printf("%s\n", "Введите матрицу NxN:");
     float ** arr = calloc(n, sizeof(float *));
     float ** identity = calloc(n, sizeof(float *));
+    if(arr == NULL || identity == NULL){
+        exit(228);
+    }
     for(i = 0; i < n; i++){
         arr[i] = calloc(n, sizeof(float));
         identity[i] = calloc(n, sizeof(float));
+        if(arr[i] == NULL || identity[i] == NULL){
+           exit(228);
+        }
         for(j = 0; j < n; j++){
             scanf("%f", &arr[i][j]);
             if(i == j){
