@@ -17,16 +17,19 @@ namespace HumanProject
         public Genders Gender { get; private set; }
         public string Adress { get; set; }
         bool dateIsNotNull = false;
+
         public Human()
         {
 
         }
+
         public Human(string name, string surname, bool isAlive = true)
         {
             Name = name;
             Surname = surname;
             IsAlive = isAlive;
         }
+
         public Human(string name, string surname, DateTime dateOfBirth, Genders gender, string adress = null, bool isAlive = true)
         {
             Name = name;
@@ -42,6 +45,7 @@ namespace HumanProject
             Male,
             Female
         }
+
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
@@ -58,25 +62,30 @@ namespace HumanProject
             output.Append(IsAlive ? "Alive" : "Dead");
             return output.ToString();
         }
+
         public void PrintInformation()
         {
             Console.WriteLine(this);
         }
+
         [Obsolete("No! You shouldn't change your gender!")]
         public void ChangeGender()
         {
             Gender = Gender == Genders.Male ? Genders.Female : Genders.Male;
         }
+
         [Obsolete("No! You shouldn't change your gender!")]
         public void ChangeGender(Genders gender)
         {
             Gender = gender;
         }
+
         void SetDateOfBirth(DateTime dateOfBirth)
         {
             this.dateOfBirth = dateOfBirth;
             dateIsNotNull = true;
         }
+
         public static int CalculateAge(DateTime dateOfBirth)
         {
             int age = DateTime.Now.Year - dateOfBirth.Year;
@@ -96,6 +105,7 @@ namespace HumanProject
                 return h2.DateOfBirth.CompareTo(h1.DateOfBirth);
             }
         }
+
         public class CompareByName : IComparer<Human>
         {
             public int Compare(Human h1, Human h2)
