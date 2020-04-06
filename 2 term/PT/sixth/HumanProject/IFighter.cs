@@ -9,5 +9,7 @@ namespace HumanProject
     interface IFighter
     {
         float Kick();
+        string Name { get; }
+        string Surname { get; }
     }
 }

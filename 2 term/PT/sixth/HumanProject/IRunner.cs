@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HumanProject
 {
-    interface IRunner
+    interface IRunner : IComparable<IRunner>
     {
         float Run(float distance);
 

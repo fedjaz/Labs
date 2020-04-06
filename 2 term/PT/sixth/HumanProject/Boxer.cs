@@ -56,7 +56,7 @@ namespace HumanProject
             Skills = new SkillOfHands(rightHandSkill, leftHandSkill);
         }
 
-        public float Fight()
+        public float Kick()
         {
             float force = Strength * 0.3f + Skill * 0.1f +
                           Stamina * 0.1f + Agility * 0.1f;

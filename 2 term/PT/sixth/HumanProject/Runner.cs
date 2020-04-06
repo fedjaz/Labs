@@ -72,5 +72,16 @@ namespace HumanProject
             output.Append(string.Format("Country: {0}", CountryName));
             return output.ToString();
         }
+
+        public int CompareTo(IRunner runner)
+        {
+            float time1 = this.Run(100);
+            float time2 = runner.Run(100);
+            if(time1 > time2)
+                return 1;
+            else if(time1 < time2)
+                return -1;
+            return 0;
+        }
     }
 }

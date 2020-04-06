@@ -72,12 +72,24 @@ namespace HumanProject
 
             return distance / (meanSpeed / 3.6f);
         }
+
         public override void Train(int time)
         {
             Skill += time * 0.1f;
             Strength += time * 0.01f;
             Stamina += time * 0.2f;
             Agility += time * 0.15f;
+        }
+
+        public int CompareTo(IRunner runner)
+        {
+            float time1 = this.Run(100);
+            float time2 = runner.Run(100);
+            if(time1 > time2)
+                return 1;
+            else if(time1 < time2)
+                return -1;
+            return 0;
         }
     }
 }
