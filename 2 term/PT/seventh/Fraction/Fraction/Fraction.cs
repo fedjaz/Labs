@@ -15,6 +15,18 @@ namespace Fraction
         public long Denominator { get => denominator; set => SetDenominator(value); }
         long denominator;
 
+        public Fraction(long numerator, long denominator)
+        {
+            Numerator = numerator;
+            Denominator = denominator;
+        }
+
+        public Fraction(long numerator)
+        {
+            Numerator = numerator;
+            Denominator = 1;
+        }
+
         void SetNumerator(long numerator)
         {
             if(denominator != 0 && numerator != 0)
@@ -48,24 +60,6 @@ namespace Fraction
             this.denominator = denominator;
         }
 
-        public Fraction(long numerator, long denominator)
-        {
-            Numerator = numerator;
-            Denominator = denominator;
-        }
-
-        
-
-        public static Fraction operator +(Fraction a, Fraction b)
-        {
-            long lcm = a.Denominator * b.Denominator /
-                      GCD(Math.Abs(a.Denominator), Math.Abs(b.Denominator));
-
-            long n1 = a.Numerator * (lcm / a.Denominator);
-            long n2 = b.Numerator * (lcm / b.Denominator);
-            return new Fraction(n1 + n2, lcm);
-        }
-
         public override string ToString()
         {
             return ToString("F");
@@ -81,6 +75,30 @@ namespace Fraction
             if(string.IsNullOrEmpty(format))
             {
                 format = "F";
+            }
+            if(format == "IF")
+            {
+                if(Math.Abs(numerator) > denominator && denominator != 1)
+                {
+                    long integral = numerator / denominator;
+                    return $"{integral}({Math.Abs(numerator) % denominator}/{denominator})";
+                }
+                else
+                {
+                    format = "I";
+                }
+            }
+            if(format == "I")
+            {
+                if(Math.Abs(numerator) > denominator)
+                {
+                    long integral = numerator / denominator;
+                    return integral.ToString();
+                }
+                else
+                {
+                    format = "F";
+                }
             }
             if(format == "F")
             {
@@ -103,7 +121,7 @@ namespace Fraction
 
         public int CompareTo(Fraction fraction)
         {
-            long lcm = (long)denominator * fraction.Denominator /
+            long lcm = denominator * fraction.Denominator /
                        GCD(Math.Abs(denominator), Math.Abs(fraction.Denominator));
 
             long n1 = numerator * (lcm / denominator);
@@ -215,6 +233,16 @@ namespace Fraction
 
         public static bool operator !=(Fraction a, Fraction b) =>
             a.CompareTo(b) != 0;
+
+        public static Fraction operator +(Fraction a, Fraction b)
+        {
+            long lcm = a.Denominator * b.Denominator /
+                      GCD(Math.Abs(a.Denominator), Math.Abs(b.Denominator));
+
+            long n1 = a.Numerator * (lcm / a.Denominator);
+            long n2 = b.Numerator * (lcm / b.Denominator);
+            return new Fraction(n1 + n2, lcm);
+        }
 
         public static Fraction operator -(Fraction a) =>
             a * -1;

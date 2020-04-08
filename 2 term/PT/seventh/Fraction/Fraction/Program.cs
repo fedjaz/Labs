@@ -10,9 +10,9 @@ namespace Fraction
     {
         static void Main(string[] args)
         {
-            Fraction f1 = new Fraction(-1, 2);
+            Fraction f1 = new Fraction(-5, 2);
             Fraction f2 = new Fraction(1, 2);
-            Console.WriteLine(f1.ToString("D10"));
+            Console.WriteLine(f2.ToString("IF"));
         }
     }
 }
