@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -58,6 +59,49 @@ namespace Fraction
                 denominator /= gcd;
             }
             this.denominator = denominator;
+        }
+
+        public static Fraction Parse(string s)
+        {
+            if(TryParse(s, out Fraction fraction))
+            {
+                return fraction;
+            }
+            else
+            {
+                throw new FormatException("Input string was not in a correct format.");
+            }
+        }
+
+        public static bool TryParse(string s, out Fraction fraction)
+        {
+            fraction = null;
+            Regex pattern1 = new Regex(@"^(\d+)/(\d+)$");
+            Regex pattern2 = new Regex(@"^(\d+)$");
+            Regex pattern3 = new Regex(@"^(\d+)\((\d+)/(\d+)\)$"); ;
+            if(pattern1.IsMatch(s))
+            {
+                Match match = pattern1.Match(s);
+                fraction = new Fraction(long.Parse(match.Groups[1].Value),
+                                        long.Parse(match.Groups[2].Value));
+                return true;
+            }
+            if(pattern2.IsMatch(s))
+            {
+                Match match = pattern2.Match(s);
+                fraction = new Fraction(long.Parse(match.Groups[1].Value));
+                return true;
+            }
+            if(pattern3.IsMatch(s))
+            {
+                Match match = pattern3.Match(s);
+                long integral = long.Parse(match.Groups[1].Value);
+                long numerator = long.Parse(match.Groups[2].Value);
+                long denominator = long.Parse(match.Groups[3].Value);
+                fraction = new Fraction(integral * denominator + numerator, denominator);
+                return true;
+            }
+            return false;
         }
 
         public override string ToString()
