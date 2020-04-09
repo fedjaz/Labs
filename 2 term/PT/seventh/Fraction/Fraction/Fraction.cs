@@ -205,6 +205,17 @@ namespace Fraction
             return a;
         }
 
+        public class DecreaseComparer : IComparer<Fraction>
+        {
+            public int Compare(Fraction a, Fraction b)
+            {
+                return b.CompareTo(a);
+            }
+        }
+
+        double GetDoubleValue() =>
+            (double)numerator / denominator;
+
         public static explicit operator int(Fraction f) =>
             f.ToInt32(null);
 
@@ -219,9 +230,6 @@ namespace Fraction
 
         public static explicit operator decimal(Fraction f) =>
             f.ToDecimal(null);
-
-        double GetDoubleValue() =>
-            (double)numerator / denominator;
 
         public TypeCode GetTypeCode() =>
             TypeCode.Object;
@@ -307,7 +315,7 @@ namespace Fraction
             a * -1;
 
         public static Fraction operator -(Fraction a, Fraction b) =>
-            a + b * -1;
+            a + (-b);
 
         public static Fraction operator *(Fraction a, Fraction b) =>
             new Fraction(a.Numerator * b.Numerator, a.Denominator * b.Denominator);
