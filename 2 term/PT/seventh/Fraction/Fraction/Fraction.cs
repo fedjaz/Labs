@@ -205,6 +205,21 @@ namespace Fraction
             return a;
         }
 
+        public static explicit operator int(Fraction f) =>
+            f.ToInt32(null);
+
+        public static explicit operator long(Fraction f) =>
+            f.ToInt64(null);
+
+        public static explicit operator float(Fraction f) =>
+            f.ToSingle(null);
+
+        public static explicit operator double(Fraction f) =>
+            f.ToDouble(null);
+
+        public static explicit operator decimal(Fraction f) =>
+            f.ToDecimal(null);
+
         double GetDoubleValue() =>
             (double)numerator / denominator;
 
