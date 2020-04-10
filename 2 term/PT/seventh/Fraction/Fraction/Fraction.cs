@@ -30,7 +30,7 @@ namespace Fraction
 
         public Fraction(double fraction)
         {
-            Fraction f = Parse(fraction.ToString(provider: null));
+            Fraction f = Parse(fraction.ToString());
             Numerator = f.Numerator;
             Denominator = f.Denominator;
         }
@@ -180,7 +180,7 @@ namespace Fraction
             }
             else
             {
-                throw new FormatException($"The {format} format is not supported");
+                throw new FormatException($"The \"{format}\" format is not supported.");
             }
 
         }
