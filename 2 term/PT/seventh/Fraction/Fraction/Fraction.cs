@@ -28,6 +28,13 @@ namespace Fraction
             Denominator = 1;
         }
 
+        public Fraction(double fraction)
+        {
+            Fraction f = Parse(fraction.ToString());
+            Numerator = f.Numerator;
+            Denominator = f.Denominator;
+        }
+
         void SetNumerator(long numerator)
         {
             if(denominator != 0 && numerator != 0)
@@ -76,9 +83,10 @@ namespace Fraction
         public static bool TryParse(string s, out Fraction fraction)
         {
             fraction = null;
-            Regex pattern1 = new Regex(@"^(\d+)/(\d+)$");
-            Regex pattern2 = new Regex(@"^(\d+)$");
-            Regex pattern3 = new Regex(@"^(\d+)\((\d+)/(\d+)\)$"); ;
+            Regex pattern1 = new Regex(@"^(-?\d+)/(\d+)$");
+            Regex pattern2 = new Regex(@"^(-?\d+)$");
+            Regex pattern3 = new Regex(@"^(-?\d+)\((\d+)/(\d+)\)$"); ;
+            Regex pattern4 = new Regex(@"^(-?\d+)\.(\d+)$");
             if(pattern1.IsMatch(s))
             {
                 Match match = pattern1.Match(s);
@@ -96,9 +104,23 @@ namespace Fraction
             {
                 Match match = pattern3.Match(s);
                 long integral = long.Parse(match.Groups[1].Value);
+                int sign = integral > 0 ? 1 : -1;
                 long numerator = long.Parse(match.Groups[2].Value);
                 long denominator = long.Parse(match.Groups[3].Value);
-                fraction = new Fraction(integral * denominator + numerator, denominator);
+                fraction = new Fraction((Math.Abs(integral) * denominator + numerator) * sign,
+                                        denominator);
+                return true;
+            }
+            if(pattern4.IsMatch(s))
+            {
+                Match match = pattern4.Match(s);
+                long integral = long.Parse(match.Groups[1].Value);
+                int sign = integral > 0 ? 1 : -1;
+                string floating = match.Groups[2].Value;
+                long denominator = BinPow(10, floating.Length);
+                fraction = new Fraction((Math.Abs(integral) * denominator + long.Parse(floating))
+                                        * sign,
+                                        denominator);
                 return true;
             }
             return false;
@@ -203,6 +225,17 @@ namespace Fraction
                 (a, b) = (b, a);
             }
             return a;
+        }
+
+        static long BinPow(long a, long n)
+        {
+            if(n == 0)
+                return 1;
+            if(n % 2 == 1)
+                return a * BinPow(a, n - 1);
+
+            long b = BinPow(a, n / 2);
+            return b * b;
         }
 
         public class DecreaseComparer : IComparer<Fraction>
