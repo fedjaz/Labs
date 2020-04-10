@@ -30,7 +30,7 @@ namespace Fraction
 
         public Fraction(double fraction)
         {
-            Fraction f = Parse(fraction.ToString());
+            Fraction f = Parse(fraction.ToString(provider: null));
             Numerator = f.Numerator;
             Denominator = f.Denominator;
         }
@@ -86,7 +86,7 @@ namespace Fraction
             Regex pattern1 = new Regex(@"^(-?\d+)/(\d+)$");
             Regex pattern2 = new Regex(@"^(-?\d+)$");
             Regex pattern3 = new Regex(@"^(-?\d+)\((\d+)/(\d+)\)$"); ;
-            Regex pattern4 = new Regex(@"^(-?\d+)\.(\d+)$");
+            Regex pattern4 = new Regex(@"^(-?\d+)[,|\.](\d+)$");
             if(pattern1.IsMatch(s))
             {
                 Match match = pattern1.Match(s);
