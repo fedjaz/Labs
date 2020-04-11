@@ -34,7 +34,7 @@ namespace Fraction
         {
             if(denominator != 0 && numerator != 0)
             {
-                long gcd = GCD(Math.Abs(numerator), Math.Abs(denominator));
+                long gcd = GCD(Math.Abs(numerator), denominator);
                 numerator /= gcd;
                 denominator /= gcd;
             }
@@ -56,7 +56,7 @@ namespace Fraction
 
             if(numerator != 0)
             {
-                long gcd = GCD(Math.Abs(numerator), Math.Abs(denominator));
+                long gcd = GCD(Math.Abs(numerator), denominator);
                 numerator /= gcd;
                 denominator /= gcd;
             }
@@ -183,7 +183,7 @@ namespace Fraction
         public int CompareTo(Fraction fraction)
         {
             long lcm = denominator * fraction.Denominator /
-                       GCD(Math.Abs(denominator), Math.Abs(fraction.Denominator));
+                       GCD(Math.Abs(denominator), fraction.Denominator);
 
             long n1 = numerator * (lcm / denominator);
             long n2 = fraction.Numerator * (lcm / fraction.Denominator);
