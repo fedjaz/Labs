@@ -121,15 +121,11 @@ namespace Fraction
             return false;
         }
 
-        public override string ToString()
-        {
-            return ToString("F");
-        }
+        public override string ToString() =>
+            ToString("F");
 
-        public string ToString(string format)
-        {
-            return ToString(format, null);
-        }
+        public string ToString(string format) =>
+            ToString(format, null);
 
         public string ToString(string format, IFormatProvider provider)
         {
@@ -177,7 +173,6 @@ namespace Fraction
             {
                 throw new FormatException($"The \"{format}\" format is not supported.");
             }
-
         }
 
         public int CompareTo(Fraction fraction)
