@@ -44,6 +44,9 @@ namespace Fraction
                 //Math operations
             }).ToList();
 
+            fractions.Add(new Fraction(7, 8).Clone() as Fraction);
+            //Cloning fraction
+
             Console.WriteLine("____________________");
             Console.WriteLine(new Fraction(3, 4) > new Fraction(2, 3));
             Console.WriteLine(new Fraction(5, 6) <= new Fraction(1, 6));
@@ -99,8 +102,8 @@ namespace Fraction
 
             try
             {
-                testing.ToString("Not existing format");
-                //Nonexistent ToString() format exception
+                testing.ToString("Unsupported format");
+                //Unsupported ToString() format exception
             }
             catch(FormatException ex)
             {

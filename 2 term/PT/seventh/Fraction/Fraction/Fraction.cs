@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace Fraction
 {
-    class Fraction : IComparable<Fraction>, IFormattable, IConvertible
+    class Fraction : IComparable<Fraction>, IFormattable, IConvertible, ICloneable
     {
         public long Numerator { get => numerator; set => SetNumerator(value); }
         long numerator;
@@ -187,6 +187,11 @@ namespace Fraction
             else if(n1 < n2)
                 return -1;
             return 0;
+        }
+
+        public object Clone()
+        {
+            return new Fraction(numerator, denominator);
         }
 
         public override bool Equals(object obj)
