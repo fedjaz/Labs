@@ -5,6 +5,8 @@ namespace HumanProject
 {
     class Boxer : Athlete, IFighter
     {
+        public delegate void TrainFunction(ref float rightHand, ref float leftHand, Hands dominantHand,
+                                           ref float strength, ref float stamina, ref float agility, int time);
         public struct SkillOfHands
         {
             public SkillOfHands(float rightHandSkill, float leftHandSkill)
@@ -84,20 +86,42 @@ namespace HumanProject
 
         public override void Train(int time)
         {
-            if(DominantHand == Hands.Right)
+            Train(time, DefaultTrainFunction);
+        }
+
+        public void Train(int time, TrainFunction function)
+        {
+            if(!IsAlive)
             {
-                Skills.RightHandSkill += time * 0.05f;
+                throw new InvalidOperationException("This athlete can't train because he is dead.");
             }
-            if(DominantHand == Hands.Left)
+            float rightHand = Skills.RightHandSkill;
+            float leftHand = Skills.LeftHandSkill;
+            float strength = Strength;
+            float stamina = Stamina;
+            float agility = Agility;
+            function.Invoke(ref rightHand, ref leftHand, DominantHand, ref strength, ref stamina, ref agility, time);
+            (Skills.RightHandSkill, Skills.LeftHandSkill, Strength, Stamina, Agility) =
+            (rightHand, leftHand, strength, stamina, agility);
+        }
+
+        static void DefaultTrainFunction(ref float rightHand, ref float leftHand, Hands dominantHand,
+                                  ref float strength, ref float stamina, ref float agility, int time)
+        {
+            if(dominantHand == Hands.Right)
             {
-                Skills.LeftHandSkill += time * 0.05f;
+                rightHand += time * 0.05f;
+            }
+            if(dominantHand == Hands.Left)
+            {
+                leftHand += time * 0.05f;
             }
 
-            Skills.RightHandSkill += time * 0.01f;
-            Skills.LeftHandSkill += time * 0.01f;
-            Strength += time * 0.2f;
-            Stamina += time * 0.2f;
-            Agility += time * 0.1f;
+            rightHand += time * 0.01f;
+            leftHand += time * 0.01f;
+            strength += time * 0.2f;
+            stamina += time * 0.2f;
+            agility += time * 0.1f;
         }
 
         public override string ToString()

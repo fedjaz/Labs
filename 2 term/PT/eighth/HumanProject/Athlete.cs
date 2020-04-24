@@ -45,7 +45,6 @@ namespace HumanProject
         }
 
         public abstract void Train(int time);
-
         public override string ToString()
         {
             StringBuilder output = new StringBuilder(base.ToString());

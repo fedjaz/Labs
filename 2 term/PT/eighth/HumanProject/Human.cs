@@ -8,6 +8,8 @@ namespace HumanProject
 {
     class Human
     {
+
+        public delegate void PrintMethod(string msg);
         public string Name { get; set; }
         public string Surname { get; set; }
         DateTime dateOfBirth;
@@ -63,9 +65,9 @@ namespace HumanProject
             return output.ToString();
         }
 
-        public void PrintInformation()
+        public void PrintInformation(PrintMethod print)
         {
-            Console.WriteLine(this);
+            print.Invoke(ToString());
         }
 
         [Obsolete("No! You shouldn't change your gender!")]

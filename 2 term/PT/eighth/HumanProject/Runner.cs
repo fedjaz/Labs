@@ -8,6 +8,7 @@ namespace HumanProject
 {
     class Runner : Athlete , IRunner
     {
+        public delegate void TrainFunction(ref float skill, ref float stamina, ref float agility, int time);
         public float PersonalRecord { get; set; }
         public string CountryName { get; set; }
 
@@ -64,9 +65,21 @@ namespace HumanProject
 
         public override void Train(int time)
         {
-            Skill += time * 0.2f;
-            Stamina += time * 0.2f;
-            Agility += time * 0.2f;
+            Train(time, DefaultTrainFunction);
+        }
+
+        public void Train(int time, TrainFunction function)
+        {
+            if(!IsAlive)
+            {
+                throw new InvalidOperationException("This athlete can't train because he is dead.");
+            }
+
+            float skill = Skill;
+            float stamina = Stamina;
+            float agility = Agility;
+            function.Invoke(ref skill, ref stamina, ref agility, time);
+            (Skill, Stamina, Agility) = (skill, stamina, agility);
         }
 
         public override string ToString()
@@ -87,6 +100,13 @@ namespace HumanProject
             else if(time1 < time2)
                 return -1;
             return 0;
+        }
+
+        void DefaultTrainFunction(ref float skill, ref float stamina, ref float agility, int time)
+        {
+            Skill += time * 0.2f;
+            Stamina += time * 0.2f;
+            Agility += time * 0.2f;
         }
     }
 }

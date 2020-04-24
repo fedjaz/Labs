@@ -8,6 +8,12 @@ namespace HumanProject
 {
     class SoccerPlayer : Athlete, IRunner
     {
+        public delegate void TrainFunction(ref float skill, ref float strength,
+                                           ref float stamina, ref float agility, int time);
+        public delegate void Reaction(string message);
+
+        public event Reaction Celebrate;
+        public event Reaction GetUpset;
         public int Number { get; set; }
         public string TeamName { get; set; }
         public enum Positions
@@ -80,10 +86,34 @@ namespace HumanProject
 
         public override void Train(int time)
         {
-            Skill += time * 0.1f;
-            Strength += time * 0.01f;
-            Stamina += time * 0.2f;
-            Agility += time * 0.15f;
+            Train(time, DefaultTrainFunction);
+        }
+
+        public void Train(int time, TrainFunction function)
+        {
+            if(!IsAlive)
+            {
+                throw new InvalidOperationException("This athlete can't train because he is dead.");
+            }
+
+            float strength = Strength;
+            float skill = Skill;
+            float stamina = Stamina;
+            float agility = Agility;
+            function.Invoke(ref skill, ref strength, ref stamina, ref agility, time);
+            (Skill, Strength, Stamina, Agility) = (skill, strength, stamina, agility);
+        }
+
+        public void Goal(string teamName)
+        {
+            if(teamName == TeamName)
+            {
+                Celebrate?.Invoke($"{Name} {Surname} from {TeamName} is very happy!");
+            }
+            else
+            {
+                GetUpset?.Invoke($"{Name} {Surname} from {TeamName} is now upset...");
+            }
         }
 
         public int CompareTo(IRunner runner)
@@ -95,6 +125,13 @@ namespace HumanProject
             else if(time1 < time2)
                 return -1;
             return 0;
+        }
+        void DefaultTrainFunction(ref float skill, ref float strength, ref float stamina, ref float agility, int time)
+        {
+            skill += time * 0.1f;
+            strength += time * 0.01f;
+            stamina += time * 0.2f;
+            agility += time * 0.15f;
         }
     }
 }
