@@ -14,6 +14,25 @@ typedef struct List{
     int length;
 } List;
 
+
+void printBigInt(List * number);
+void pushBack(List * list, int number);
+void popBack(List * list);
+void pushFront(List * list, int number);
+void popFront(List * list);
+void trim(List * list);
+void dispose(List * list);
+int compareInt(int a, int b); 
+int compare(List * a, List * b);
+List * newBigIntN(int number);
+List * newBigIntC(char * number, int length);
+List * copy(List * list, int startIndex, int length);
+List * mulByInt(List * list, int n);
+List * substract(List * a, List * b);
+List * mod(List * a, List * b);
+
+
+
 int compareInt(int a, int b){
     if(a > b){
         return 1;
@@ -48,6 +67,8 @@ int compare(List * a, List * b){
 
 void pushBack(List * list, int number){
     Node * node = malloc(sizeof(Node));
+    node->next = NULL;
+    node->prev = NULL;
     node->value = number;
     list->length++;
     if(list->begin == NULL){
@@ -77,6 +98,8 @@ void popBack(List * list){
 
 void pushFront(List * list, int number){
     Node * node = malloc(sizeof(Node));
+    node->next = NULL;
+    node->prev = NULL;
     node->value = number;
     list->length++;
     if(list->begin == NULL){
@@ -88,6 +111,7 @@ void pushFront(List * list, int number){
         node->next = list->begin;
         list->begin = node;
     }
+    trim(list);
 }
 
 void popFront(List * list){
@@ -110,8 +134,37 @@ void trim(List * list){
     }
 }
 
-List * newBigInt(char * number, int length){
-    List * output = malloc(sizeof(List));   
+void dispose(List * list){
+    if(list == NULL){
+        return;
+    }
+    while(list->length > 0){
+        popBack(list);
+    }
+    free(list);
+}
+
+List * newBigIntN(int number){
+    List * output = malloc(sizeof(List));  
+    output->begin = NULL;
+    output->end = NULL;
+    output->length = 0;
+    if(number == 0){
+        pushBack(output, 0);
+        return output;
+    }
+    while(number != 0){
+        pushFront(output, number % 10);
+        number /= 10;
+    }
+    return output;
+}
+
+List * newBigIntC(char * number, int length){
+    List * output = malloc(sizeof(List));  
+    output->begin = NULL;
+    output->end = NULL;
+    output->length = 0;
     int i;
     for(i = 0; i < length; i++){
         pushBack(output, number[i] - '0');
@@ -120,35 +173,36 @@ List * newBigInt(char * number, int length){
 }
 
 List * copy(List * list, int startIndex, int length){
-    List * output = malloc(sizeof(List));
+    List * output = newBigIntN(0);
     Node * cur = list->begin;
-    pushBack(output, cur->value);
     int i;
-    for(i = 0; cur != list->end; i++){
-        cur = cur->next;
+    for(i = 0; i < list->length; i++, cur = cur->next){
         if(i >= startIndex && i - startIndex < length){
             pushBack(output, cur->value);
         }
     }
+    trim(output);
     return output;
 }
 
 List * mulByInt(List * list, int n){
-    List * output = copy(list, 0, output->length);
+    List * output = copy(list, 0, list->length);
     Node * cur = output->begin;
-    cur->value *= n;
-    while(cur != output->end){
-        cur = cur->next;
+    int i;
+    for(i = 0; i < output->length; i++){
         cur->value *= n;
+        cur = cur->next;
     }
-    while(cur != output->begin){
+    cur = output->end;
+    for(i = 0; i < output->length - 1; i++){
         cur->prev->value += cur->value / 10;
         cur->value %= 10;
         cur = cur->prev;
     }
-    if(cur->value > 9){
-        pushFront(output, cur->value / 10);
-        cur->value %= 10;
+    if(output->begin->value > 9){
+        int val = output->begin->value / 10;
+        output->begin->value %= 10;
+        pushFront(output, val);
     }
     return output;
 }
@@ -162,8 +216,8 @@ List * substract(List * a, List * b){
     Node * curB = b->end;
     curA->value -= curB->value;
     if(curA->value < 0){
-            curA->value += 10;
-            curA->prev->value -= 1;
+        curA->value += 10;
+        curA->prev->value -= 1;
     }
     while(curB != b->begin){
         curA = curA->prev;
@@ -178,6 +232,36 @@ List * substract(List * a, List * b){
     return output;
 }
 
+List * mod(List * a, List * b){
+    List * rest = newBigIntN(a->begin->value);
+    List * try;
+    Node * cur = a->begin;
+    do{
+        while(compare(rest, b) == -1 && cur != a->end){
+            cur = cur->next;
+            pushBack(rest, cur->value);
+        }
+        int l = 1, r = 10;
+        while(l < r){
+            int m = (l + r) / 2;
+            dispose(try);
+            try = mulByInt(b, m);
+            if(compare(try, rest) != 1){
+                l = m + 1;
+            }
+            else{
+                r = m;
+            }
+        }
+        dispose(try);
+        try = mulByInt(b, l - 1);
+        List * newRest = substract(rest, try);
+        dispose(rest);
+        rest = newRest;
+    }while(cur != a->end);
+    return rest;
+}
+
 void printBigInt(List * number){
     Node * cur = number->begin;
     printf("%d", cur->value);
@@ -188,12 +272,12 @@ void printBigInt(List * number){
 }
 
 int main(){
-    List * a = newBigInt("999", 3);
-    List * b = newBigInt("999", 3);
+    List * a = newBigIntN(1337);
+    List * b = newBigIntN(228);
     printBigInt(a);
     printf("\n");
     printBigInt(b);
     printf("\n");
-    printBigInt(substract(a, b));
+    printBigInt(mod(a, b));
     return 0;
 }
