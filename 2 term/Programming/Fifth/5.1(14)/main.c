@@ -53,19 +53,22 @@ List * newBigInt(char * number, int length){
     return output;
 }
 
-List * copy(List * list){
+List * copy(List * list, int startIndex, int length){
     List * output = malloc(sizeof(List));
     Node * cur = list->begin;
     pushBack(output, cur->value);
-    while(cur != list->end){
+    int i;
+    for(i = 0; cur != list->end; i++){
         cur = cur->next;
-        pushBack(output, cur->value);
+        if(i >= startIndex && i - startIndex < length){
+            pushBack(output, cur->value);
+        }
     }
     return output;
 }
 
 List * mulByInt(List * list, int n){
-    List * output = copy(list);
+    List * output = copy(list, 0, output->length);
     Node * cur = output->begin;
     cur->value *= n;
     while(cur != output->end){
@@ -96,6 +99,8 @@ void printBigInt(List * number){
 
 int main(){
     List * number = newBigInt("228", 3);
-    printBigInt(mulByInt(number, 9));
+    printBigInt(copy(number, 1, 2));
+    printf("\n");
+    printBigInt(mulByInt(number, 1488));
     return 0;
 }
