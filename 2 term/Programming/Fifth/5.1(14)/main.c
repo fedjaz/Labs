@@ -61,6 +61,20 @@ void pushBack(List * list, int number){
     }
 }
 
+void popBack(List * list){
+    if(list->length == 1){
+        free(list->end);
+        list->begin = NULL;
+        list->end = NULL;
+    }
+    else{
+        list->end = list->end->prev;
+        free(list->end->next);
+        list->end->next = NULL;
+    }
+    list->length--;
+}
+
 void pushFront(List * list, int number){
     Node * node = malloc(sizeof(Node));
     node->value = number;
@@ -73,6 +87,26 @@ void pushFront(List * list, int number){
         list->begin->prev = node;
         node->next = list->begin;
         list->begin = node;
+    }
+}
+
+void popFront(List * list){
+    if(list->length == 1){
+        free(list->end);
+        list->begin = NULL;
+        list->end = NULL;
+    }
+    else{
+        list->begin = list->begin->next;
+        free(list->begin->prev);
+        list->begin->prev = NULL;
+    }
+    list->length--;
+}
+
+void trim(List * list){
+    while(list->begin->value == 0 && list->length > 1){
+        popFront(list);
     }
 }
 
@@ -119,6 +153,31 @@ List * mulByInt(List * list, int n){
     return output;
 }
 
+List * substract(List * a, List * b){
+    if(compare(a, b) == -1){
+        return NULL;
+    }
+    List * output = copy(a, 0, a->length);
+    Node * curA = output->end;
+    Node * curB = b->end;
+    curA->value -= curB->value;
+    if(curA->value < 0){
+            curA->value += 10;
+            curA->prev->value -= 1;
+    }
+    while(curB != b->begin){
+        curA = curA->prev;
+        curB = curB->prev;
+        curA->value -= curB->value;
+        if(curA->value < 0){
+            curA->value += 10;
+            curA->prev->value -= 1;
+        }
+    }
+    trim(output);
+    return output;
+}
+
 void printBigInt(List * number){
     Node * cur = number->begin;
     printf("%d", cur->value);
@@ -129,11 +188,12 @@ void printBigInt(List * number){
 }
 
 int main(){
-    List * a = newBigInt("229", 3);
-    List * b = newBigInt("228", 3);
+    List * a = newBigInt("999", 3);
+    List * b = newBigInt("999", 3);
     printBigInt(a);
     printf("\n");
     printBigInt(b);
-    printf("\n%d", compare(a, b));
+    printf("\n");
+    printBigInt(substract(a, b));
     return 0;
 }
