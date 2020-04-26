@@ -14,6 +14,38 @@ typedef struct List{
     int length;
 } List;
 
+int compareInt(int a, int b){
+    if(a > b){
+        return 1;
+    }
+    else if(a < b){
+        return -1;
+    }
+    return 0;
+}
+
+int compare(List * a, List * b){
+    if(a->length != b->length){
+        return compareInt(a->length, b->length);
+    }
+    else{
+        Node * curA = a->begin, * curB = b->begin;
+        int result = compareInt(curA->value, curB->value);
+        if(result != 0){
+            return result;
+        }
+        while(curA != a->end){
+            curA = curA->next;
+            curB = curB->next;
+            int result = compareInt(curA->value, curB->value);
+            if(result != 0){
+                return result;
+            }
+        }
+    }
+    return 0;
+}
+
 void pushBack(List * list, int number){
     Node * node = malloc(sizeof(Node));
     node->value = number;
@@ -96,11 +128,12 @@ void printBigInt(List * number){
     }
 }
 
-
 int main(){
-    List * number = newBigInt("228", 3);
-    printBigInt(copy(number, 1, 2));
+    List * a = newBigInt("229", 3);
+    List * b = newBigInt("228", 3);
+    printBigInt(a);
     printf("\n");
-    printBigInt(mulByInt(number, 1488));
+    printBigInt(b);
+    printf("\n%d", compare(a, b));
     return 0;
 }
