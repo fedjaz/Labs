@@ -30,7 +30,7 @@ List * copy(List * list, int startIndex, int length);
 List * mulByInt(List * list, int n);
 List * substract(List * a, List * b);
 List * mod(List * a, List * b);
-
+List * gcd(List * a, List * b);
 
 
 int compareInt(int a, int b){
@@ -128,6 +128,9 @@ void popFront(List * list){
 }
 
 void trim(List * list){
+    if(list == NULL || list->length < 2){
+        return;
+    }
     while(list->begin->value == 0 && list->length > 1){
         popFront(list);
     }
@@ -168,6 +171,7 @@ List * newBigIntC(char * number, int length){
     for(i = 0; i < length; i++){
         pushBack(output, number[i] - '0');
     }
+    trim(output);
     return output;
 }
 
@@ -226,12 +230,13 @@ List * substract(List * a, List * b){
 
 List * mod(List * a, List * b){
     List * rest = newBigIntN(a->begin->value);
-    List * try;
+    List * try = NULL;
     Node * cur = a->begin;
     do{
         while(compare(rest, b) == -1 && cur != a->end){
             cur = cur->next;
             pushBack(rest, cur->value);
+            trim(rest);
         }
         int l = 1, r = 10;
         while(l < r){
@@ -262,13 +267,28 @@ void printBigInt(List * number){
     }
 }
 
+List * gcd(List * a, List * b){
+    if(compare(a, b) == -1){
+        List * c = b;
+        b = a;
+        a = c;
+    }
+    while (b->begin->value != 0){
+        List * newA = mod(a, b);
+        dispose(a);
+        a = b;
+        b = newA;
+    }
+    return a;
+}
+
 int main(){
-    List * a = newBigIntN(1488);
-    List * b = newBigIntN(228);
+    List * a = newBigIntN(228);
+    List * b = newBigIntN(1488);
     printBigInt(a);
     printf("\n");
     printBigInt(b);
     printf("\n");
-    printBigInt(mod(a, b));
+    printBigInt(gcd(a, b));
     return 0;
 }
