@@ -111,7 +111,6 @@ void pushFront(List * list, int number){
         node->next = list->begin;
         list->begin = node;
     }
-    trim(list);
 }
 
 void popFront(List * list){
@@ -173,7 +172,7 @@ List * newBigIntC(char * number, int length){
 }
 
 List * copy(List * list, int startIndex, int length){
-    List * output = newBigIntN(0);
+    List * output = newBigIntC("", 0);
     Node * cur = list->begin;
     int i;
     for(i = 0; i < list->length; i++, cur = cur->next){
@@ -181,7 +180,6 @@ List * copy(List * list, int startIndex, int length){
             pushBack(output, cur->value);
         }
     }
-    trim(output);
     return output;
 }
 
@@ -214,18 +212,12 @@ List * substract(List * a, List * b){
     List * output = copy(a, 0, a->length);
     Node * curA = output->end;
     Node * curB = b->end;
-    curA->value -= curB->value;
-    if(curA->value < 0){
-        curA->value += 10;
-        curA->prev->value -= 1;
-    }
-    while(curB != b->begin){
-        curA = curA->prev;
-        curB = curB->prev;
+    int i;
+    for(i = 0; i < b->length; i++, curA = curA->prev, curB = curB->prev){
         curA->value -= curB->value;
         if(curA->value < 0){
             curA->value += 10;
-            curA->prev->value -= 1;
+            curA->prev->value--;
         }
     }
     trim(output);
@@ -264,15 +256,14 @@ List * mod(List * a, List * b){
 
 void printBigInt(List * number){
     Node * cur = number->begin;
-    printf("%d", cur->value);
-    while(cur != number->end){
-        cur = cur->next;
+    int i;
+    for(i = 0; i < number->length; i++, cur = cur->next){
         printf("%d", cur->value);
     }
 }
 
 int main(){
-    List * a = newBigIntN(1337);
+    List * a = newBigIntN(1488);
     List * b = newBigIntN(228);
     printBigInt(a);
     printf("\n");
