@@ -24,6 +24,7 @@ void trim(List * list);
 void dispose(List * list);
 int compareInt(int a, int b); 
 int compare(List * a, List * b);
+int checkChar(char c);
 void checkPtr(void * ptr);
 List * newBigIntN(int number);
 List * newBigIntC(char * number, int length);
@@ -32,6 +33,8 @@ List * mulByInt(List * list, int n);
 List * substract(List * a, List * b);
 List * mod(List * a, List * b);
 List * gcd(List * a, List * b);
+List * getNumber();
+List * getCorrectNumber();
 
 
 void checkPtr(void * ptr){
@@ -39,6 +42,10 @@ void checkPtr(void * ptr){
         printf("fatal error ocurred");
         exit(-1);
     }
+}
+
+int checkChar(char c){
+    return (c >= '0' && c <= '9');
 }
 
 int compareInt(int a, int b){
@@ -244,6 +251,9 @@ List * mod(List * a, List * b){
     List * rest = newBigIntN(a->begin->value);
     List * try = NULL;
     Node * cur = a->begin;
+    if(b->begin->value == 0){
+        return NULL;
+    }
     do{
         while(compare(rest, b) == -1 && cur != a->end){
             cur = cur->next;
@@ -280,6 +290,9 @@ void printBigInt(List * number){
 }
 
 List * gcd(List * a, List * b){
+    if(a->begin->value == 0 || b->begin->value == 0){
+        return NULL;
+    }
     a = copy(a, 0, a->length);
     b = copy(b, 0, b->length);
     if(compare(a, b) == -1){
@@ -304,18 +317,39 @@ List * getNumber(){
     int length, i;
     List * output = newBigIntN(0);
     for(i = 0; c[i] != 0 && c[i] != '\n'; i++){
+        if(checkChar(c[i]) == 0){
+            dispose(output);
+            return NULL;
+        }
         pushBack(output, c[i] - '0');
     }
     trim(output);
     return output;
 }
 
+List * getCorrectNumber(){
+    List * output = NULL;
+    while(output == NULL){
+        output = getNumber();
+        if(output == NULL){
+            printf("Input string was not in a correct format, try again\n");
+        }
+        if(output->begin->value == 0){
+            printf("This number can't be zero, try again\n");
+            dispose(output);
+            output = NULL;
+        }
+    }
+    return output;
+}
+
 int main(){
-    printf("Type a: ");
-    List * a = getNumber();
-    printf("Type b: ");
-    List * b = getNumber();
-    List * c = gcd(a, b);
+    List * a, * b, * c;
+    printf("Type positive number a: ");
+    a = getCorrectNumber();
+    printf("Type positive number b: ");
+    b = getCorrectNumber();
+    c = gcd(a, b);
     printf("gcd(a, b) = ");
     printBigInt(c);
     printf("\n");
