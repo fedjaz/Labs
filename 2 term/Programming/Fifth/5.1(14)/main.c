@@ -241,7 +241,6 @@ List * mod(List * a, List * b){
         int l = 1, r = 10;
         while(l < r){
             int m = (l + r) / 2;
-            dispose(try);
             try = mulByInt(b, m);
             if(compare(try, rest) != 1){
                 l = m + 1;
@@ -249,11 +248,12 @@ List * mod(List * a, List * b){
             else{
                 r = m;
             }
+            dispose(try);
         }
-        dispose(try);
         try = mulByInt(b, l - 1);
         List * newRest = substract(rest, try);
         dispose(rest);
+        dispose(try);
         rest = newRest;
     }while(cur != a->end);
     return rest;
@@ -306,6 +306,7 @@ int main(){
     List * c = gcd(a, b);
     printf("gcd(a, b) = ");
     printBigInt(c);
+    printf("\n");
     dispose(a);
     dispose(b);
     dispose(c);
