@@ -24,6 +24,7 @@ void trim(List * list);
 void dispose(List * list);
 int compareInt(int a, int b); 
 int compare(List * a, List * b);
+void checkPtr(void * ptr);
 List * newBigIntN(int number);
 List * newBigIntC(char * number, int length);
 List * copy(List * list, int startIndex, int length);
@@ -32,6 +33,13 @@ List * substract(List * a, List * b);
 List * mod(List * a, List * b);
 List * gcd(List * a, List * b);
 
+
+void checkPtr(void * ptr){
+    if(ptr == NULL){
+        printf("fatal error ocurred");
+        exit(-1);
+    }
+}
 
 int compareInt(int a, int b){
     if(a > b){
@@ -67,6 +75,7 @@ int compare(List * a, List * b){
 
 void pushBack(List * list, int number){
     Node * node = malloc(sizeof(Node));
+    checkPtr(node);
     node->next = NULL;
     node->prev = NULL;
     node->value = number;
@@ -98,6 +107,7 @@ void popBack(List * list){
 
 void pushFront(List * list, int number){
     Node * node = malloc(sizeof(Node));
+    checkPtr(node);
     node->next = NULL;
     node->prev = NULL;
     node->value = number;
@@ -148,6 +158,7 @@ void dispose(List * list){
 
 List * newBigIntN(int number){
     List * output = malloc(sizeof(List));  
+    checkPtr(output);
     output->begin = NULL;
     output->end = NULL;
     output->length = 0;
@@ -164,6 +175,7 @@ List * newBigIntN(int number){
 
 List * newBigIntC(char * number, int length){
     List * output = malloc(sizeof(List));  
+    checkPtr(output);
     output->begin = NULL;
     output->end = NULL;
     output->length = 0;
