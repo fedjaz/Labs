@@ -1,3 +1,15 @@
-Task: main.c
+all: build run clean
+
+build: main.c
 	gcc main.c -o main -lm -std=c89
+
+run:
 	./main
+
+valgrind: build
+	valgrind --leak-check=full ./main
+	rm -rf ./main
+
+clean:
+	rm -rf ./main
+
