@@ -268,6 +268,8 @@ void printBigInt(List * number){
 }
 
 List * gcd(List * a, List * b){
+    a = copy(a, 0, a->length);
+    b = copy(b, 0, b->length);
     if(compare(a, b) == -1){
         List * c = b;
         b = a;
@@ -279,16 +281,33 @@ List * gcd(List * a, List * b){
         a = b;
         b = newA;
     }
+    dispose(b);
     return a;
 }
 
+char c[1000000];
+
+List * getNumber(){
+    fgets(c, 1000000, stdin);
+    int length, i;
+    List * output = newBigIntN(0);
+    for(i = 0; c[i] != 0 && c[i] != '\n'; i++){
+        pushBack(output, c[i] - '0');
+    }
+    trim(output);
+    return output;
+}
+
 int main(){
-    List * a = newBigIntN(228);
-    List * b = newBigIntN(1488);
-    printBigInt(a);
-    printf("\n");
-    printBigInt(b);
-    printf("\n");
-    printBigInt(gcd(a, b));
+    printf("Type a: ");
+    List * a = getNumber();
+    printf("Type b: ");
+    List * b = getNumber();
+    List * c = gcd(a, b);
+    printf("gcd(a, b) = ");
+    printBigInt(c);
+    dispose(a);
+    dispose(b);
+    dispose(c);
     return 0;
 }
