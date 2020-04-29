@@ -282,6 +282,9 @@ List * mod(List * a, List * b){
 }
 
 void printBigInt(List * number){
+    if(number == NULL){
+        return;
+    }
     Node * cur = number->begin;
     int i;
     for(i = 0; i < number->length; i++, cur = cur->next){
@@ -334,7 +337,7 @@ List * getCorrectNumber(){
         if(output == NULL){
             printf("Input string was not in a correct format, try again\n");
         }
-        if(output->begin->value == 0){
+        else if(output->begin->value == 0){
             printf("This number can't be zero, try again\n");
             dispose(output);
             output = NULL;
