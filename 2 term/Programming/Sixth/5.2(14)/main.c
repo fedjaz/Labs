@@ -18,6 +18,8 @@ typedef struct Tree{
 void checkPtr(void * ptr);
 void printTree(Tree * tree, Node * begin);
 void pushNode(Tree * tree, char * c, int lenght);
+void disposeRecursive(Node * cur);
+void dispose(Tree * tree);
 Tree * newTree();
 
 
@@ -84,6 +86,27 @@ void printTree(Tree * tree, Node * begin){
     }
 }
 
+void disposeRecursive(Node * cur){
+    if(cur->left != NULL){
+        disposeRecursive(cur->left);
+    }
+    if(cur->right != NULL){
+        disposeRecursive(cur->right);
+    }
+    free(cur->value);
+    free(cur);
+}
+
+void dispose(Tree * tree){
+    if(tree == NULL){
+        return;
+    }
+    if(tree->root != NULL){
+        disposeRecursive(tree->root);
+    }
+    free(tree);
+}
+
 char buffer[100];
 
 int main(){
@@ -91,15 +114,14 @@ int main(){
     Tree * tree = newTree();
     checkPtr(file);
     while(fscanf(file, "%s", buffer) > 0){
-        int length, i;
-        for(length = 0; buffer[length] != 0 && buffer[length] != '\n'; length++);
-        char * c = calloc(length, sizeof(char));
+        int length = strlen(buffer), i;
+        char * c = calloc(length + 1, sizeof(char));
         checkPtr(c);
-        for(i = 0; i < length; i++){
-            c[i] = buffer[i];
-        }
+        strcpy(c, buffer);
         pushNode(tree, c, length);
     }
     printTree(tree, NULL);
+    dispose(tree);
+    fclose(file);
     return 0;
 }

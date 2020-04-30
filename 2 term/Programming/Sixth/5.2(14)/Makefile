@@ -7,7 +7,7 @@ run:
 	./main
 
 valgrind: build
-	valgrind --leak-check=full ./main
+	valgrind --leak-check=full -s ./main
 	rm -rf ./main
 
 clean:
