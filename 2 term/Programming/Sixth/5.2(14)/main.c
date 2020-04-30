@@ -80,7 +80,9 @@ void printTree(Tree * tree, Node * begin){
     if(begin->left != NULL){
         printTree(tree, begin->left);
     }
-    printf("%s ", begin->value);
+    if(begin->value[0] == begin->value[begin->length - 1]){
+        printf("%s ", begin->value);
+    }
     if(begin->right != NULL){
         printTree(tree, begin->right);
     }
