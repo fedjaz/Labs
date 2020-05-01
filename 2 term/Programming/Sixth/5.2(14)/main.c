@@ -109,14 +109,14 @@ void dispose(Tree * tree){
     free(tree);
 }
 
-char buffer[100];
+char buffer[1000000];
 
 int main(){
     FILE * file = fopen("input.txt", "r");
     Tree * tree = newTree();
     checkPtr(file);
     while(fscanf(file, "%s", buffer) > 0){
-        int length = strlen(buffer), i;
+        int length = strlen(buffer);
         char * c = calloc(length + 1, sizeof(char));
         checkPtr(c);
         strcpy(c, buffer);
