@@ -17,7 +17,7 @@ typedef struct Tree{
 
 void checkPtr(void * ptr);
 void printTree(Tree * tree, Node * begin);
-void pushNode(Tree * tree, char * c, int lenght);
+void pushNode(Tree * tree, char * c, int length);
 void disposeRecursive(Node * cur);
 void dispose(Tree * tree);
 Tree * newTree();
@@ -37,7 +37,7 @@ Tree * newTree(){
     return output;
 }
 
-void pushNode(Tree * tree, char * c, int lenght){
+void pushNode(Tree * tree, char * c, int length){
     Node * cur = tree->root;
     Node * prev = NULL;
     int compareResult;
@@ -56,7 +56,7 @@ void pushNode(Tree * tree, char * c, int lenght){
     cur->left = NULL;
     cur->right = NULL;
     cur->value = c;
-    cur->length = lenght;
+    cur->length = length;
     if(prev != NULL){
         if(compareResult > 0){
             prev->right = cur;
