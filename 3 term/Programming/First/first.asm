@@ -1,10 +1,10 @@
 .model small
 .stack 100h
 .data
-	a dw 0
-	b dw 2
-	c dw 7
-	d dw 9
+	a dw 3
+	b dw 6
+	c dw 0
+	d dw 7
 .code
 main:
 	mov ax, @data
@@ -21,39 +21,37 @@ main:
 	or bx, d
 	
 	cmp ax, bx
-	jz ifbody1
-	
+		jnz else1
+		mov ax, a
+		add ax, b
+		add ax, c
+		add ax, d
+		jmp endif1
+		else1:
 		mov ax, b
-		or ax, c
+		and ax, c
 		add ax, a
+		jc else2
 		
 		mov bx, b
-		or bx, c
-		or bx, d
-		
+		and bx, c
+		and bx, d
 		cmp ax, bx
-		jz ifbody2
-			mov ax, a
-			xor ax, b
-			mov bx, c
-			and bx, d
-			add ax, bx
-			jmp continue2
-		ifbody2:
+			jnz else2
 			mov ax, a
 			xor ax, b
 			mov bx, c
 			and bx, d
 			xor ax, bx
-		continue2:
-	jmp continue1
-	ifbody1:
-		mov ax, a
-		add ax, b
-		add ax, c
-		add ax, d
-	
-	continue1:
+			jmp endif2
+			else2:
+			mov ax, a
+			xor ax, b
+			mov bx, c
+			and bx, d
+			add ax, bx
+			endif2:
+		endif1:
 
 	mov ax, 4c00h
 	int 21h
