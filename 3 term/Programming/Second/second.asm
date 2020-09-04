@@ -1,7 +1,8 @@
 .model small
 .stack 100h
 .data
-	msg1 db "Type decimal number:$"
+	msg1_1 db "Type first decimal number:$"
+	msg1_2 db "Type second decimal number:$"
 	msg2 db "This symbol is deprecated, try again$"
 	msg3 db "This number is too large, try again$"
 .code
@@ -13,9 +14,6 @@ getNumber proc
 	
 	xor bx, bx
 	xor cx, cx
-	lea dx, msg1
-	mov ah, 09h
-	int 21h
 	begin1:
 		mov ah, 1
 		int 21h
@@ -103,8 +101,28 @@ main:
 	mov ax, @data
 	mov ds, ax
 	
+	lea dx, msg1_1
+	mov ah, 09h
+	int 21h 
+	
 	call getNumber
+	mov cx, ax
+	
+	mov ah, 2
+	int 21h
+	
+	lea dx, msg1_2
+	mov ah, 09h
+	int 21h
+	
+	call getNumber
+	mov bx, ax
+	mov ax, cx
+	xor dx, dx
+	div bx
+	
 	call printNumber
+	
 	mov ax, 4c00h
 	int 21h
 end main
