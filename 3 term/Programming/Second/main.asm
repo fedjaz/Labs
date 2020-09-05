@@ -1,8 +1,11 @@
 .model small
 .stack 100h
 .data
-	msg1_1 db "Type first decimal number:$"
-	msg1_2 db "Type second decimal number:$"
+	msg1_1 db "Type first decimal number: $"
+	msg1_2 db "Type second decimal number: $"
+	msg2 db "Result: $"
+	msg3 db ", Mod: $"
+	msg4 db 10, "You can't divide by zero$"
 .code
 deleteSymbol proc
 	push ax
@@ -142,7 +145,7 @@ main:
 	mov ds, ax
 	
 	lea dx, msg1_1
-	mov ah, 09h
+	mov ah, 9
 	int 21h 
 	
 	call getNumber
@@ -153,25 +156,46 @@ main:
 	int 21h
 	
 	lea dx, msg1_2
-	mov ah, 09h
+	mov ah, 9
 	int 21h
 	
 	call getNumber
 	mov bx, ax
 	mov ax, cx
 	xor dx, dx
+	cmp bx, 0
+	jnz notnull
+		lea dx, msg4
+		mov ah, 9
+		int 21h
+		jmp waitkey
+	notnull:
 	div bx
 	mov bx, ax
+	mov cx, dx
 	
 	mov dl, 10
 	mov ah, 2
 	int 21h
 
+	lea dx, msg2
+	mov ah, 9
+	int 21h
+	
 	mov ax, bx
 	call printNumber
 	
+	lea dx, msg3
+	mov ah, 9
+	int 21h
+
+	mov ax, cx
+	call printNumber
+
+	waitkey:
 	mov ah, 1
 	int 21h
+
 	mov ax, 4c00h
 	int 21h
 end main
