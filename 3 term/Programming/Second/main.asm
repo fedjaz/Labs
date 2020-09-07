@@ -71,6 +71,12 @@ getNumber proc
 		jnz begin1
 
 		mov bx, ax
+		
+		mov al, cl
+		xor ah, ah
+		or ax, bx
+		cmp ax, 0
+		jz begin1
 		add cl, '0'
 		mov dl, cl
 		mov ah, 2
@@ -199,5 +205,3 @@ main:
 	mov ax, 4c00h
 	int 21h
 end main
-
-
