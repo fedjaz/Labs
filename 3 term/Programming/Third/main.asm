@@ -51,10 +51,12 @@ getNumber proc
 	
 	jmp endinit
 		isMinus db 0
+		len db 0
 	endinit:
 	xor bx, bx
 	xor cx, cx
 	mov isMinus, 0
+	mov len, 0
 	begin1:
 		mov ah, 8
 		int 21h
@@ -80,20 +82,27 @@ getNumber proc
 		jz checked
 		jnc begin1
 
+		cmp cl, 0
+		jnz checked
+		cmp len, 1
+		jnz checked
+		cmp bx, 0
+		jnz checked
+		jmp begin1
+
 		checked:
 		mov bx, ax
 
 		mov al, cl
 		xor ah, ah
 		or ax, bx
-		cmp ax, 0
-		jz begin1
+
 
 		add cl, '0'
 		mov dl, cl
 		mov ah, 2
 		int 21h
-
+		inc len
 		jmp begin1
 
 		er:
@@ -107,9 +116,10 @@ getNumber proc
 			jz minus
 			jmp begin1
 			back:
-				cmp bx, 0
+				cmp len, 0
 				jz checkMinus1
 					call deleteSymbol
+					dec len
 					jmp begin1
 				checkMinus1:
 					cmp isMinus, 0
@@ -119,9 +129,10 @@ getNumber proc
 				jmp begin1
 			esck:
 				begin4:
-					cmp bx, 0
+					cmp len, 0
 					jz checkMinus2
 					call deleteSymbol
+					dec len
 					jmp begin4
 				checkMinus2:
 					cmp isMinus, 0
@@ -130,7 +141,7 @@ getNumber proc
 					mov isMinus, 0
 				jmp begin1
 			minus:
-				cmp bx, 0
+				cmp len, 0
 				jnz begin1
 				cmp isMinus, 1
 				jz begin1

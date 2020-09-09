@@ -48,6 +48,10 @@ getNumber proc
 	push cx
 	push dx
 	
+	jmp endinit
+		len db 0
+	endinit:
+	mov len, 0
 	xor bx, bx
 	xor cx, cx
 	begin1:
@@ -74,14 +78,21 @@ getNumber proc
 		
 		mov al, cl
 		xor ah, ah
-		or ax, bx
-		cmp ax, 0
-		jz begin1
+
+		cmp cl, 0
+		jnz checked
+		cmp len, 1
+		jnz checked
+		cmp bx, 0
+		jnz checked
+		jmp begin1
+		
+		checked:
 		add cl, '0'
 		mov dl, cl
 		mov ah, 2
 		int 21h
-
+		inc len
 		jmp begin1
 
 		er:
@@ -93,16 +104,18 @@ getNumber proc
 			jz save
 			jmp begin1
 			back:
-				cmp bx, 0
+				cmp len, 0
 				jz begin1
 					
 					call deleteSymbol
+					dec len
 					jmp begin1
 			esck:
 				begin4:
-					cmp bx, 0
+					cmp len, 0
 					jz begin1
 					call deleteSymbol
+					dec len
 					jmp begin4
 					
 		jmp begin1
