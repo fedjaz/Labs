@@ -16,23 +16,6 @@ namespace Second
         {
             Path = path;
             IsEnabled = isEnabled;
-            try
-            {
-                string name = path.Split('\\').Last();
-                path = path.Substring(0, path.Length - name.Length);
-                if(!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-                if(!File.Exists(Path))
-                {
-                    File.Create(Path).Close();
-                }
-            }
-            catch
-            {
-                IsEnabled = false;
-            }
         }
 
         public void Log(string message)
