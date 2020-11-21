@@ -28,22 +28,96 @@ namespace Second
             string source = "C:\\FileWatcher\\source";
             string target = "C:\\FileWatcher\\target";
             string logFile = "C:\\FileWatcher\\target\\log.txt";
-            string variablesLoadStatus;
+            string variablesLoadStatus = "";
+            string[] variable;
             try
             {
-                string[] variable = Environment.GetEnvironmentVariable("FileWatcher").Split(';');
-                source = variable[0];
-                target = variable[1];
-                logFile = variable[2];
-                variablesLoadStatus = "Variavles loaded successfully";
+                variable = Environment.GetEnvironmentVariable("FileWatcher").Split(';');
+                try
+                {
+                    source = variable[0];
+                    if(!Directory.Exists(source))
+                    {
+                        Directory.CreateDirectory(source);
+                    }
+                }
+                catch
+                {
+                    source = "C:\\FileWatcher\\source";
+                    if(!Directory.Exists(source))
+                    {
+                        Directory.CreateDirectory(source);
+                    }
+                    variablesLoadStatus += "Failed to reach source directory, using default. ";
+                }
+                try
+                {
+                    target = variable[1].Trim();
+                    if(target == source)
+                    {
+                        variablesLoadStatus += "Target directory cannot be equal to source, using default. ";
+                        target = "C:\\FileWatcher\\target";
+                    }
+                    if(!Directory.Exists(target))
+                    {
+                        Directory.CreateDirectory(target);
+                    }
+
+                }
+                catch
+                {
+                    target = "C:\\FileWatcher\\target";
+                    if(!Directory.Exists(target))
+                    {
+                        Directory.CreateDirectory(target);
+                    }
+                    variablesLoadStatus += "Failed to reach target directory, using default";
+                }
+                try
+                {
+                    logFile = variable[2].Trim();
+                    string name = logFile.Split('\\').Last();
+                    string path = logFile.Substring(0, logFile.Length - name.Length);
+                    if(!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    if(!File.Exists(logFile))
+                    {
+                        File.Create(logFile).Close();
+                    }
+                }
+                catch
+                {
+                    variablesLoadStatus += "Failed to load log path, using default";
+                    logFile = "C:\\FileWatcher\\target\\log.txt";
+                    string name = logFile.Split('\\').Last();
+                    string path = logFile.Substring(0, logFile.Length - name.Length);
+                    if(!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    if(!File.Exists(logFile))
+                    {
+                        File.Create(logFile).Close();
+                    }
+                }
+
             }
             catch(Exception ex)
             {
                 variablesLoadStatus = $"Failed to load variables, using default directories - {ex}";
+                Directory.CreateDirectory(source);
+                Directory.CreateDirectory(target);
+                string name = logFile.Split('\\').Last();
+                string path = logFile.Substring(0, logFile.Length - name.Length);
+                Directory.CreateDirectory(path);
+                File.Create(logFile).Close();
             }
+
             Config(source, target, logFile);
 
-            logger.Log(variablesLoadStatus);
+            logger.Log(variablesLoadStatus == "" ? "Variables loaded successfully" : variablesLoadStatus);
             logger.Log("Service started succsessfully");
         }
 
@@ -52,22 +126,7 @@ namespace Second
             logger = new Logger(logFile, true);
             this.targetDirectory = targetDirectory;
             archiveDirectory = $"{targetDirectory}\\archive";
-            try
-            {
-                if(!Directory.Exists(archiveDirectory))
-                {
-                    Directory.CreateDirectory(archiveDirectory);
-                }
-                if(!Directory.Exists(sourceDirectory))
-                {
-                    Directory.CreateDirectory(sourceDirectory);
-                }
-            }
-            catch(Exception ex)
-            {
-                logger.Log($"Fatal error ocured while reaching source or target directory - {ex}");
-                return;
-            }
+            Directory.CreateDirectory(archiveDirectory);
 
             watcher = new FileSystemWatcher(sourceDirectory);
             watcher.Filter = "*.txt";
@@ -76,6 +135,7 @@ namespace Second
         }
         protected override void OnStop()
         {
+            logger.Log("Service stopped");
         }
 
         private void Created(object sender, FileSystemEventArgs e)
