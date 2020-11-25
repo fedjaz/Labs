@@ -1,7 +1,10 @@
 .model small
 .stack 100h
 .data
-	
+	graph db 100 dup(0)
+    used db 100 dup(0)
+    sizeX dw 10
+    sizeY dw 10
 .code
 .386
 
@@ -38,7 +41,7 @@ printNumber endp
 getElem proc
     push ax
     push si
-    mov cl, 10
+    mov cx, sizeY
     mul cl
     add ax, bx
     add si, ax
@@ -56,7 +59,7 @@ setElem proc
     push ax
     push dx
     push di
-    mov dl, 10
+    mov dx, sizeY
     mul dl
     add ax, bx
     add di, ax
@@ -81,6 +84,85 @@ rand proc
     ret
 rand endp 
 
+check proc
+    push cx
+    push dx
+    push si
+    lea si, used
+
+    jmp variables1
+        y dw 0
+        x dw 0
+    variables1:
+
+    mov y, ax
+    mov x, bx
+    ;checking up
+    up:
+        mov ax, y
+        mov bx, x
+
+        cmp ax, 0
+        je down
+
+        sub ax, 1
+
+        call getElem
+        cmp cx, 0
+        je canmove
+
+    ;checking down
+    down:
+        mov ax, y
+        mov bx, x
+        
+        add ax, 1
+        cmp ax, sizey
+        je left
+
+        call getElem
+        cmp cx, 0
+        je canmove
+
+    ;checking left
+    left:
+        mov ax, y
+        mov bx, x
+        
+        cmp bx, 0
+        je right
+
+        sub bx, 1
+
+        call getElem
+        cmp cx, 0
+        je canmove
+
+    ;checking right
+    right:
+        mov ax, y
+        mov bx, x
+        
+        add bx, 
+
+
+    canMove:
+        push ax
+        mov ah, 0
+        jmp endcheck
+    cantMove:
+        push ax
+        mov ah, 01000000b
+    
+    endCheck:
+        sahf
+        pop ax
+        pop dx
+        pop cx
+        pop di
+    ret
+check endp
+
 dfs proc
     jmp variables
         posY dw 0
@@ -88,6 +170,12 @@ dfs proc
     variables:   
     pop [posy]
     pop [posx]
+
+    bigloop:
+
+
+    endbigloop:
+
 dfs endp
 
 main:
