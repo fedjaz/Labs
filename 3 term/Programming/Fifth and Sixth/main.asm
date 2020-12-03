@@ -718,12 +718,12 @@ movePlayer proc
 movePlayer endp
 
 play proc far
+
     cli
+    xor ax, ax
+    in al, 60h
+
     push ax
-    mov dl, ah
-    mov ah, 2
-    int 21h
-    cli
 
     mov ax, playerPosY
     mov bx, playerPosX
@@ -733,7 +733,7 @@ play proc far
     pop ax
 
     moveUp:
-    cmp ah, 'w'
+    cmp al, 'w'
     jne moveDown
     rcr cx, 1
     jnc playEnd
@@ -746,7 +746,7 @@ play proc far
     jmp move
 
     moveDown:
-    cmp ah, 's'
+    cmp al, 's'
     jne moveLeft
 
     rcr cx, 2
@@ -760,7 +760,7 @@ play proc far
     jmp move
 
     moveLeft:
-    cmp ah, 'a'
+    cmp al, 'a'
     jne moveRight
 
     rcr cx, 3
@@ -773,7 +773,7 @@ play proc far
     jmp move
 
     moveRight:
-    cmp ah, 'd'
+    cmp al, 'd'
     jne playEnd
 
     rcr cx, 4
@@ -825,7 +825,7 @@ main:
     cli
     push ds
     mov ax, 2509h
-    mov dx, seg play
+    mov dx, @code
     mov ds, dx
     mov dx, offset play
     int 21h
@@ -833,7 +833,6 @@ main:
     sti
 
     infiniteLoop:
-    sti 
     jmp infiniteLoop
 
     mov ax, 4c00h
