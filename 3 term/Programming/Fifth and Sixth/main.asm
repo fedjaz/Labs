@@ -1,12 +1,244 @@
 .model small
 .stack 100h
 .data
-	graph db 100 dup(0)
-    used db 100 dup(0)
-    sizeX dw 4
-    sizeY dw 4
+	graph db 10000 dup(0)
+    used db 10000 dup(0)
+    sizeX dw 40
+    sizeY dw 40
+    cellSize db 5
+    lineWidth db 1
 .code
 .386
+
+
+fillRectangle proc
+    jmp fillRectangleVariables
+        X1 dw 0
+        X2 dw 0
+        Y1 dw 0
+        Y2 dw 0
+        color db 0
+    fillRectangleVariables:
+
+    push ax
+    push bx
+    push cx
+    push dx
+
+    mov cx, X1
+    mov dx, Y1
+    mov ah, 0ch
+    mov al, color
+    mov bx, 0
+
+    loop1_1:
+        cmp dx, Y2
+        jg loop1_1_end
+
+        mov cx, x1
+        loop2_1:
+            cmp cx, X2
+            jg loop2_1end
+
+            int 10h
+
+            inc cx
+            jmp loop2_1
+
+        loop2_1end:
+        inc dx
+        jmp loop1_1
+    loop1_1_end:
+
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+    ret
+fillRectangle endp
+
+
+drawCell proc
+    push ax
+    push bx
+    push cx
+    push dx
+
+    jmp drawCellVariables
+        cornerY dw 0
+        cornerX dw 0
+    drawCellVariables:
+
+    ;calculating coords
+    mul cellSize
+    push ax
+    mov ax, bx
+    mul cellSize
+    mov bx, ax
+    pop ax
+    mov cornerY, ax
+    mov cornerX, bx
+
+    ;down border
+    shr cx, 1
+    rcr cx, 1
+    jc rightborder
+
+    ;Y1
+    mov ax, cornerY
+    xor bx, bx
+    mov bl, cellSize
+    add ax, bx
+    mov bl, lineWidth
+    sub ax, bx
+    mov Y1, ax
+
+    ;X1
+    mov ax, cornerX
+    mov X1, ax
+
+    ;Y2
+    mov ax, cornerY
+    mov bl, cellSize
+    add ax, bx
+    mov Y2, ax 
+
+    ;X2
+    mov ax, cornerX
+    mov bl, cellSize 
+    add ax, bx
+    mov X2, ax
+
+    mov color, 0
+    call fillRectangle
+
+
+    rightborder:
+    shr cx, 1
+    rcr cx, 1
+    jc endDrawCell
+
+    ;Y1
+    mov ax, cornerY
+    mov Y1, ax
+
+    ;X1
+    mov ax, cornerX
+    xor bx, bx
+    mov bl, cellSize
+    add ax, bx
+    mov bl, lineWidth
+    sub ax, bx
+    mov X1, ax
+
+    ;Y2
+    mov ax, cornerY
+    mov bl, cellSize
+    add ax, bx
+    mov Y2, ax
+
+    ;X2
+    mov ax, cornerX
+    mov bl, cellSize
+    add ax, bx
+    mov X2, ax
+
+    mov color, 0
+    call fillRectangle
+
+    endDrawCell:
+
+    ;draw square
+    mov ax, cornerY 
+    mov bl, cellSize
+    add ax, bx
+    mov bl, lineWidth
+    sub ax, bx
+    mov Y1, ax
+    mov Y2, ax
+    inc Y2
+
+    mov ax, cornerX
+    mov bl, cellSize
+    add ax, bx
+    mov bl, lineWidth
+    sub ax, bx
+    mov X1, ax
+    mov X2, ax
+    inc X2
+
+    call fillRectangle
+
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+drawCell endp
+
+
+drawMaze proc
+    push ax
+    push bx
+
+    ;drawing game background
+
+    mov X1, 0
+    mov Y1, 0
+    mov X2, 320
+    mov Y2, 200
+    mov color, 6
+    call fillRectangle
+    ;drawing maze background
+
+    mov X1, 0
+    mov Y1, 0
+    mov X2, 200
+    mov Y2, 200
+    mov color, 15
+    call fillRectangle
+
+    ;drawing borders
+    mov color, 0
+
+    mov X1, 0
+    mov Y1, 0
+
+    mov X2, 200
+    xor ax, ax
+    mov al, lineWidth
+    mov Y2, ax
+    call fillRectangle
+
+    mov X2, ax
+    mov Y2, 200
+    call fillRectangle
+
+    lea si, graph
+    mov ax, 0
+    drawMazeloop1:
+        cmp ax, sizeY
+        jge drawMazeloop1end
+
+        mov bx, 0
+        drawMazeloop2:
+        cmp bx, sizeX
+        jge drawMazeloop2end
+        call getElem
+
+        call drawCell
+
+        inc bx
+        jmp drawMazeloop2
+        drawMazeloop2end:
+        inc ax
+        jmp drawMazeloop1
+    drawMazeloop1end:
+    pop bx
+    pop ax
+    ret
+drawMaze endp
 
 dfs proc
     jmp variables
@@ -329,7 +561,6 @@ getElem proc
     ret
 getElem endp
 
-
 setElem proc
     push ax
     push dx
@@ -346,7 +577,6 @@ setElem proc
 
     ret
 setElem endp
-
 
 rand proc
     push bx
@@ -366,44 +596,16 @@ main:
 	mov ds, ax
 	mov es, ax
 
+    mov ah,0Fh
+    int 10h
+    mov ax, 0013h
+    int 10h
+
     mov ax, 0
     mov bx, 0
-   
     call dfs
 
-    mov cx, sizeY
-    mov ax, 0
-    mov bx, 0
-    loop1:
-        push cx
-        mov cx, sizeX
-        mov bx, 0
-        loop2:
-            lea si, graph
-            push cx
-            call getElem
-            push ax
-            mov ax, cx
-            call printNumber
-
-            mov dl, ' '
-            mov ah, 2
-            int 21h
-
-            pop ax
-            pop cx
-            inc bx
-        loop loop2
-        pop cx
-        push ax
-
-        mov dl, 10
-        mov ah, 2
-        int 21h
-
-        pop ax
-        inc ax
-    loop loop1
+    call drawMaze
 
     mov ah, 1
     int 21h
