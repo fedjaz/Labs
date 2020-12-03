@@ -1,12 +1,16 @@
 .model small
 .stack 100h
 .data
-	graph db 10000 dup(0)
-    used db 10000 dup(0)
-    sizeX dw 40
-    sizeY dw 40
-    cellSize db 5
+	graph db 1000 dup(0)
+    used db 1000 dup(0)
+    sizeX dw 25
+    sizeY dw 25
+    cellSize db 8
     lineWidth db 1
+    playerPosX dw 0
+    playerPosY dw 0
+    playerSize dw 1
+    playerOffset dw 3
 .code
 .386
 
@@ -199,6 +203,29 @@ drawMaze proc
     mov color, 15
     call fillRectangle
 
+    ;drawing start and finish
+    mov X1, 0
+    mov Y1, 0
+    xor ax, ax
+    mov al, cellSize
+    mov Y2, ax
+    mov X2, ax
+    mov color, 2
+    call fillRectangle
+
+    mov ax, sizeX
+    sub ax, 1
+    mul cellSize
+    mov X1, ax
+    mov Y1, 0
+    xor bx, bx
+    mov bl, cellSize
+    add ax, bx
+    mov X2, ax
+    mov Y2, bx
+    mov color, 4
+    call fillRectangle
+
     ;drawing borders
     mov color, 0
 
@@ -215,6 +242,9 @@ drawMaze proc
     mov Y2, 200
     call fillRectangle
 
+    
+
+    ;drawing cells
     lea si, graph
     mov ax, 0
     drawMazeloop1:
@@ -580,23 +610,206 @@ setElem endp
 
 rand proc
     push bx
+    push dx
     db 0fh, 31h
+
+    mov dx, ax
+    mov ax, 25173
+
+    mul dx
+
+    add ax, 13849
     xor ah, ah
     mov bl, 4
     div bl
     mov al, ah
     xor ah, ah
+
+    pop dx
     pop bx
 
     ret
 rand endp 
+
+movePlayer proc
+    push ax
+    push bx
+    push cx
+    push dx
+
+    jmp movePlayerVariables
+        lastPosX dw 0
+        lastPosY dw 0
+        newPosX dw 0
+        newPosY dw 0
+    movePlayerVariables:
+
+    mul cellSize
+    mov newPosY, ax
+
+    mov ax, bx
+    mul cellSize
+    mov newPosX, ax
+
+    mov ax, cx
+    mul cellSize
+    mov lastPosY, ax
+
+    mov ax, dx
+    mul cellSize
+    mov lastPosX, ax
+
+    ;drawing white square
+    mov ax, playerOffset
+    add ax, lastPosY
+    mov Y1, ax
+
+    mov ax, playerOffset
+    add ax, lastPosX
+    mov X1, ax
+
+    mov ax, Y1
+    add ax, playerSize
+    mov Y2, ax
+
+    mov ax, X1
+    add ax, playerSize
+    mov X2, ax
+
+    cmp lastPosY, 0
+    jne white
+    cmp lastPosX, 0
+    jne white
+    mov color, 2
+    jmp draw
+
+    white:
+    mov color, 15
+
+    draw:
+    call fillRectangle
+
+    ;drawing player
+    mov ax, playerOffset
+    add ax, newPosY
+    mov Y1, ax
+
+    mov ax, playerOffset
+    add ax, newPosX
+    mov X1, ax
+
+    mov ax, Y1
+    add ax, playerSize
+    mov Y2, ax
+
+    mov ax, X1
+    add ax, playerSize
+    mov X2, ax
+
+    mov color, 1
+    call fillRectangle
+
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+    ret
+movePlayer endp
+
+play proc
+
+    mov ax, 0
+    mov bx, 0
+    mov cx, 0
+    mov dx, 0
+    call movePlayer
+
+    playLoop:
+        mov ah, 7
+        int 21h
+        push ax
+
+        mov ax, playerPosY
+        mov bx, playerPosX
+        lea si, graph
+        call getElem
+        
+        pop ax
+
+        moveUp:
+        cmp al, 'w'
+        jne moveDown
+        rcr cx, 1
+        jnc playLoop
+
+        mov ax, playerPosY
+        mov bx, playerPosX
+
+        dec ax
+
+        jmp move
+
+        moveDown:
+        cmp al, 's'
+        jne moveLeft
+
+        rcr cx, 2
+        jnc playLoop
+
+        mov ax, playerPosY
+        mov bx, playerPosX
+
+        inc ax
+
+        jmp move
+
+        moveLeft:
+        cmp al, 'a'
+        jne moveRight
+
+        rcr cx, 3
+        jnc playLoop
+
+        mov ax, playerPosY
+        mov bx, playerPosX
+        dec bx
+
+        jmp move
+
+        moveRight:
+        cmp al, 'd'
+        jne playLoop
+
+        rcr cx, 4
+        jnc playLoop
+
+        mov ax, playerPosY
+        mov bx, playerPosX
+        inc bx
+
+        move:
+        mov cx, playerPosY
+        mov dx, playerPosX
+
+        call movePlayer
+
+        mov playerPosY, ax
+        mov playerPosX, bx
+
+        jmp playLoop
+
+    ret
+play endp
 
 main:
     mov ax, @data
 	mov ds, ax
 	mov es, ax
 
-    mov ah,0Fh
+    mov ah, 7
+    int 21h
+
+    mov ah, 0Fh
     int 10h
     mov ax, 0013h
     int 10h
@@ -607,8 +820,7 @@ main:
 
     call drawMaze
 
-    mov ah, 1
-    int 21h
+    call play
 
     mov ax, 4c00h
 	int 21h
