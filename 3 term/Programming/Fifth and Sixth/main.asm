@@ -13,7 +13,7 @@
     playerOffset dw 3
 .code
 .386
-
+org 100h
 
 fillRectangle proc
     jmp fillRectangleVariables
@@ -637,6 +637,7 @@ movePlayer proc
     push cx
     push dx
 
+
     jmp movePlayerVariables
         lastPosX dw 0
         lastPosY dw 0
@@ -716,89 +717,84 @@ movePlayer proc
     ret
 movePlayer endp
 
-play proc
+play proc far
+    cli
+    push ax
+    mov dl, ah
+    mov ah, 2
+    int 21h
+    cli
 
-    mov ax, 0
-    mov bx, 0
-    mov cx, 0
-    mov dx, 0
+    mov ax, playerPosY
+    mov bx, playerPosX
+    lea si, graph
+    call getElem
+    
+    pop ax
+
+    moveUp:
+    cmp ah, 'w'
+    jne moveDown
+    rcr cx, 1
+    jnc playEnd
+
+    mov ax, playerPosY
+    mov bx, playerPosX
+
+    dec ax
+
+    jmp move
+
+    moveDown:
+    cmp ah, 's'
+    jne moveLeft
+
+    rcr cx, 2
+    jnc playEnd
+
+    mov ax, playerPosY
+    mov bx, playerPosX
+
+    inc ax
+
+    jmp move
+
+    moveLeft:
+    cmp ah, 'a'
+    jne moveRight
+
+    rcr cx, 3
+    jnc playEnd
+
+    mov ax, playerPosY
+    mov bx, playerPosX
+    dec bx
+
+    jmp move
+
+    moveRight:
+    cmp ah, 'd'
+    jne playEnd
+
+    rcr cx, 4
+    jnc playEnd
+
+    mov ax, playerPosY
+    mov bx, playerPosX
+    inc bx
+
+    move:
+    mov cx, playerPosY
+    mov dx, playerPosX
+
     call movePlayer
 
-    playLoop:
-        mov ah, 7
-        int 21h
-        push ax
+    mov playerPosY, ax
+    mov playerPosX, bx
 
-        mov ax, playerPosY
-        mov bx, playerPosX
-        lea si, graph
-        call getElem
-        
-        pop ax
-
-        moveUp:
-        cmp al, 'w'
-        jne moveDown
-        rcr cx, 1
-        jnc playLoop
-
-        mov ax, playerPosY
-        mov bx, playerPosX
-
-        dec ax
-
-        jmp move
-
-        moveDown:
-        cmp al, 's'
-        jne moveLeft
-
-        rcr cx, 2
-        jnc playLoop
-
-        mov ax, playerPosY
-        mov bx, playerPosX
-
-        inc ax
-
-        jmp move
-
-        moveLeft:
-        cmp al, 'a'
-        jne moveRight
-
-        rcr cx, 3
-        jnc playLoop
-
-        mov ax, playerPosY
-        mov bx, playerPosX
-        dec bx
-
-        jmp move
-
-        moveRight:
-        cmp al, 'd'
-        jne playLoop
-
-        rcr cx, 4
-        jnc playLoop
-
-        mov ax, playerPosY
-        mov bx, playerPosX
-        inc bx
-
-        move:
-        mov cx, playerPosY
-        mov dx, playerPosX
-
-        call movePlayer
-
-        mov playerPosY, ax
-        mov playerPosX, bx
-
-        jmp playLoop
-
-    ret
+    playEnd:
+    sti
+    iret
 play endp
 
 main:
@@ -806,8 +802,8 @@ main:
 	mov ds, ax
 	mov es, ax
 
-    mov ah, 7
-    int 21h
+    ;mov ah, 7
+    ;int 21h
 
     mov ah, 0Fh
     int 10h
@@ -820,7 +816,25 @@ main:
 
     call drawMaze
 
-    call play
+    mov ax, 0
+    mov bx, 0
+    mov cx, 0
+    mov dx, 0
+    call movePlayer
+
+    cli
+    push ds
+    mov ax, 2509h
+    mov dx, seg play
+    mov ds, dx
+    mov dx, offset play
+    int 21h
+    pop ds
+    sti
+
+    infiniteLoop:
+    sti 
+    jmp infiniteLoop
 
     mov ax, 4c00h
 	int 21h
