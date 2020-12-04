@@ -4,13 +4,13 @@
 	graph db 1000 dup(0)
     used db 1000 dup(0)
     directions db 0, 1, 2, 3
-    sizeX dw 25
-    sizeY dw 25
-    cellSize db 8
+    sizeX dw 20
+    sizeY dw 20
+    cellSize db 10
     lineWidth db 1
     playerPosX dw 0
     playerPosY dw 0
-    playerSize dw 1
+    playerSize dw 2
     playerOffset dw 3
 .code
 .386
@@ -547,6 +547,7 @@ play proc far
     push bx
     push cx
     push dx
+
     cli
     xor ax, ax
     in al, 60h
@@ -559,6 +560,12 @@ play proc far
     
     pop ax
 
+    restart:
+    cmp al, 13h
+    jne moveUp
+    call newGame
+    jmp playEnd
+    
     moveUp:
     cmp al, 48h
     jne moveDown
@@ -622,6 +629,18 @@ play proc far
     playEnd:
     mov al, 20h 
     out 20h,  al
+
+    ;checking new cords
+    mov ax, playerPosY
+    mov bx, playerPosX
+    inc bx
+    cmp ax, 0
+    jne trueEnd
+    cmp bx, sizeX
+    jne trueEnd
+    call newGame
+
+    trueEnd:
     sti
 
     pop dx
@@ -863,6 +882,46 @@ dfs proc
     mov bx, posX
     ret
 dfs endp
+
+newGame proc
+    mov ax, 0
+    mov bx, 0
+    mov cx, 0
+    newGameLoop1:
+        cmp ax, sizeY
+        jge newGameLoop1End
+
+        mov bx, 0
+        newGameLoop2:
+            cmp bx, sizeX
+            jge newGameLoop2End
+
+            lea di, graph
+            call setElem
+
+            lea di, used
+            call setElem
+
+            inc bx
+            jmp newGameLoop2
+        newGameLoop2End:
+
+        inc ax
+        jmp newGameLoop1
+    newGameLoop1End:
+    mov playerPosX, 0
+    mov playerPosY, 0
+    mov ax, 0
+    mov bx, 0
+    call dfs
+    call drawMaze
+    mov ax, 0
+    mov bx, 0
+    mov cx, 0
+    mov dx, 0
+    call movePlayer
+    ret
+newGame endp
 
 main:
     mov ax, @data
