@@ -4,16 +4,48 @@
 	graph db 1000 dup(0)
     used db 1000 dup(0)
     directions db 0, 1, 2, 3
-    sizeX dw 20
-    sizeY dw 20
+    sizeX dw 10
+    sizeY dw 10
     cellSize db 10
     lineWidth db 1
     playerPosX dw 0
     playerPosY dw 0
     playerSize dw 2
     playerOffset dw 3
+    fileName db "D:\dist\data", 0
+    char db 0
 .code
 .386
+
+printNumberOld proc
+	push bx
+	push cx
+	push dx
+	
+	mov bx, 10
+	xor cx, cx
+	xor dx, dx
+	begin2qq:
+		div bx
+		push dx
+		xor dx, dx
+		inc cx
+		cmp ax, 0
+		jnz begin2qq
+	
+	begin3qq:
+		pop ax
+		mov dl, '0'
+		add dl, al
+		mov ah, 2
+		int 21h
+		loop begin3qq
+		
+	pop dx
+	pop cx
+	pop bx
+	ret
+printNumberOld endp
 
 fillRectangle proc
     jmp fillRectangleVariables
@@ -60,7 +92,6 @@ fillRectangle proc
     pop ax
     ret
 fillRectangle endp
-
 
 drawCell proc
     push ax
@@ -180,7 +211,6 @@ drawCell proc
     ret
 
 drawCell endp
-
 
 drawMaze proc
     push ax
@@ -369,36 +399,6 @@ check proc
     ret
 check endp
 
-printNumber proc
-	push bx
-	push cx
-	push dx
-	
-	mov bx, 10
-	xor cx, cx
-	xor dx, dx
-	begin2:
-		div bx
-		push dx
-		xor dx, dx
-		inc cx
-		cmp ax, 0
-		jnz begin2
-	
-	begin3:
-		pop ax
-		mov dl, '0'
-		add dl, al
-		mov ah, 2
-		int 21h
-		loop begin3
-		
-	pop dx
-	pop cx
-	pop bx
-	ret
-printNumber endp
-
 getElem proc
     push ax
     push si
@@ -559,6 +559,12 @@ play proc far
     call getElem
     
     pop ax
+
+
+    save:
+    cmp al, 1fh
+    jne restart
+    call write
 
     restart:
     cmp al, 13h
@@ -923,6 +929,169 @@ newGame proc
     ret
 newGame endp
 
+printNumber proc
+	push bx
+	push cx
+	push dx
+	
+
+	xor cx, cx
+	xor dx, dx
+	begin2:
+        push bx
+        mov bx, 10
+		div bx
+        pop bx
+		push dx
+		xor dx, dx
+		inc cx
+		cmp ax, 0
+		jnz begin2
+	
+	begin3:
+		pop ax
+		push cx
+        add al, '0'
+        mov char, al
+
+        mov ah, 40h
+        mov cx, 1
+        mov dx, offset char
+		int 21h
+
+        pop cx
+		loop begin3
+		
+	pop dx
+	pop cx
+	pop bx
+	ret
+printNumber endp
+
+printWhiteSpace proc
+    push ax
+    push cx
+    push dx
+
+    mov ah, 40h
+    mov char, ' '
+    mov cx, 1
+    mov dx, offset char
+    int 21h
+
+    pop dx
+    pop cx
+    pop ax
+    ret
+printWhiteSpace endp
+
+printEnter proc
+    push ax
+    push cx
+    push dx
+
+    mov ah, 40h
+    mov char, 13
+    mov cx, 1
+    mov dx, offset char
+    int 21h
+
+    pop dx
+    pop cx
+    pop ax
+    ret
+printEnter endp
+
+write proc
+    push ax
+    push bx
+    push cx
+    push dx
+
+    ;creating file
+    mov ah, 5bh
+    mov dx, offset fileName
+    mov cx, 0
+    int 21h
+
+    ;opening file
+    mov ah, 3dh
+    mov al, 1
+    mov dx, offset fileName
+    int 21h
+    jc endWrite
+    mov dx, ax
+
+    mov ax, playerPosY
+    mov bx, dx
+    call printNumber
+
+    call printWhiteSpace
+
+    mov ax, playerPosX
+    call printNumber
+
+    call printEnter
+    
+    mov ax, 0
+    mov bx, 0
+    writeLoop1:
+        cmp ax, sizeY
+        jge writeLoop1End
+
+        mov bx, 0
+        writeLoop2:
+            cmp bx, sizeX
+            jge writeLoop2End
+
+            lea si, graph
+            call getElem
+
+            push ax
+            push bx
+
+            mov ax, cx
+            mov bx, dx
+            call printNumber
+            
+            call printWhiteSpace
+            mov dx, bx
+
+            pop bx
+            pop ax
+
+            inc bx
+            jmp writeLoop2
+        writeLoop2End:
+
+        push ax
+        push bx
+
+        mov bx, dx
+        call printEnter
+
+        pop bx
+        pop ax 
+
+        inc ax
+        jmp writeLoop1
+    writeLoop1End:
+
+
+
+    endWrite:
+    mov bx, dx
+    mov ah, 3eh
+    int 21h
+
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+write endp
+
 main:
     mov ax, @data
 	mov ds, ax
@@ -936,17 +1105,7 @@ main:
     mov ax, 0013h
     int 10h
 
-    mov ax, 0
-    mov bx, 0
-    call dfs
-
-    call drawMaze
-
-    mov ax, 0
-    mov bx, 0
-    mov cx, 0
-    mov dx, 0
-    call movePlayer
+    call newGame
 
     cli
     push ds
