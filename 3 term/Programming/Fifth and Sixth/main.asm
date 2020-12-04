@@ -3,6 +3,7 @@
 .data
 	graph db 1000 dup(0)
     used db 1000 dup(0)
+    directions db 0, 1, 2, 3
     sizeX dw 25
     sizeY dw 25
     cellSize db 8
@@ -13,7 +14,6 @@
     playerOffset dw 3
 .code
 .386
-org 100h
 
 fillRectangle proc
     jmp fillRectangleVariables
@@ -270,182 +270,6 @@ drawMaze proc
     ret
 drawMaze endp
 
-dfs proc
-    jmp variables
-        posY dw 0
-        posX dw 0
-    variables:   
-
-    mov posY, ax
-    mov posX, bx
-    lea di, used
-    mov cx, 1
-    call setElem
-
-    bigloop:
-        mov ax, posY
-        mov bx, posX
-
-        call check
-        jz endbigloop
-
-        push ax
-        call rand
-        mov dx, ax
-        pop ax
-
-        upDir:
-            ;checking is up
-            cmp dx, 0
-            jne downDir
-            
-            ;checking if can move up
-            cmp ax, 0
-            je bigloop
-
-            ;checking if up direction is not used
-            sub ax, 1
-            lea si, used
-            call getElem
-            cmp cx, 1
-            je bigloop
-
-            ;adding info that can move up from this cell
-            lea si, graph
-            add ax, 1
-            call getElem
-            add cx, 0001b
-            lea di, graph
-            call setElem
-
-            ;adding info that can move down from upper cell
-            sub ax, 1
-            lea di, graph
-            mov cx, 0010b
-            call setElem
-
-            ;calling recursivly dfs into 
-            call dfs
-            add ax, 1
-            mov posY, ax
-
-            ;getting out of loop
-            jmp bigloop
-
-        downDir:
-            ;checking is down
-            cmp dx, 1
-            jne leftDir
-
-            ;checking if can move down
-            add ax, 1
-            cmp ax, sizeY
-            je bigloop
-            
-            ;checking if down direction is not used
-            lea si, used
-            call getElem
-            cmp cx, 1
-            je bigloop
-
-            ;adding info that can move down from this cell
-            lea si, graph
-            sub ax, 1
-            call getElem
-            add cx, 0010b
-            lea di, graph
-            call setElem
-
-            ;adding info that can move up from down cell
-            add ax, 1
-            lea di, graph
-            mov cx, 0001b
-            call setElem
-
-            ;calling recursivly dfs into 
-            call dfs
-            sub ax, 1
-            mov posY, ax
-
-            ;getting out of loop
-            jmp bigloop
-
-
-        leftDir:
-            ;checking is left
-            cmp dx, 2
-            jne rightDir
-
-            ;checking if can move left
-            cmp bx, 0
-            je bigloop
-
-            ;checking if left direction is not used
-            sub bx, 1
-            lea si, used
-            call getElem
-            cmp cx, 1
-            je bigloop
-
-            ;adding info that can move left from this cell
-            lea si, graph
-            add bx, 1
-            call getElem
-            add cx, 0100b
-            lea di, graph
-            call setElem
-
-            ;adding info that can move right from left cell
-            sub bx, 1
-            lea di, graph
-            mov cx, 1000b
-            call setElem
-
-            ;calling recursivly dfs into 
-            call dfs
-            add bx, 1
-            mov posX, bx
-
-            ;getting out of loop
-            jmp bigloop
-
-        rightDir:
-            ;checking if can move right
-            add bx, 1
-            cmp bx, sizeX
-            je bigloop
-
-            ;checking if right direction is not used
-            lea si, used
-            call getElem
-            cmp cx, 1
-            je bigloop
-
-            ;adding info that can move right from this cell
-            lea si, graph
-            sub bx, 1
-            call getElem
-            add cx, 1000b
-            lea di, graph
-            call setElem
-
-            ;adding info that can move left from right cell
-            add bx, 1
-            lea di, graph
-            mov cx, 0100b
-            call setElem
-
-            ;calling recursivly dfs into 
-            call dfs
-            sub bx, 1
-            mov posX, bx
-
-            jmp bigloop
-
-    endbigloop:
-    ret
-dfs endp
-
 check proc
     push ax
     push bx
@@ -550,7 +374,7 @@ printNumber proc
 	push cx
 	push dx
 	
-	mov bx, 2
+	mov bx, 10
 	xor cx, cx
 	xor dx, dx
 	begin2:
@@ -719,10 +543,13 @@ movePlayer endp
 
 play proc far
 
+    push ax
+    push bx
+    push cx
+    push dx
     cli
     xor ax, ax
     in al, 60h
-
     push ax
 
     mov ax, playerPosY
@@ -733,7 +560,7 @@ play proc far
     pop ax
 
     moveUp:
-    cmp al, 'w'
+    cmp al, 48h
     jne moveDown
     rcr cx, 1
     jnc playEnd
@@ -746,7 +573,7 @@ play proc far
     jmp move
 
     moveDown:
-    cmp al, 's'
+    cmp al, 50h
     jne moveLeft
 
     rcr cx, 2
@@ -760,7 +587,7 @@ play proc far
     jmp move
 
     moveLeft:
-    cmp al, 'a'
+    cmp al, 4bh
     jne moveRight
 
     rcr cx, 3
@@ -773,7 +600,7 @@ play proc far
     jmp move
 
     moveRight:
-    cmp al, 'd'
+    cmp al, 4dh
     jne playEnd
 
     rcr cx, 4
@@ -793,17 +620,257 @@ play proc far
     mov playerPosX, bx
 
     playEnd:
+    mov al, 20h 
+    out 20h,  al
     sti
+
+    pop dx
+    pop cx
+    pop bx
+    pop ax
     iret
 play endp
+
+dfs proc
+    jmp variables
+        posY dw 0
+        posX dw 0
+    variables:   
+
+    mov posY, ax
+    mov posX, bx
+
+    ;mixing
+    mov cx, 16
+
+    mixloop:
+    push cx
+    call rand
+    push ax
+    call rand
+    mov bx, ax
+    mov ax, 0
+    lea si, directions
+    call getElem
+    mov dx, cx
+    mov ax, bx
+    pop bx
+    push ax
+    mov ax, 0
+    call getElem
+    mov ax, dx
+    mov dx, cx
+    mov cx, ax
+    mov ax, 0
+    lea di, directions
+    call setElem
+    mov cx, dx
+    pop bx
+    call setElem
+
+    pop cx
+    loop mixloop
+
+    mov ax, 0
+    mov bx, 0
+    lea si, directions
+    pushingLoop:
+    cmp bx, 4
+    jge pushingLoopEnd
+    call getElem
+    push cx
+
+    inc bx
+    jmp pushingLoop
+    pushingLoopEnd:
+
+
+    mov ax, posY
+    mov bx, posX
+    lea di, used
+    mov cx, 1
+    call setElem
+
+    mov cx, 4
+    bigloop:
+        mov ax, posY
+        mov bx, posX
+
+        ;call check
+        ;jz endbigloop
+
+        pop dx
+        push cx
+
+        upDir:
+            ;checking is up
+            cmp dx, 0
+            jne downDir
+            
+            ;checking if can move up
+            cmp ax, 0
+            je next
+
+            ;checking if up direction is not used
+            sub ax, 1
+            lea si, used
+            call getElem
+            cmp cx, 1
+            je next
+
+            ;adding info that can move up from this cell
+            lea si, graph
+            add ax, 1
+            call getElem
+            add cx, 0001b
+            lea di, graph
+            call setElem
+
+            ;adding info that can move down from upper cell
+            sub ax, 1
+            lea di, graph
+            mov cx, 0010b
+            call setElem
+
+            ;calling recursivly dfs into 
+            call dfs
+            add ax, 1
+            mov posY, ax
+
+            ;getting out of loop
+            jmp next
+
+        downDir:
+            ;checking is down
+            cmp dx, 1
+            jne leftDir
+
+            ;checking if can move down
+            add ax, 1
+            cmp ax, sizeY
+            je next
+            
+            ;checking if down direction is not used
+            lea si, used
+            call getElem
+            cmp cx, 1
+            je next
+
+            ;adding info that can move down from this cell
+            lea si, graph
+            sub ax, 1
+            call getElem
+            add cx, 0010b
+            lea di, graph
+            call setElem
+
+            ;adding info that can move up from down cell
+            add ax, 1
+            lea di, graph
+            mov cx, 0001b
+            call setElem
+
+            ;calling recursivly dfs into 
+            call dfs
+            sub ax, 1
+            mov posY, ax
+
+            ;getting out of loop
+            jmp next
+
+
+        leftDir:
+            ;checking is left
+            cmp dx, 2
+            jne rightDir
+
+            ;checking if can move left
+            cmp bx, 0
+            je next
+
+            ;checking if left direction is not used
+            sub bx, 1
+            lea si, used
+            call getElem
+            cmp cx, 1
+            je next
+
+            ;adding info that can move left from this cell
+            lea si, graph
+            add bx, 1
+            call getElem
+            add cx, 0100b
+            lea di, graph
+            call setElem
+
+            ;adding info that can move right from left cell
+            sub bx, 1
+            lea di, graph
+            mov cx, 1000b
+            call setElem
+
+            ;calling recursivly dfs into 
+            call dfs
+            add bx, 1
+            mov posX, bx
+
+            ;getting out of loop
+            jmp next
+
+        rightDir:
+            ;checking if can move right
+            add bx, 1
+            cmp bx, sizeX
+            je next
+
+            ;checking if right direction is not used
+            lea si, used
+            call getElem
+            cmp cx, 1
+            je next
+
+            ;adding info that can move right from this cell
+            lea si, graph
+            sub bx, 1
+            call getElem
+            add cx, 1000b
+            lea di, graph
+            call setElem
+
+            ;adding info that can move left from right cell
+            add bx, 1
+            lea di, graph
+            mov cx, 0100b
+            call setElem
+
+            ;calling recursivly dfs into 
+            call dfs
+            sub bx, 1
+            mov posX, bx
+
+            jmp next
+
+        next:
+            pop cx
+            dec cx
+            cmp cx, 0
+
+            je endbigloop
+            jmp bigloop
+
+    endbigloop:
+    mov ax, posY
+    mov bx, posX
+    ret
+dfs endp
 
 main:
     mov ax, @data
 	mov ds, ax
 	mov es, ax
 
-    ;mov ah, 7
-    ;int 21h
+    mov ah, 7
+    int 21h
 
     mov ah, 0Fh
     int 10h
@@ -833,6 +900,7 @@ main:
     sti
 
     infiniteLoop:
+    sti
     jmp infiniteLoop
 
     mov ax, 4c00h
