@@ -4,8 +4,8 @@
 	graph db 1000 dup(0)
     used db 1000 dup(0)
     directions db 0, 1, 2, 3
-    sizeX dw 10
-    sizeY dw 10
+    sizeX dw 20
+    sizeY dw 20
     cellSize db 10
     lineWidth db 1
     playerPosX dw 0
@@ -560,11 +560,17 @@ play proc far
     
     pop ax
 
+    load:
+    cmp al, 38
+    jne save
+    call read
+    jmp playEnd
 
     save:
     cmp al, 1fh
     jne restart
     call write
+    jmp playEnd
 
     restart:
     cmp al, 13h
@@ -1015,7 +1021,7 @@ write proc
     int 21h
 
     ;opening file
-    mov ah, 3dh
+    mov ah, 3ch
     mov al, 1
     mov dx, offset fileName
     int 21h
@@ -1078,7 +1084,6 @@ write proc
     writeLoop1End:
 
 
-
     endWrite:
     mov bx, dx
     mov ah, 3eh
@@ -1091,6 +1096,131 @@ write proc
     ret
 
 write endp
+
+readNumber proc
+    push bx
+    push cx
+    push dx
+
+    jmp readNumberVariables
+        isStarted db 0
+    readNumberVariables:
+    mov isStarted, 0
+    mov ax, 0
+    readNumberLoop:
+        push ax
+        mov ah, 3fh
+        mov dx, offset char
+        mov cx, 1
+        int 21h
+        cmp ax, 0
+        je readNumberEnd
+
+        mov cl, char
+        pop ax
+
+        cmp cl, '0'
+        jl notNumber
+        cmp cl, '9'
+        jg notNumber
+        jmp isNumber
+        
+        notNumber:
+        cmp isStarted, 1
+        je readNumberEnd
+        jmp readNumberLoop
+
+        isNumber:
+        mov isStarted, 1
+        sub cl, '0'
+        mov dx, ax
+        mov ax, 10
+        mul dx
+        add ax, cx
+
+        jmp readNumberLoop
+
+    readNumberEnd:
+    pop bx
+    pop cx
+    pop dx
+
+    ret
+readNumber endp
+
+read proc
+    push ax
+    push bx
+    push cx
+    push dx
+
+    mov ah, 3dh
+    mov al, 0
+    mov dx, offset fileName
+    int 21h    
+
+    jc readEnd
+
+
+    mov dx, ax
+    mov bx, ax
+
+    call readNumber
+    mov playerPosY, ax
+
+    call readNumber
+    mov playerPosX, ax
+
+    mov ax, 0
+    mov bx, 0
+    readLoop1:
+        cmp ax, sizeY
+        jge readLoop1End
+
+        mov bx, 0
+        readLoop2:
+        cmp bx, sizeX
+        jge readLoop2End
+
+        push ax
+        push bx
+
+        mov bx, dx
+        call readNumber
+
+        mov cx, ax
+        mov dx, bx
+
+        pop bx
+        pop ax
+        lea di, graph
+
+        call setElem
+
+        inc bx
+        jmp readLoop2
+        readLoop2End:
+
+        inc ax
+        jmp readLoop1
+    readLoop1End:
+
+    call drawMaze
+
+    mov ax, playerPosY
+    mov bx, playerPosX
+    mov cx, playerPosY
+    mov dx, playerPosX
+    call movePlayer
+
+    readEnd:
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+
+    ret
+read endp
 
 main:
     mov ax, @data
