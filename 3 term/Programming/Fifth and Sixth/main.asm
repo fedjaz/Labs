@@ -247,12 +247,20 @@ drawMaze proc
     sub ax, 1
     mul cellSize
     mov X1, ax
-    mov Y1, 0
+    mov ax, sizeY
+    sub ax, 1
+    mul cellSize
+    mov Y1, ax
+
+    
     xor bx, bx
     mov bl, cellSize
+    mov ax, X1
     add ax, bx
     mov X2, ax
-    mov Y2, bx
+    mov ax, Y1
+    add ax, bx
+    mov Y2, ax
     mov color, 4
     call fillRectangle
 
@@ -645,8 +653,9 @@ play proc far
     ;checking new cords
     mov ax, playerPosY
     mov bx, playerPosX
+    inc ax
     inc bx
-    cmp ax, 0
+    cmp ax, sizeY
     jne trueEnd
     cmp bx, sizeX
     jne trueEnd
