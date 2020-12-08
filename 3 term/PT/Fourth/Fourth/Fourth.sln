@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileManager", "FileManager\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataManager", "DataManager\DataManager.csproj", "{B2FA7758-CF55-4D55-A764-F4F7A6C38AFA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonClasses", "CommonClasses\CommonClasses.csproj", "{0FEE2590-E56B-44B7-B15D-017A1ED02D50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{B2FA7758-CF55-4D55-A764-F4F7A6C38AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2FA7758-CF55-4D55-A764-F4F7A6C38AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2FA7758-CF55-4D55-A764-F4F7A6C38AFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FEE2590-E56B-44B7-B15D-017A1ED02D50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FEE2590-E56B-44B7-B15D-017A1ED02D50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FEE2590-E56B-44B7-B15D-017A1ED02D50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FEE2590-E56B-44B7-B15D-017A1ED02D50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

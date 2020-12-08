@@ -55,7 +55,6 @@
     <Compile Include="OptionsModels\Validator.cs" />
     <Compile Include="Processing\Archive.cs" />
     <Compile Include="Processing\Encryption.cs" />
-    <Compile Include="Processing\Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="System\Installer.cs">
       <SubType>Component</SubType>
@@ -75,6 +74,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommonClasses\CommonClasses.csproj">
+      <Project>{0fee2590-e56b-44b7-b15d-017a1ed02d50}</Project>
+      <Name>CommonClasses</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Converter\Converter\Converter.csproj">
       <Project>{51e02012-5aad-4ed3-8d61-81544080c408}</Project>
       <Name>Converter</Name>

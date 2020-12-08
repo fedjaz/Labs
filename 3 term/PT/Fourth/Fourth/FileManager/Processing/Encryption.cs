@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.IO;
+using CommonClasses;
 
 namespace FileManager
 {
@@ -60,7 +61,7 @@ namespace FileManager
             }
         }
 
-        public static void EncryptFile(string path, EncryptionOptions options, Logger logger)
+        public static void EncryptFile(string path, EncryptionOptions options, ILogger logger)
         {
             if(options.EnableEncryption)
             {
@@ -95,7 +96,7 @@ namespace FileManager
             }
         }
 
-        public static void DecryptFile(string path, EncryptionOptions options, Logger logger)
+        public static void DecryptFile(string path, EncryptionOptions options, ILogger logger)
         {
             if(options.EnableEncryption) 
             { 

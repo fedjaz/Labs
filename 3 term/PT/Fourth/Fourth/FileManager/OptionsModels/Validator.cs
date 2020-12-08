@@ -36,15 +36,6 @@ namespace FileManager
                 CreateDirectoryIfNotExist(sending.ArchiveDirectory);
             }
             #endregion
-            #region Logging Validation
-            LoggingOptions logging = options.LoggingOptions;
-            if(!CreateFileIfNotExist(logging.LogPath))
-            {
-                logging.LogPath = "C:\\FileWatcher\\target\\log.txt";
-                report += "Cannot open source log file, using default. ";
-                CreateFileIfNotExist(logging.LogPath);
-            }
-            #endregion
             #region Encryption Validation
             EncryptionOptions encryption = options.EncryptionOptions;
             if(!encryption.RandomKey && encryption.Key.Length != 16)

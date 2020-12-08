@@ -1,4 +1,5 @@
 ﻿using System;
+using CommonClasses;
 using Converter;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +16,7 @@ namespace FileManager
     partial class MyETL : ServiceBase
     {
         FileSystemWatcher watcher;
-        Logger logger;
+        ILogger logger;
         OptionsManager.OptionsManager<ETLOptions> optionsManager;
         Validator validator;
         IParser parser;
@@ -44,7 +45,7 @@ namespace FileManager
             parser = new Converter.Converter();
             optionsManager = new OptionsManager.OptionsManager<ETLOptions>(directory, parser, validator);
             ETLOptions options = optionsManager.GetOptions<ETLOptions>() as ETLOptions;
-            logger = new Logger(options.LoggingOptions);
+            logger = new Logger(optionsManager.GetOptions<CommonClasses.LoggingOptions>() as CommonClasses.LoggingOptions);
             logger.Log(optionsManager.Report);
 
 
@@ -69,7 +70,7 @@ namespace FileManager
 
         }
 
-        string SendFile(FileInfo file, SendingOptions sendingOptions, Logger logger, ArchiveOptions archiveOptions)
+        string SendFile(FileInfo file, SendingOptions sendingOptions, ILogger logger, ArchiveOptions archiveOptions)
         {
             string targetDirectory = $"{sendingOptions.TargetDirectory}\\{file.LastWriteTime:yyyy\\\\MM\\\\dd}";
             validator.CreateDirectoryIfNotExist(targetDirectory);
