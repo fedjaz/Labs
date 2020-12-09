@@ -9,7 +9,7 @@ using System.IO;
 
 namespace DataAccessLayer
 {
-    class Validator : IValidator
+    public class Validator : IValidator
     {
         public void Validate(object obj)
         {

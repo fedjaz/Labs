@@ -21,13 +21,6 @@ namespace DataAccessLayer
             string connectionString = $"Data Source={options.DataSource}; Database={options.Database}; User={options.User}; Integrated Security={options.IntegratedSecurity}";
             connection = new SqlConnection(connectionString);
             connection.Open();
-            //SqlCommand command = new SqlCommand("SELECT TOP(10) * FROM Person.Person", connection);
-            //var a = command.ExecuteReader();
-            //while(a.Read())
-            //{
-
-            //}
-
         }
 
         public Person GetPerson(int id)
@@ -44,6 +37,35 @@ namespace DataAccessLayer
             {
                 return ans.First();
             }
+        }
+
+        public int PersonCount()
+        {
+            SqlCommand command = new SqlCommand("PersonCount", connection);
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            SqlDataReader reader = command.ExecuteReader();
+            reader.Read();
+            int ans = reader.GetInt32(0);
+            reader.Close();
+            return ans;
+        }
+
+        public List<Person> GetPersons()
+        {
+            SqlCommand command = new SqlCommand("GetPersons", connection);
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            List<Person> ans = Map<Person>(command.ExecuteReader(), Parser);
+            return ans;
+        }
+
+        public List<Person> GetPersonsRange(int startIndex, int count)
+        {
+            SqlCommand command = new SqlCommand("GetPersonsRange", connection);
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.Add(new SqlParameter("startIndex", startIndex));
+            command.Parameters.Add(new SqlParameter("count", count));
+            List<Person> ans = Map<Person>(command.ExecuteReader(), Parser);
+            return ans;
         }
 
         public Password GetPassword(int id)

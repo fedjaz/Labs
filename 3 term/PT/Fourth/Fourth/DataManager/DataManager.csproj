@@ -62,6 +62,10 @@
       <Project>{6aabdbd2-4b8e-4274-98b6-567cab705204}</Project>
       <Name>DataAccessLayer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OptionsManager\OptionsManager.csproj">
+      <Project>{7ef962f6-df5b-4c11-8002-4b2e91535672}</Project>
+      <Name>OptionsManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ServiceLayer\ServiceLayer.csproj">
       <Project>{fa672b02-efae-4174-a440-4f5892d6666c}</Project>
       <Name>ServiceLayer</Name>
