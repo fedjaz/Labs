@@ -35,7 +35,15 @@ namespace DataAccessLayer
             SqlCommand command = new SqlCommand("GetPerson", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.Add(new SqlParameter("id", id));
-            return Map<Person>(command.ExecuteReader(), Parser).First();
+            List<Person> ans = Map<Person>(command.ExecuteReader(), Parser);
+            if(ans.Count == 0)
+            {
+                return new Person();
+            }
+            else
+            {
+                return ans.First();
+            }
         }
 
         public Password GetPassword(int id)
@@ -43,15 +51,31 @@ namespace DataAccessLayer
             SqlCommand command = new SqlCommand("GetPassword", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.Add(new SqlParameter("id", id));
-            return Map<Password>(command.ExecuteReader(), Parser).First();
+            List<Password> ans = Map<Password>(command.ExecuteReader(), Parser);
+            if(ans.Count == 0)
+            {
+                return new Password();
+            }
+            else
+            {
+                return ans.First();
+            }
         }
 
-        public EmailAdress GetEmail(int id)
+        public Email GetEmail(int id)
         {
             SqlCommand command = new SqlCommand("GetEmail", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.Add(new SqlParameter("id", id));
-            return Map<EmailAdress>(command.ExecuteReader(), Parser).First();
+            List<Email> ans = Map<Email>(command.ExecuteReader(), Parser);
+            if(ans.Count == 0)
+            {
+                return new Email();
+            }
+            else
+            {
+                return ans.First();
+            }
         }
 
         public PersonPhone GetPhone(int id)
@@ -59,7 +83,15 @@ namespace DataAccessLayer
             SqlCommand command = new SqlCommand("GetPhone", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.Add(new SqlParameter("id", id));
-            return Map<PersonPhone>(command.ExecuteReader(), Parser).First();
+            List<PersonPhone> ans = Map<PersonPhone>(command.ExecuteReader(), Parser);
+            if(ans.Count == 0)
+            {
+                return new PersonPhone();
+            }
+            else
+            {
+                return ans.First();
+            }
         }
 
         public Address GetAddress(int id)
@@ -67,7 +99,15 @@ namespace DataAccessLayer
             SqlCommand command = new SqlCommand("GetAddress", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.Add(new SqlParameter("id", id));
-            return Map<Address>(command.ExecuteReader(), Parser).First();
+            List<Address> ans = Map<Address>(command.ExecuteReader(), Parser);
+            if(ans.Count == 0)
+            {
+                return new Address();
+            }
+            else
+            {
+                return ans.First();
+            }
         }
 
         public List<T> Map<T>(SqlDataReader reader, IParser parser)
@@ -95,6 +135,7 @@ namespace DataAccessLayer
                 }
                 ans.Add(dict);
             }
+            reader.Close();
             return ans;
         }
     }

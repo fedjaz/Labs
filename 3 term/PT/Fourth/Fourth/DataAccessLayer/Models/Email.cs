@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Models
 {
-    public class EmailAdress
+    public class Email
     {
         public int BusinessEntityID { get; set; }
         public int EmailAddressID { get; set; }
