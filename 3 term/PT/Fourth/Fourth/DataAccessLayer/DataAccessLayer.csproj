@@ -58,6 +58,10 @@
       <Project>{51e02012-5aad-4ed3-8d61-81544080c408}</Project>
       <Name>Converter</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OptionsManager\OptionsManager.csproj">
+      <Project>{7ef962f6-df5b-4c11-8002-4b2e91535672}</Project>
+      <Name>OptionsManager</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

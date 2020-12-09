@@ -113,6 +113,24 @@ namespace Converter
             return ans;
         }
 
+        public T Map<T>(Dictionary<string, object> dict)
+        {
+            T ans = (T)Activator.CreateInstance(typeof(T));
+            foreach(KeyValuePair<string, object> pair in dict)
+            {
+                if(pair.Value.GetType() == typeof(DBNull))
+                {
+                    SetMemberValue(ans, pair.Key, null);
+                }
+                else
+                {
+                    SetMemberValue(ans, pair.Key, pair.Value);
+                }
+                
+            }
+            return ans;
+        }
+
         public string SerializeJson(object obj)
         {
             return SerializeJson(obj, 0).Trim('\n');
@@ -128,7 +146,11 @@ namespace Converter
             }
             if(type.IsPrimitive || type.IsEnum)
             {
-                sb = new StringBuilder($"{obj}");
+                sb = new StringBuilder($"\"{obj}\"");
+            }
+            if(type.GetMethod("ToString", new Type[] { }).DeclaringType != typeof(object))
+            {
+                sb = new StringBuilder($"\"{obj}\"");
             }
             else if(type == typeof(string))
             {
@@ -178,9 +200,17 @@ namespace Converter
                     if(members[i].GetCustomAttribute(typeof(JsonIgnore)) != null)
                     {
                         continue;
-                    }
+                    }         
                     object obj1 = GetMemberValue(obj, members[i].Name);
-                    string value = $"{SerializeJson(obj1, deep + 1)}";
+                    string value;
+                    if(obj1 == null)
+                    {
+                        value = "null";
+                    }
+                    else
+                    {
+                        value = $"{SerializeJson(obj1, deep + 1)}";
+                    }                
                     sb.Append($"{new string('\t', deep + 1)}{members[i].Name} : {value}".TrimEnd('\n'));
                     if(i != members.Length - 1)
                     {
@@ -201,6 +231,10 @@ namespace Converter
 
         static string SerializeXML(object obj, int deep, string name)
         {
+            if(obj == null)
+            {
+                return $"{new string('\t', deep)}<{name}>null</{name}>\n";
+            }
             Type type = obj.GetType();
             StringBuilder sb;
             if(type.GetCustomAttribute(typeof(XMLIgnore)) != null)
@@ -208,6 +242,11 @@ namespace Converter
                 return "";
             }
             if(type.IsPrimitive || type.IsEnum || type == typeof(string))
+            {
+                name = name == "" ? type.Name : name;
+                sb = new StringBuilder($"{new string('\t', deep)}<{name}>{obj}</{name}>\n");
+            }
+            else if(type.GetMethod("ToString",new Type[] { }).DeclaringType != typeof(object))
             {
                 name = name == "" ? type.Name : name;
                 sb = new StringBuilder($"{new string('\t', deep)}<{name}>{obj}</{name}>\n");
@@ -244,7 +283,15 @@ namespace Converter
                         continue;
                     }
                     object obj1 = GetMemberValue(obj, members[i].Name);
-                    string value = SerializeXML(obj1, deep + 1, members[i].Name);
+                    string value;
+                    //if(obj1 == null)
+                    //{
+                    //    value = "null";
+                    //}
+                    //else
+                    //{
+                    value = SerializeXML(obj1, deep + 1, members[i].Name);
+                    //}
                     if(i == members.Length - 1)
                     {
                         value = value.TrimEnd(new char[] { '\t', '\n', ' ' });

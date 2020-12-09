@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Models
 {
-    class Person
+    public class Person
     {
         public int BusinessEntityID { get; set; }
         public string PersonType { get; set; }
-        public int NameStyle { get; set; }
+        public bool NameStyle { get; set; }
         public string Title { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -19,7 +19,7 @@ namespace DataAccessLayer.Models
         public int EmailPromotion { get; set; }
         public string AdditionalContactInfo { get; set; }
         public string Demographics { get; set; }
-        public string rowguid { get; set; }
+        public Guid rowguid { get; set; }
         public DateTime ModifiedDate { get; set; }
 
     }

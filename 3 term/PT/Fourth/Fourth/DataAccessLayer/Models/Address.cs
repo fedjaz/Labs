@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Models
 {
-    class Address
+    public class Address
     {
         public int AddressID { get; set; }
         public string AddressLine1 { get; set; }
@@ -14,8 +14,7 @@ namespace DataAccessLayer.Models
         public string City { get; set; }
         public int StateProvinceID { get; set; }
         public string PostalCode { get; set; }
-        public string SpatialLocation { get; set; }
-        public string rowguid { get; set; }
+        public Guid rowguid { get; set; }
         public DateTime ModifiedDate { get; set; }
     }
 }

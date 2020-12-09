@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Models
 {
-    class EmailAdress
+    public class EmailAdress
     {
         public int BusinessEntityID { get; set; }
         public int EmailAddressID { get; set; }
         public string EmailAddress { get; set; }
-        public string rowguid { get; set; }
+        public Guid rowguid { get; set; }
         public DateTime ModifiedDate { get; set; }
     }
 }

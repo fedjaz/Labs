@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Models
 {
-    class Password
+    public class Password
     {
         public int BusinessEntityID { get; set; }
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }
-        public string rowguid { get; set; }
+        public Guid rowguid { get; set; }
         public DateTime ModifiedDate { get; set; }
     }
 }

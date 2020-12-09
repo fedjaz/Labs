@@ -1,6 +1,7 @@
 ﻿using System;
 using Converter;
 using System.Collections.Generic;
+using OptionsManager;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using System.IO;
 
 namespace DataAccessLayer
 {
-    class Validator : OptionsManager.IValidator
+    class Validator : IValidator
     {
         public void Validate(object obj)
         {
