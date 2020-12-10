@@ -20,6 +20,7 @@ namespace FileManager
         OptionsManager.OptionsManager<ETLOptions> optionsManager;
         Validator validator;
         IParser parser;
+        object locker = new object();
 
         public MyETL()
         {
@@ -45,7 +46,7 @@ namespace FileManager
             parser = new Converter.Converter();
             optionsManager = new OptionsManager.OptionsManager<ETLOptions>(directory, parser, validator);
             ETLOptions options = optionsManager.GetOptions<ETLOptions>() as ETLOptions;
-            logger = new Logger(optionsManager.GetOptions<CommonClasses.LoggingOptions>() as CommonClasses.LoggingOptions);
+            logger = new Logger(optionsManager.GetOptions<CommonClasses.LoggingOptions>() as CommonClasses.LoggingOptions, parser);
             logger.Log(optionsManager.Report);
 
 
@@ -56,18 +57,24 @@ namespace FileManager
         }
         private void Created(object sender, FileSystemEventArgs e)
         {
-            WaitUntilFileIsReady(e.FullPath);
-            FileInfo file = new FileInfo(e.FullPath);
-            EncryptionOptions encryptionOptions = optionsManager.GetOptions<EncryptionOptions>() as EncryptionOptions;
+            Task task = Task.Factory.StartNew(() => 
+            {
+                lock(locker)
+                {
+                    logger.Log($"Processing file {e.Name}");
+                    WaitUntilFileIsReady(e.FullPath);
+                    FileInfo file = new FileInfo(e.FullPath);
+                    EncryptionOptions encryptionOptions = optionsManager.GetOptions<EncryptionOptions>() as EncryptionOptions;
 
-            Encryption.EncryptFile(e.FullPath, encryptionOptions, logger);
+                    Encryption.EncryptFile(e.FullPath, encryptionOptions, logger);
 
-            string newPath = SendFile(file,
-                                      optionsManager.GetOptions<SendingOptions>() as SendingOptions,
-                                      logger,
-                                      optionsManager.GetOptions<ArchiveOptions>() as ArchiveOptions);
-            Encryption.DecryptFile(newPath, encryptionOptions, logger);
-
+                    string newPath = SendFile(file,
+                                                optionsManager.GetOptions<SendingOptions>() as SendingOptions,
+                                                logger,
+                                                optionsManager.GetOptions<ArchiveOptions>() as ArchiveOptions);
+                    Encryption.DecryptFile(newPath, encryptionOptions, logger);
+                }
+            });
         }
 
         string SendFile(FileInfo file, SendingOptions sendingOptions, ILogger logger, ArchiveOptions archiveOptions)
