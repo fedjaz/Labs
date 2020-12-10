@@ -10,8 +10,9 @@ namespace DataAccessLayer.Settings
     {
         public string DataSource { get; set; } = "DESKTOP-2D1MIID\\AdventureWorks";
         public string Database { get; set; } = "AdventureWorks2017";
-        public string User { get; set; } = "DESKTOP - 2D1MIID\\fedjaz";
-        public bool IntegratedSecurity { get; set; } = true;
+        public string User { get; set; } = "WindowsService";
+        public string Password { get; set; } = "helloworld";
+        public bool IntegratedSecurity { get; set; } = false;
         public ConnectionOptions()
         {
 

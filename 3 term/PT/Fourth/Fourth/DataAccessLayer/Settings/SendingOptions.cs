@@ -14,7 +14,7 @@ namespace DataAccessLayer.Settings
         
         public enum PullingModes
         {
-            SingleLine,
+            ByBatches,
             FullTable,
             FullJoin
         }

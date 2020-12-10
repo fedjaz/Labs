@@ -18,7 +18,7 @@ namespace DataAccessLayer
         public DataAccessLayer(Settings.ConnectionOptions options, IParser parser)
         {
             Parser = parser;
-            string connectionString = $"Data Source={options.DataSource}; Database={options.Database}; User={options.User}; Integrated Security={options.IntegratedSecurity}";
+            string connectionString = $"Data Source={options.DataSource}; Database={options.Database}; User={options.User}; Password={options.Password}; Integrated Security={options.IntegratedSecurity}";
             connection = new SqlConnection(connectionString);
             connection.Open();
         }
@@ -39,9 +39,9 @@ namespace DataAccessLayer
             }
         }
 
-        public int PersonCount()
+        public int PersonMaxID()
         {
-            SqlCommand command = new SqlCommand("PersonCount", connection);
+            SqlCommand command = new SqlCommand("GetMaxId", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
             SqlDataReader reader = command.ExecuteReader();
             reader.Read();
@@ -159,6 +159,16 @@ namespace DataAccessLayer
             }
             reader.Close();
             return ans;
+        }
+
+        public void Log(DateTime date, string message)
+        {
+            SqlCommand command = new SqlCommand("Log", connection);
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.Add(new SqlParameter("date", date));
+            command.Parameters.Add(new SqlParameter("message", message));
+            command.ExecuteNonQuery();
+
         }
     }
 }
