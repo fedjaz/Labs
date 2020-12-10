@@ -5,6 +5,7 @@ using OptionsManager;
 using ServiceLayer;
 using DataAccessLayer;
 using DataAccessLayer.Models;
+using DataAccessLayer.Settings;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,22 +19,24 @@ namespace DataManager
         static void Main(string[] args)
         {
             IParser parser = new Converter.Converter();
-            ILogger logger = new Logger(new LoggingOptions(), parser);
             IValidator validator = new Validator();
             string directory = AppDomain.CurrentDomain.BaseDirectory;
 
-            OptionsManager<DataAccessLayer.Settings.DataAccessOptions> options =
-                new OptionsManager<DataAccessLayer.Settings.DataAccessOptions>(directory, parser, validator);
-            
+            OptionsManager<DataAccessOptions> options =
+                new OptionsManager<DataAccessOptions>(directory, parser, validator);
+
+            LoggingOptions loggingOptions = new LoggingOptions();
+            loggingOptions.ConnectionOptions = options.GetOptions<ConnectionOptions>() as ConnectionOptions;
+            loggingOptions.EnableLogging = true;
+            ILogger logger = new Logger(loggingOptions, parser);
             ServiceLayer.ServiceLayer SL = new ServiceLayer.ServiceLayer(
-                options.GetOptions<DataAccessLayer.Settings.ConnectionOptions>() as DataAccessLayer.Settings.ConnectionOptions,
+                options.GetOptions<ConnectionOptions>() as ConnectionOptions,
                 parser, logger);
 
-            DataAccessLayer.Settings.SendingOptions sendingOptions = 
-                options.GetOptions<DataAccessLayer.Settings.SendingOptions>() as DataAccessLayer.Settings.SendingOptions;
+            SendingOptions sendingOptions = options.GetOptions<SendingOptions>() as SendingOptions;
 
             logger.Log("Starting pulling data");
-            if(sendingOptions.PullingMode == DataAccessLayer.Settings.SendingOptions.PullingModes.ByBatches)
+            if(sendingOptions.PullingMode == SendingOptions.PullingModes.ByBatches)
             {
                 int curIndex = 1;
                 int maxID = SL.DAL.PersonMaxID();
@@ -50,12 +53,12 @@ namespace DataManager
                     curIndex = lastID + 1;
                 }
             }
-            else if(sendingOptions.PullingMode == DataAccessLayer.Settings.SendingOptions.PullingModes.FullTable)
+            else if(sendingOptions.PullingMode == SendingOptions.PullingModes.FullTable)
             {
                 List<PersonInfo> info = SL.GetPersons();
                 SplitOnBatches(info, sendingOptions, parser);
             }
-            else if(sendingOptions.PullingMode == DataAccessLayer.Settings.SendingOptions.PullingModes.FullJoin)
+            else if(sendingOptions.PullingMode == SendingOptions.PullingModes.FullJoin)
             {
                 List<PersonInfo> info = SL.GetPersonsByJoin();
                 SplitOnBatches(info, sendingOptions, parser);
@@ -64,7 +67,7 @@ namespace DataManager
             logger.Log("Pulled all data successfully");
         }
 
-        static void SplitOnBatches(List<PersonInfo> info, DataAccessLayer.Settings.SendingOptions sendingOptions, IParser parser)
+        static void SplitOnBatches(List<PersonInfo> info, SendingOptions sendingOptions, IParser parser)
         {
             int curIndex = 0;
             while(curIndex < info.Count)
