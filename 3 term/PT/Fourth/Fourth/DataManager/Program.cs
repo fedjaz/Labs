@@ -31,10 +31,10 @@ namespace DataManager
             DataAccessLayer.Settings.SendingOptions sendingOptions = 
                 options.GetOptions<DataAccessLayer.Settings.SendingOptions>() as DataAccessLayer.Settings.SendingOptions;
 
-            logger.Log("Let's go!!!");
+            logger.Log("Starting pulling data");
             if(sendingOptions.PullingMode == DataAccessLayer.Settings.SendingOptions.PullingModes.ByBatches)
             {
-                int curIndex = 0;
+                int curIndex = 1;
                 int maxID = SL.DAL.PersonMaxID();
                 List<DataAccessLayer.Models.PersonInfo> info;
                 while(curIndex < maxID)
@@ -69,6 +69,8 @@ namespace DataManager
                 }
                 
             }
+
+            logger.Log("Pulled all data successfully");
         }
     }
 }

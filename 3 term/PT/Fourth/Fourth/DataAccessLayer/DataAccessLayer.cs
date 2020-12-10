@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Converter;
+using System.Transactions;
 
 namespace DataAccessLayer
 {
@@ -19,8 +20,12 @@ namespace DataAccessLayer
         {
             Parser = parser;
             string connectionString = $"Data Source={options.DataSource}; Database={options.Database}; User={options.User}; Password={options.Password}; Integrated Security={options.IntegratedSecurity}";
-            connection = new SqlConnection(connectionString);
-            connection.Open();
+            using(TransactionScope scope = new TransactionScope())
+            {
+                connection = new SqlConnection(connectionString);
+                connection.Open();
+                scope.Complete();
+            }
         }
 
         public Person GetPerson(int id)
@@ -28,34 +33,46 @@ namespace DataAccessLayer
             SqlCommand command = new SqlCommand("GetPerson", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.Add(new SqlParameter("id", id));
-            List<Person> ans = Map<Person>(command.ExecuteReader(), Parser);
-            if(ans.Count == 0)
+            using(TransactionScope scope = new TransactionScope())
             {
-                return new Person();
-            }
-            else
-            {
-                return ans.First();
-            }
+                List<Person> ans = Map<Person>(command.ExecuteReader(), Parser);
+                scope.Complete();
+                if(ans.Count == 0)
+                {
+                    return new Person();
+                }
+                else
+                {
+                    return ans.First();
+                }
+            }  
         }
 
         public int PersonMaxID()
         {
             SqlCommand command = new SqlCommand("GetMaxId", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
-            SqlDataReader reader = command.ExecuteReader();
-            reader.Read();
-            int ans = reader.GetInt32(0);
-            reader.Close();
-            return ans;
+            using(TransactionScope scope = new TransactionScope())
+            {
+                SqlDataReader reader = command.ExecuteReader();
+                reader.Read();
+                int ans = reader.GetInt32(0);
+                reader.Close();
+                scope.Complete();
+                return ans;
+            }
         }
 
         public List<Person> GetPersons()
         {
             SqlCommand command = new SqlCommand("GetPersons", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
-            List<Person> ans = Map<Person>(command.ExecuteReader(), Parser);
-            return ans;
+            using(TransactionScope scope = new TransactionScope())
+            {
+                List<Person> ans = Map<Person>(command.ExecuteReader(), Parser);
+                scope.Complete();
+                return ans;
+            }
         }
 
         public List<Person> GetPersonsRange(int startIndex, int count)
@@ -64,8 +81,13 @@ namespace DataAccessLayer
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.Add(new SqlParameter("startIndex", startIndex));
             command.Parameters.Add(new SqlParameter("count", count));
-            List<Person> ans = Map<Person>(command.ExecuteReader(), Parser);
-            return ans;
+            
+            using(TransactionScope scope = new TransactionScope())
+            {
+                scope.Complete();
+                List<Person> ans = Map<Person>(command.ExecuteReader(), Parser);
+                return ans;
+            }
         }
 
         public Password GetPassword(int id)
@@ -73,14 +95,18 @@ namespace DataAccessLayer
             SqlCommand command = new SqlCommand("GetPassword", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.Add(new SqlParameter("id", id));
-            List<Password> ans = Map<Password>(command.ExecuteReader(), Parser);
-            if(ans.Count == 0)
+            using(TransactionScope scope = new TransactionScope())
             {
-                return new Password();
-            }
-            else
-            {
-                return ans.First();
+                List<Password> ans = Map<Password>(command.ExecuteReader(), Parser);
+                scope.Complete();
+                if(ans.Count == 0)
+                {
+                    return new Password();
+                }
+                else
+                {
+                    return ans.First();
+                }
             }
         }
 
@@ -89,14 +115,18 @@ namespace DataAccessLayer
             SqlCommand command = new SqlCommand("GetEmail", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.Add(new SqlParameter("id", id));
-            List<Email> ans = Map<Email>(command.ExecuteReader(), Parser);
-            if(ans.Count == 0)
+            using(TransactionScope scope = new TransactionScope())
             {
-                return new Email();
-            }
-            else
-            {
-                return ans.First();
+                List<Email> ans = Map<Email>(command.ExecuteReader(), Parser);
+                scope.Complete();
+                if(ans.Count == 0)
+                {
+                    return new Email();
+                }
+                else
+                {
+                    return ans.First();
+                }
             }
         }
 
@@ -105,14 +135,18 @@ namespace DataAccessLayer
             SqlCommand command = new SqlCommand("GetPhone", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.Add(new SqlParameter("id", id));
-            List<PersonPhone> ans = Map<PersonPhone>(command.ExecuteReader(), Parser);
-            if(ans.Count == 0)
+            using(TransactionScope scope = new TransactionScope())
             {
-                return new PersonPhone();
-            }
-            else
-            {
-                return ans.First();
+                List<PersonPhone> ans = Map<PersonPhone>(command.ExecuteReader(), Parser);
+                scope.Complete();
+                if(ans.Count == 0)
+                {
+                    return new PersonPhone();
+                }
+                else
+                {
+                    return ans.First();
+                }
             }
         }
 
@@ -121,14 +155,18 @@ namespace DataAccessLayer
             SqlCommand command = new SqlCommand("GetAddress", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.Add(new SqlParameter("id", id));
-            List<Address> ans = Map<Address>(command.ExecuteReader(), Parser);
-            if(ans.Count == 0)
+            using(TransactionScope scope = new TransactionScope())
             {
-                return new Address();
-            }
-            else
-            {
-                return ans.First();
+                List<Address> ans = Map<Address>(command.ExecuteReader(), Parser);
+                scope.Complete();
+                if(ans.Count == 0)
+                {
+                    return new Address();
+                }
+                else
+                {
+                    return ans.First();
+                }
             }
         }
 
@@ -165,10 +203,15 @@ namespace DataAccessLayer
         {
             SqlCommand command = new SqlCommand("Log", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
+
             command.Parameters.Add(new SqlParameter("date", date));
             command.Parameters.Add(new SqlParameter("message", message));
-            command.ExecuteNonQuery();
-
+            
+            using(TransactionScope scope = new TransactionScope())
+            {
+                command.ExecuteNonQuery();
+                scope.Complete();
+            }
         }
     }
 }
