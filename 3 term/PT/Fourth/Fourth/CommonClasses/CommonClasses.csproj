@@ -47,6 +47,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Converter\Converter\Converter.csproj">
+      <Project>{51e02012-5aad-4ed3-8d61-81544080c408}</Project>
+      <Name>Converter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">
       <Project>{6aabdbd2-4b8e-4274-98b6-567cab705204}</Project>
       <Name>DataAccessLayer</Name>
