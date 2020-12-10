@@ -55,6 +55,11 @@ namespace ServiceLayer
             return ans;
         }
 
+        public List<DataAccessLayer.Models.PersonInfo> GetPersonsByJoin()
+        {
+            return DAL.GetPersonsByJoin();
+        }
+
         DataAccessLayer.Models.PersonInfo LoadPerson(DataAccessLayer.Models.Person person)
         {
             int id = person.BusinessEntityID;
@@ -65,5 +70,7 @@ namespace ServiceLayer
             DataAccessLayer.Models.PersonInfo personInfo = new DataAccessLayer.Models.PersonInfo(person, password, email, personPhone, address);
             return personInfo;
         }
+
+
     }
 }

@@ -4,6 +4,7 @@ using CommonClasses;
 using OptionsManager;
 using ServiceLayer;
 using DataAccessLayer;
+using DataAccessLayer.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,7 +37,7 @@ namespace DataManager
             {
                 int curIndex = 1;
                 int maxID = SL.DAL.PersonMaxID();
-                List<DataAccessLayer.Models.PersonInfo> info;
+                List<PersonInfo> info;
                 while(curIndex < maxID)
                 {
                     info = SL.GetPersonsRange(curIndex, sendingOptions.BatchSize);
@@ -51,26 +52,35 @@ namespace DataManager
             }
             else if(sendingOptions.PullingMode == DataAccessLayer.Settings.SendingOptions.PullingModes.FullTable)
             {
-                int curIndex = 0;
-                List<DataAccessLayer.Models.PersonInfo> info = SL.GetPersons();
-                while(curIndex < info.Count)
-                {
-                    List<DataAccessLayer.Models.PersonInfo> subInfo = info.GetRange(curIndex, 
-                                                                                    Math.Min(sendingOptions.BatchSize, info.Count - curIndex));
-
-                    int firstID = subInfo.First().Person.BusinessEntityID;
-                    int lastID = subInfo.Last().Person.BusinessEntityID;
-                    string s = parser.SerializeXML(subInfo);
-                    using(StreamWriter sw = new StreamWriter($"{sendingOptions.Target}\\file{firstID}-{lastID}.txt"))
-                    {
-                        sw.Write(s);
-                    }
-                    curIndex += sendingOptions.BatchSize;
-                }
-                
+                List<PersonInfo> info = SL.GetPersons();
+                SplitOnBatches(info, sendingOptions, parser);
+            }
+            else if(sendingOptions.PullingMode == DataAccessLayer.Settings.SendingOptions.PullingModes.FullJoin)
+            {
+                List<PersonInfo> info = SL.GetPersonsByJoin();
+                SplitOnBatches(info, sendingOptions, parser);
             }
 
             logger.Log("Pulled all data successfully");
+        }
+
+        static void SplitOnBatches(List<PersonInfo> info, DataAccessLayer.Settings.SendingOptions sendingOptions, IParser parser)
+        {
+            int curIndex = 0;
+            while(curIndex < info.Count)
+            {
+                List<PersonInfo> subInfo = info.GetRange(curIndex,
+                                                         Math.Min(sendingOptions.BatchSize, info.Count - curIndex));
+
+                int firstID = subInfo.First().Person.BusinessEntityID;
+                int lastID = subInfo.Last().Person.BusinessEntityID;
+                string s = parser.SerializeXML(subInfo);
+                using(StreamWriter sw = new StreamWriter($"{sendingOptions.Target}\\file{firstID}-{lastID}.txt"))
+                {
+                    sw.Write(s);
+                }
+                curIndex += sendingOptions.BatchSize;
+            }
         }
     }
 }

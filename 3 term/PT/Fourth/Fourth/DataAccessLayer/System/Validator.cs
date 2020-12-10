@@ -24,7 +24,7 @@ namespace DataAccessLayer
                 options.SendingOptions.Target = "C:\\FileWatcher\\source";
                 CreateDirectoryIfNotExist(options.SendingOptions.Target);
             }
-            if((int)options.SendingOptions.PullingMode < 0 || (int)options.SendingOptions.PullingMode >= 2)
+            if((int)options.SendingOptions.PullingMode < 0 || (int)options.SendingOptions.PullingMode >= 3)
             {
                 options.SendingOptions.PullingMode = Settings.SendingOptions.PullingModes.FullTable;
             }

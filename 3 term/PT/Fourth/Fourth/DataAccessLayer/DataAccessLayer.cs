@@ -170,7 +170,70 @@ namespace DataAccessLayer
             }
         }
 
-        public List<T> Map<T>(SqlDataReader reader, IParser parser)
+        public List<PersonInfo> GetPersonsByJoin()
+        {
+            List<PersonInfo> ans = new List<PersonInfo>();
+            SqlCommand command = new SqlCommand("GetPersonsByJoin", connection);
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            using(TransactionScope scope = new TransactionScope())
+            {
+                SqlDataReader reader = command.ExecuteReader();
+                while(reader.Read())
+                {
+                    PersonInfo personInfo = new PersonInfo();
+
+                    Dictionary<string, object> dict = new Dictionary<string, object>();
+                    for(int i = 0; i < 13; i++)
+                    {
+                        string name = reader.GetName(i);
+                        object val = reader.GetValue(i);
+                        dict.Add(name, val);
+                    }
+                    personInfo.Person = Parser.Map<Person>(dict);
+
+                    dict = new Dictionary<string, object>();
+                    for(int i = 13; i < 18; i++)
+                    {
+                        string name = reader.GetName(i);
+                        object val = reader.GetValue(i);
+                        dict.Add(name, val);
+                    }
+                    personInfo.Password = Parser.Map<Password>(dict);
+
+                    dict = new Dictionary<string, object>();
+                    for(int i = 18; i < 23; i++)
+                    {
+                        string name = reader.GetName(i);
+                        object val = reader.GetValue(i);
+                        dict.Add(name, val);
+                    }
+                    personInfo.Email = Parser.Map<Email>(dict);
+
+                    dict = new Dictionary<string, object>();
+                    for(int i = 23; i < 27; i++)
+                    {
+                        string name = reader.GetName(i);
+                        object val = reader.GetValue(i);
+                        dict.Add(name, val);
+                    }
+                    personInfo.PersonPhone = Parser.Map<PersonPhone>(dict);
+
+                    dict = new Dictionary<string, object>();
+                    for(int i = 27; i < 35; i++)
+                    {
+                        string name = reader.GetName(i);
+                        object val = reader.GetValue(i);
+                        dict.Add(name, val);
+                    }
+                    personInfo.Address = Parser.Map<Address>(dict);
+
+                    ans.Add(personInfo);
+                }
+            }
+            return ans;
+        }
+
+        List<T> Map<T>(SqlDataReader reader, IParser parser)
         {
             List<Dictionary<string, object>> parsed = Parse(reader);
             List<T> ans = new List<T>();
@@ -181,7 +244,7 @@ namespace DataAccessLayer
             return ans;
         }
 
-        public List<Dictionary<string, object>> Parse(SqlDataReader reader)
+        List<Dictionary<string, object>> Parse(SqlDataReader reader)
         {
             List<Dictionary<string, object>> ans = new List<Dictionary<string, object>>();
             while(reader.Read())

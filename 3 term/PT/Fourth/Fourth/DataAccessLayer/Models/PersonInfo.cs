@@ -22,5 +22,10 @@ namespace DataAccessLayer.Models
             PersonPhone = personPhone;
             Address = address;
         }
+
+        public PersonInfo()
+        {
+
+        }
     }
 }
