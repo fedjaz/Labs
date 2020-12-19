@@ -1,10 +1,16 @@
 // Seventh.cpp : Defines the entry point for the application.
 //
 
+using namespace std;
 #include "framework.h"
 #include "Seventh.h"
+#include <algorithm>
+#include <vector>
 
 #define MAX_LOADSTRING 100
+#define ComboBox1 10001
+#define ComboBox2 10002
+#define ComboBox3 10003
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -21,12 +27,23 @@ void OnMouseUp(int x, int y);
 void OnMouseMove(int x, int y);
 void DrawLine(int x1, int y1, int x2, int y2, int width, COLORREF color);
 void DrawRectangle(int x1, int y1, int x2, int y2, int width, COLORREF color);
-void FillRectangle(int x1, int y1, int x2, int y2, int width, COLORREF color);
+void FillRectangle(int x1, int y1, int x2, int y2, COLORREF color);
 void DrawEllipse(int x1, int y1, int x2, int y2, int width, COLORREF color);
 void FillEllipse(int x1, int y1, int x2, int y2, int width, COLORREF color);
 void Fill(int x, int y, COLORREF color);
+void Gradient(int x, int y);
+int GetWindowSizeX(HWND window);
+void RegisterModeBox();
+void RegisterWidthBox();
+void RegisterColorBox();
+void Repaint();
 
 int lastX, lastY;
+
+HWND hWndComboBox1;
+HWND hWndComboBox2;
+HWND hWndComboBox3;
+bool movedObject = false;
 
 enum class Modes
 {
@@ -41,9 +58,9 @@ enum class Modes
     Gradient
 };
 
-Modes mode = Modes::Fill;
-int width = 5;
-COLORREF color = RGB(255, 0, 0);
+Modes mode = Modes::Pen;
+int width = 1;
+COLORREF curColor = RGB(0, 0, 0);
 bool isDown = false;
 HWND mainWindow;
 
@@ -55,7 +72,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    // TODO: Place code here.
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -68,9 +84,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
+    RegisterModeBox();
+    RegisterWidthBox();
+    RegisterColorBox();
+
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_SEVENTH));
 
     MSG msg;
+
 
     // Main message loop:
     while (GetMessage(&msg, nullptr, 0, 0))
@@ -158,6 +179,104 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_COMMAND:
         {
+            if (HIWORD(wParam) == CBN_SELCHANGE)
+            {
+                int elem = LOWORD(wParam);
+                int id;
+                switch (elem)
+                {
+                case ComboBox1:
+                    id = SendMessage(hWndComboBox1, (UINT)CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
+                    switch (id)
+                    {
+                    case 0:
+                        mode = Modes::Pen;
+                        break;
+                    case 1:
+                        mode = Modes::Line;
+                        break;
+                    case 2:
+                        mode = Modes::Rectangle;
+                        break;
+                    case 3:
+                        mode = Modes::FillRectangle;
+                        break;
+                    case 4:
+                        mode = Modes::Ellipse;
+                        break;
+                    case 5:
+                        mode = Modes::FillEllipse;
+                        break;
+                    case 6:
+                        mode = Modes::Fill;
+                        break;
+                    case 7:
+                        mode = Modes::Eraser;
+                        break;
+                    case 8:
+                        mode = Modes::Gradient;
+                        break;
+                    }
+                case ComboBox2:
+                    id = SendMessage(hWndComboBox2, (UINT)CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
+                    switch (id)
+                    {
+                    case 0:
+                        width = 1;
+                        break;
+                    case 1:
+                        width = 2;
+                        break;
+                    case 2:
+                        width = 3;
+                        break;
+                    case 3:
+                        width = 5;
+                        break;
+                    case 4:
+                        width = 10;
+                        break;
+                    case 5:
+                        width = 25;
+                        break;
+                    case 6:
+                        width = 50;
+                        break;
+                    }
+                case ComboBox3:
+                    id = SendMessage(hWndComboBox3, (UINT)CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
+                    switch(id)
+                    {
+                    case 0:
+                        curColor = RGB(0, 0, 0);
+                        break;
+                    case 1:
+                        curColor = RGB(255, 0, 0);
+                        break;
+                    case 2:
+                        curColor = RGB(0, 255, 0);
+                        break;
+                    case 3:
+                        curColor = RGB(0, 0, 255);
+                        break;
+                    case 4:
+                        curColor = RGB(255, 255, 0);
+                        break;
+                    case 5:
+                        curColor = RGB(127, 127, 127);
+                        break;
+                    case 6:
+                        curColor = RGB(255, 127, 0);
+                        break;
+                    case 7:
+                        curColor = RGB(255, 0, 255);
+                        break;
+                    case 8:
+                        curColor = RGB(127, 0, 255);
+                        break;
+                    }
+                }
+            }
             int wmId = LOWORD(wParam);
             // Parse the menu selections:
             switch (wmId)
@@ -177,8 +296,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
+            
             EndPaint(hWnd, &ps);
+        }
+        break;
+    case WM_SIZE:
+        {
+            Repaint();
         }
         break;
     case WM_DESTROY:
@@ -221,55 +345,85 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 void OnMouseDown(int x, int y) 
 {
+    if (x >= GetWindowSizeX(mainWindow) - 200) 
+    {
+        return;
+    }
     isDown = true;
     lastX = x;
     lastY = y;
     if(mode == Modes::Pen)
     {
-        DrawLine(x, y, x, y, width, color);
+        DrawLine(x, y, x, y, width, curColor);
     }
-    if (mode == Modes::Fill)
+    else if (mode == Modes::Eraser) 
     {
-        Fill(x, y, color);
+        DrawLine(x, y, x, y, width, RGB(255, 255, 255));
     }
+    else if (mode == Modes::Fill)
+    {
+        Fill(x, y, curColor);
+    }
+    else if (mode == Modes::Gradient) {
+        Gradient(x, y);
+    }
+    Repaint();
 }
 
 void OnMouseUp(int x, int y)
 {
+    if (x >= GetWindowSizeX(mainWindow) - 200)
+    {
+        isDown = false;
+        return;
+    }
     if (isDown) 
     {
         if (mode == Modes::Rectangle)
         {
-            DrawRectangle(lastX, lastY, x, y, width, color);
+            DrawRectangle(lastX, lastY, x, y, width, curColor);
         }
         else if (mode == Modes::FillRectangle) 
         {
-            FillRectangle(lastX, lastY, x, y, width, color);
+            FillRectangle(lastX, lastY, x, y, curColor);
         }
         else if (mode == Modes::Ellipse) 
         {
-            DrawEllipse(lastX, lastY, x, y, width, color);
+            DrawEllipse(lastX, lastY, x, y, width, curColor);
         }
         else if (mode == Modes::FillEllipse)
         {
-            FillEllipse(lastX, lastY, x, y, width, color);
+            FillEllipse(lastX, lastY, x, y, width, curColor);
         }
         else if (mode == Modes::Line)
         {
-            DrawLine(lastX, lastY, x, y, width, color);
+            DrawLine(lastX, lastY, x, y, width, curColor);
         }
     }
-    
     isDown = false;
+    Repaint();
 }
 
 void OnMouseMove(int x, int y) 
 {
+    if (x >= GetWindowSizeX(mainWindow) - 200)
+    {
+        return;
+    }
     if(mode == Modes::Pen)
     {
         if(isDown)
         {
-            DrawLine(lastX, lastY, x, y, width, color);
+            DrawLine(lastX, lastY, x, y, width, curColor);
+            lastX = x;
+            lastY = y;
+        }
+    }
+    else if (mode == Modes::Eraser) 
+    {
+        if (isDown)
+        {
+            DrawLine(lastX, lastY, x, y, width, RGB(255, 255, 255));
             lastX = x;
             lastY = y;
         }
@@ -300,10 +454,10 @@ void DrawRectangle(int x1, int y1, int x2, int y2, int width, COLORREF color)
     ReleaseDC(mainWindow, hdc);
 }
 
-void FillRectangle(int x1, int y1, int x2, int y2, int width, COLORREF color)
+void FillRectangle(int x1, int y1, int x2, int y2, COLORREF color)
 {
     HDC hdc = GetDC(mainWindow);
-    HPEN pen = CreatePen(PS_SOLID, width, color);
+    HPEN pen = CreatePen(PS_SOLID, 1, color);
     HBRUSH brush = CreateSolidBrush(color);
 
     SelectObject(hdc, pen);
@@ -349,8 +503,94 @@ void Fill(int x, int y, COLORREF color)
     HBRUSH brush = CreateSolidBrush(color);
 
     SelectObject(hdc, brush);
-    FloodFill(hdc, x, y, color);
+    ExtFloodFill(hdc, x, y, GetPixel(hdc, x, y), FLOODFILLSURFACE);
 
     DeleteObject(brush);
     ReleaseDC(mainWindow, hdc);
+}
+
+void Gradient(int x, int y) 
+{
+
+}
+
+int GetWindowSizeX(HWND window)
+{
+    RECT* windowRect = new RECT;
+    GetWindowRect(window, windowRect);
+    return windowRect->right - windowRect->left;
+}
+
+void RegisterModeBox() 
+{
+    int sizeX = GetWindowSizeX(mainWindow);
+    hWndComboBox1 = CreateWindow(L"COMBOBOX", NULL, WS_VISIBLE | WS_CHILD | CBS_DROPDOWN, sizeX - 200 + 5, 20, 180, 500, mainWindow, (HMENU)ComboBox1,
+        (HINSTANCE)GetWindowLong(mainWindow, GWL_HINSTANCE), NULL);
+
+    SendMessage(hWndComboBox1, CB_ADDSTRING, 0, (LPARAM)L"Pen");
+    SendMessage(hWndComboBox1, CB_ADDSTRING, 0, (LPARAM)L"Line");
+    SendMessage(hWndComboBox1, CB_ADDSTRING, 0, (LPARAM)L"Rectangle");
+    SendMessage(hWndComboBox1, CB_ADDSTRING, 0, (LPARAM)L"Fill rectangle");
+    SendMessage(hWndComboBox1, CB_ADDSTRING, 0, (LPARAM)L"Ellipse");
+    SendMessage(hWndComboBox1, CB_ADDSTRING, 0, (LPARAM)L"Fill ellipse");
+    SendMessage(hWndComboBox1, CB_ADDSTRING, 0, (LPARAM)L"Fill");
+    SendMessage(hWndComboBox1, CB_ADDSTRING, 0, (LPARAM)L"Eraser"); 
+    SendMessage(hWndComboBox1, CB_ADDSTRING, 0, (LPARAM)L"Gradient");
+
+    SendMessage(hWndComboBox1, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
+}
+
+void RegisterWidthBox()
+{
+    int sizeX = GetWindowSizeX(mainWindow);
+    hWndComboBox2 = CreateWindow(L"COMBOBOX", NULL, WS_VISIBLE | WS_CHILD | CBS_DROPDOWN, sizeX - 200 + 5, 60, 180, 500, mainWindow, (HMENU)ComboBox1,
+        (HINSTANCE)GetWindowLong(mainWindow, GWL_HINSTANCE), NULL);
+
+    SendMessage(hWndComboBox2, CB_ADDSTRING, 0, (LPARAM)L"1");
+    SendMessage(hWndComboBox2, CB_ADDSTRING, 0, (LPARAM)L"2");
+    SendMessage(hWndComboBox2, CB_ADDSTRING, 0, (LPARAM)L"3");
+    SendMessage(hWndComboBox2, CB_ADDSTRING, 0, (LPARAM)L"5");
+    SendMessage(hWndComboBox2, CB_ADDSTRING, 0, (LPARAM)L"10");
+    SendMessage(hWndComboBox2, CB_ADDSTRING, 0, (LPARAM)L"25");
+    SendMessage(hWndComboBox2, CB_ADDSTRING, 0, (LPARAM)L"50");
+
+    SendMessage(hWndComboBox2, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
+}
+
+void RegisterColorBox()
+{
+    int sizeX = GetWindowSizeX(mainWindow);
+    hWndComboBox3 = CreateWindow(L"COMBOBOX", NULL, WS_VISIBLE | WS_CHILD | CBS_DROPDOWN, sizeX - 200 + 5, 100, 180, 500, mainWindow, (HMENU)ComboBox1,
+        (HINSTANCE)GetWindowLong(mainWindow, GWL_HINSTANCE), NULL);
+
+    SendMessage(hWndComboBox3, CB_ADDSTRING, 0, (LPARAM)L"Black");
+    SendMessage(hWndComboBox3, CB_ADDSTRING, 0, (LPARAM)L"Red");
+    SendMessage(hWndComboBox3, CB_ADDSTRING, 0, (LPARAM)L"Green");
+    SendMessage(hWndComboBox3, CB_ADDSTRING, 0, (LPARAM)L"Blue");
+    SendMessage(hWndComboBox3, CB_ADDSTRING, 0, (LPARAM)L"Yellow");
+    SendMessage(hWndComboBox3, CB_ADDSTRING, 0, (LPARAM)L"Gray");
+    SendMessage(hWndComboBox3, CB_ADDSTRING, 0, (LPARAM)L"Orange");
+    SendMessage(hWndComboBox3, CB_ADDSTRING, 0, (LPARAM)L"Pink");
+    SendMessage(hWndComboBox3, CB_ADDSTRING, 0, (LPARAM)L"Violet");
+
+    SendMessage(hWndComboBox3, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
+}
+
+void Repaint() 
+{
+    RECT* window = new RECT;
+    GetWindowRect(mainWindow, window);
+    window->bottom -= window->top;
+    window->right -= window->left;
+    window->top = 0;
+    window->left = 0;
+    int x1 = window->right - 200;
+    /*int y1 = 0;
+    int x2 = window->right;
+    int y2 = window->bottom;
+    FillRectangle(x1, y1, x2, y2, RGB(255, 221, 105));*/
+
+    MoveWindow(hWndComboBox1, x1 + 5, 20, 180, 300, false);
+    MoveWindow(hWndComboBox2, x1 + 5, 60, 180, 300, false);
+    MoveWindow(hWndComboBox3, x1 + 5, 100, 180, 300, false);
 }
