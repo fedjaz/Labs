@@ -6,11 +6,16 @@ using namespace std;
 #include "Seventh.h"
 #include <algorithm>
 #include <vector>
+#include <queue>
+
 
 #define MAX_LOADSTRING 100
 #define ComboBox1 10001
 #define ComboBox2 10002
 #define ComboBox3 10003
+
+bool used[3000][3000];
+bool isAdded[3000][3000];
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -33,6 +38,7 @@ void FillEllipse(int x1, int y1, int x2, int y2, int width, COLORREF color);
 void Fill(int x, int y, COLORREF color);
 void Gradient(int x, int y);
 int GetWindowSizeX(HWND window);
+int GetWindowSizeY(HWND window);
 void RegisterModeBox();
 void RegisterWidthBox();
 void RegisterColorBox();
@@ -511,7 +517,67 @@ void Fill(int x, int y, COLORREF color)
 
 void Gradient(int x, int y) 
 {
-
+	memset(used, 0, sizeof(bool) * 3000 * 3000);
+	memset(isAdded, 0, sizeof(bool) * 3000 * 3000);
+	HDC hdc = GetDC(mainWindow);
+	queue<pair<int, int> > q;
+	vector<pair<int, int> > v;
+	q.push(make_pair(x, y));
+	while (!q.empty()) {
+		v.push_back(q.front());
+		x = q.front().first;
+		y = q.front().second;
+		used[x][y] = 1;
+		COLORREF color = GetPixel(hdc, x, y);
+		
+		COLORREF negative = RGB(255 - GetRValue(color), 255 - GetGValue(color), 255 - GetBValue(color));
+		if (x - 1 > 0 && !used[x-1][y] && !isAdded[x-1][y]) {
+			COLORREF subcolor = GetPixel(hdc, x - 1, y);
+			if (color == subcolor) {
+				q.push(make_pair(x - 1, y));
+				isAdded[x - 1][y] = true;
+			}
+		}
+		if (x + 1 < GetWindowSizeX(mainWindow) && !used[x + 1][y] && !isAdded[x + 1][y]) {
+			COLORREF subcolor = GetPixel(hdc, x + 1, y);
+			if (color == subcolor) {
+				q.push(make_pair(x + 1, y));
+				isAdded[x + 1][y] = true;
+			}
+		}
+		if (y - 1 > 0 && !used[x][y - 1] && !isAdded[x][y - 1]) {
+			COLORREF subcolor = GetPixel(hdc, x, y - 1);
+			if (color == subcolor) {
+				q.push(make_pair(x, y - 1));
+				isAdded[x][y - 1] = true;
+			}
+		}
+		if (y + 1 < GetWindowSizeY(mainWindow) && !used[x][y + 1] && !isAdded[x][y + 1]) {
+			COLORREF subcolor = GetPixel(hdc, x, y + 1);
+			if (color == subcolor) {
+				q.push(make_pair(x, y + 1));
+				isAdded[x][y + 1] = true;
+			}
+		}
+		SetPixel(hdc, x, y, negative);
+		q.pop();
+	}
+	sort(v.begin(), v.end());
+	int minX = v[0].first;
+	for (int i = 0; i < v.size(); i++) {
+		x = v[i].first;
+		y = v[i].second;
+		if ((x - minX) % 64 < 32) {
+			int green = 8 * ((x - minX) % 64);
+			int blue = 255 - green;
+			SetPixel(hdc, x, y, RGB(0, green, blue));
+		}
+		else {
+			int blue = 8 * (((x - minX) % 64) - 32);
+			int green = 255 - blue;
+			SetPixel(hdc, x, y, RGB(0, green, blue));
+		}
+	}
 }
 
 int GetWindowSizeX(HWND window)
@@ -521,11 +587,18 @@ int GetWindowSizeX(HWND window)
     return windowRect->right - windowRect->left;
 }
 
+int GetWindowSizeY(HWND window)
+{
+	RECT* windowRect = new RECT;
+	GetWindowRect(window, windowRect);
+	return windowRect->bottom - windowRect->top;
+}
+
 void RegisterModeBox() 
 {
     int sizeX = GetWindowSizeX(mainWindow);
     hWndComboBox1 = CreateWindow(L"COMBOBOX", NULL, WS_VISIBLE | WS_CHILD | CBS_DROPDOWN, sizeX - 200 + 5, 20, 180, 500, mainWindow, (HMENU)ComboBox1,
-        (HINSTANCE)GetWindowLong(mainWindow, GWL_HINSTANCE), NULL);
+        (HINSTANCE)GetWindowLong(mainWindow, NULL), NULL);
 
     SendMessage(hWndComboBox1, CB_ADDSTRING, 0, (LPARAM)L"Pen");
     SendMessage(hWndComboBox1, CB_ADDSTRING, 0, (LPARAM)L"Line");
@@ -544,7 +617,7 @@ void RegisterWidthBox()
 {
     int sizeX = GetWindowSizeX(mainWindow);
     hWndComboBox2 = CreateWindow(L"COMBOBOX", NULL, WS_VISIBLE | WS_CHILD | CBS_DROPDOWN, sizeX - 200 + 5, 60, 180, 500, mainWindow, (HMENU)ComboBox1,
-        (HINSTANCE)GetWindowLong(mainWindow, GWL_HINSTANCE), NULL);
+        (HINSTANCE)GetWindowLong(mainWindow, NULL), NULL);
 
     SendMessage(hWndComboBox2, CB_ADDSTRING, 0, (LPARAM)L"1");
     SendMessage(hWndComboBox2, CB_ADDSTRING, 0, (LPARAM)L"2");
@@ -561,7 +634,7 @@ void RegisterColorBox()
 {
     int sizeX = GetWindowSizeX(mainWindow);
     hWndComboBox3 = CreateWindow(L"COMBOBOX", NULL, WS_VISIBLE | WS_CHILD | CBS_DROPDOWN, sizeX - 200 + 5, 100, 180, 500, mainWindow, (HMENU)ComboBox1,
-        (HINSTANCE)GetWindowLong(mainWindow, GWL_HINSTANCE), NULL);
+        (HINSTANCE)GetWindowLong(mainWindow, NULL), NULL);
 
     SendMessage(hWndComboBox3, CB_ADDSTRING, 0, (LPARAM)L"Black");
     SendMessage(hWndComboBox3, CB_ADDSTRING, 0, (LPARAM)L"Red");
