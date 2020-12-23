@@ -13,6 +13,7 @@ using namespace std;
 #define ComboBox1 10001
 #define ComboBox2 10002
 #define ComboBox3 10003
+#define Button1 10004
 
 bool used[3000][3000];
 bool isAdded[3000][3000];
@@ -42,6 +43,7 @@ int GetWindowSizeY(HWND window);
 void RegisterModeBox();
 void RegisterWidthBox();
 void RegisterColorBox();
+void RegisterButton();
 void Repaint();
 
 int lastX, lastY;
@@ -49,6 +51,7 @@ int lastX, lastY;
 HWND hWndComboBox1;
 HWND hWndComboBox2;
 HWND hWndComboBox3;
+HWND hwndButton1;
 bool movedObject = false;
 
 enum class Modes
@@ -93,6 +96,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     RegisterModeBox();
     RegisterWidthBox();
     RegisterColorBox();
+    RegisterButton();
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_SEVENTH));
 
@@ -282,6 +286,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         break;
                     }
                 }
+            }
+            else if (LOWORD(wParam) == Button1) 
+            {
+                FillRectangle(0, 0, GetWindowSizeX(mainWindow) - 200, GetWindowSizeY(mainWindow), RGB(255, 255, 255));
             }
             int wmId = LOWORD(wParam);
             // Parse the menu selections:
@@ -568,14 +576,14 @@ void Gradient(int x, int y)
 		x = v[i].first;
 		y = v[i].second;
 		if ((x - minX) % 64 < 32) {
-			int green = 8 * ((x - minX) % 64);
-			int blue = 255 - green;
-			SetPixel(hdc, x, y, RGB(0, green, blue));
+			int red = 8 * ((x - minX) % 64);
+			int blue = 255 - red;
+			SetPixel(hdc, x, y, RGB(red, 0, blue));
 		}
 		else {
 			int blue = 8 * (((x - minX) % 64) - 32);
-			int green = 255 - blue;
-			SetPixel(hdc, x, y, RGB(0, green, blue));
+			int red = 255 - blue;
+			SetPixel(hdc, x, y, RGB(red, 0, blue));
 		}
 	}
 }
@@ -649,6 +657,13 @@ void RegisterColorBox()
     SendMessage(hWndComboBox3, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
 }
 
+void RegisterButton()
+{
+    int sizeX = GetWindowSizeX(mainWindow);
+    hwndButton1 = CreateWindow(L"BUTTON", L"Clear", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        sizeX - 200 + 5, 140, 180, 20, mainWindow, (HMENU)Button1, (HINSTANCE)GetWindowLongPtr(mainWindow, GWLP_HINSTANCE), NULL);
+}
+
 void Repaint() 
 {
     RECT* window = new RECT;
@@ -666,4 +681,5 @@ void Repaint()
     MoveWindow(hWndComboBox1, x1 + 5, 20, 180, 300, false);
     MoveWindow(hWndComboBox2, x1 + 5, 60, 180, 300, false);
     MoveWindow(hWndComboBox3, x1 + 5, 100, 180, 300, false);
+    MoveWindow(hwndButton1, x1 + 5, 140, 180, 20, false);
 }
