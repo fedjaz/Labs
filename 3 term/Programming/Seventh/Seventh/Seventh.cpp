@@ -14,6 +14,7 @@ using namespace std;
 #define ComboBox2 10002
 #define ComboBox3 10003
 #define Button1 10004
+#define ButtonRed 10005
 
 bool used[3000][3000];
 bool isAdded[3000][3000];
@@ -52,6 +53,7 @@ HWND hWndComboBox1;
 HWND hWndComboBox2;
 HWND hWndComboBox3;
 HWND hwndButton1;
+HWND hwndButtonRed;
 bool movedObject = false;
 
 enum class Modes
@@ -187,6 +189,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+    case WM_DRAWITEM:
+        {
+
+        break;
+        } 
     case WM_COMMAND:
         {
             if (HIWORD(wParam) == CBN_SELCHANGE)
@@ -310,7 +317,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            
             EndPaint(hWnd, &ps);
         }
         break;
@@ -530,6 +536,7 @@ void Gradient(int x, int y)
 	HDC hdc = GetDC(mainWindow);
 	queue<pair<int, int> > q;
 	vector<pair<int, int> > v;
+    int startX = x, startY = y;
 	q.push(make_pair(x, y));
 	while (!q.empty()) {
 		v.push_back(q.front());
@@ -546,7 +553,7 @@ void Gradient(int x, int y)
 				isAdded[x - 1][y] = true;
 			}
 		}
-		if (x + 1 < GetWindowSizeX(mainWindow) && !used[x + 1][y] && !isAdded[x + 1][y]) {
+		if (x + 1 < GetWindowSizeX(mainWindow) - 200 && !used[x + 1][y] && !isAdded[x + 1][y]) {
 			COLORREF subcolor = GetPixel(hdc, x + 1, y);
 			if (color == subcolor) {
 				q.push(make_pair(x + 1, y));
@@ -567,24 +574,20 @@ void Gradient(int x, int y)
 				isAdded[x][y + 1] = true;
 			}
 		}
-		SetPixel(hdc, x, y, negative);
+        int x1 = startX - x;
+        int y1 = startY - y;
+        int rad = round(sqrt(x1 * x1 + y1 * y1));
+        if (rad % 64 < 32) {
+            int red = 8 * (rad % 64);
+            int blue = 255 - red;
+            SetPixel(hdc, x, y, RGB(red, 0, blue));
+        }
+        else {
+            int blue = 8 * ((rad % 64) - 32);
+            int red = 255 - blue;
+            SetPixel(hdc, x, y, RGB(red, 0, blue));
+        }
 		q.pop();
-	}
-	sort(v.begin(), v.end());
-	int minX = v[0].first;
-	for (int i = 0; i < v.size(); i++) {
-		x = v[i].first;
-		y = v[i].second;
-		if ((x - minX) % 64 < 32) {
-			int red = 8 * ((x - minX) % 64);
-			int blue = 255 - red;
-			SetPixel(hdc, x, y, RGB(red, 0, blue));
-		}
-		else {
-			int blue = 8 * (((x - minX) % 64) - 32);
-			int red = 255 - blue;
-			SetPixel(hdc, x, y, RGB(red, 0, blue));
-		}
 	}
 }
 
@@ -662,6 +665,7 @@ void RegisterButton()
     int sizeX = GetWindowSizeX(mainWindow);
     hwndButton1 = CreateWindow(L"BUTTON", L"Clear", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         sizeX - 200 + 5, 140, 180, 20, mainWindow, (HMENU)Button1, (HINSTANCE)GetWindowLongPtr(mainWindow, GWLP_HINSTANCE), NULL);
+
 }
 
 void Repaint() 
@@ -673,13 +677,11 @@ void Repaint()
     window->top = 0;
     window->left = 0;
     int x1 = window->right - 200;
-    /*int y1 = 0;
-    int x2 = window->right;
-    int y2 = window->bottom;
-    FillRectangle(x1, y1, x2, y2, RGB(255, 221, 105));*/
+
 
     MoveWindow(hWndComboBox1, x1 + 5, 20, 180, 300, false);
     MoveWindow(hWndComboBox2, x1 + 5, 60, 180, 300, false);
     MoveWindow(hWndComboBox3, x1 + 5, 100, 180, 300, false);
     MoveWindow(hwndButton1, x1 + 5, 140, 180, 20, false);
+
 }
