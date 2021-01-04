@@ -16,6 +16,8 @@ using namespace std;
 #define Button1 10004
 #define ButtonRed 10005
 
+int savedDC;
+
 bool used[3000][3000];
 bool isAdded[3000][3000];
 
@@ -535,17 +537,14 @@ void Gradient(int x, int y)
 	memset(isAdded, 0, sizeof(bool) * 3000 * 3000);
 	HDC hdc = GetDC(mainWindow);
 	queue<pair<int, int> > q;
-	vector<pair<int, int> > v;
     int startX = x, startY = y;
 	q.push(make_pair(x, y));
 	while (!q.empty()) {
-		v.push_back(q.front());
 		x = q.front().first;
 		y = q.front().second;
 		used[x][y] = 1;
 		COLORREF color = GetPixel(hdc, x, y);
 		
-		COLORREF negative = RGB(255 - GetRValue(color), 255 - GetGValue(color), 255 - GetBValue(color));
 		if (x - 1 > 0 && !used[x-1][y] && !isAdded[x-1][y]) {
 			COLORREF subcolor = GetPixel(hdc, x - 1, y);
 			if (color == subcolor) {
@@ -588,6 +587,7 @@ void Gradient(int x, int y)
             SetPixel(hdc, x, y, RGB(red, 0, blue));
         }
 		q.pop();
+        
 	}
 }
 
