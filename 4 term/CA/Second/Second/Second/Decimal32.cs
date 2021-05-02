@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,7 +33,7 @@ namespace Second
                 return;
             }
 
-            int intPart = (int)number;
+            BigInteger intPart = (BigInteger)number;
             List<byte> m = ToBinaryList(intPart);
             int len = m.Count;
             int exp = 0;
@@ -56,6 +57,10 @@ namespace Second
             exponent = ToBinary(exp, 8);
             for(int i = m.Count - 2; i >= 0; i--)
             {
+                if(22 - (m.Count - i - 2) < 0)
+                {
+                    break;
+                }
                 mantissa[22 - (m.Count - i - 2)] = m[i];
             }
         }
@@ -76,19 +81,28 @@ namespace Second
                 ans += mantissa[i] * (1f / (1 <<  (23 - i)));
             }
             ans += 1;
-            sbyte exp = (sbyte)BitsToInt(exponent);
-            if(exp == 0)
+            byte exp = (byte)BitsToInt(exponent);
+            if(exp == 127)
             {
                 return 0;
             }
-            exp -= 127;
-            if(exp > 0)
+            if(exp > 127)
             {
-                ans *= (1 << exp);
+                float f = 1;
+                for(int i = 0; i < exp - 127; i++)
+                {
+                    f *= 2;
+                }
+                ans *= f;
             }
             else
             {
-                ans *= 1f / (1 << Math.Abs(exp));
+                float f = 1;
+                for(int i = 0; i < Math.Abs((sbyte)exp - 127); i++)
+                {
+                    f /= 2;
+                }
+                ans *= f;
             }
             ans *= sign == 1 ? -1 : 1;
             return ans;
@@ -136,6 +150,7 @@ namespace Second
                 Console.WriteLine($"The resulting mantissa is {BitsToString(newMantissa)}");
             }
             int shift = 0;
+            int onesCount1 = newMantissa.Where((x) => x == 1).Count();
             for(int i = 47; i >= 0; i--)
             {
                 shift++;
@@ -147,17 +162,30 @@ namespace Second
             }
 
             newMantissa = ShiftLeft(newMantissa, shift);
+            
             if(a.Interactive)
             {
                 Console.WriteLine($"Normalized mantissa is {BitsToString(newMantissa)}");
             }
             byte[] newMantissa1 = new byte[23];
             Array.Copy(newMantissa, 25, newMantissa1, 0, 23);
-
+            int onesCount2 = newMantissa.Where((x) => x == 1).Count();
             if(a.Interactive)
             {
+                if(onesCount1 != onesCount2)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Precision lost!");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
                 Console.WriteLine($"Result:");
                 Console.WriteLine($"{sign} {BitsToString(ToBinary(exp + 127 + 2 - shift, 8))} {BitsToString(newMantissa1)}");
+            }
+            if(a.Interactive && exp + 127 + 2 - shift > 255)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Overflow!");
+                Console.ForegroundColor = ConsoleColor.White;
             }
             return new Decimal32(sign, ToBinary(exp + 127 + 2 - shift, 8), newMantissa1, a.Interactive);
         }
@@ -218,7 +246,14 @@ namespace Second
             {
                 Console.WriteLine($"Result:");
                 Console.WriteLine($"{sign} {BitsToString(ToBinary(exp + 127 + 25 - shift, 8))} {BitsToString(newMantissa1)}");
+                if(exp + 127 + 25 - shift > 255)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Overflow!");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
             }
+            
             return new Decimal32(sign, ToBinary(exp + 127 + 25 - shift, 8), newMantissa1, a.Interactive);
         }
 
@@ -237,7 +272,7 @@ namespace Second
             }
             if(a.Interactive)
             {
-                Console.WriteLine($"{a.ToFloat()} + {b.ToFloat()}:");
+                Console.WriteLine($"{(double)a.ToFloat()} + {(double)b.ToFloat()}:");
             }
             int expA = BitsToInt(a.exponent), expB = BitsToInt(b.exponent);
             if(expA < expB)
@@ -270,7 +305,15 @@ namespace Second
                 Console.WriteLine($"Exponents differs by {delta}, shifting b mantissa right by {delta} bits");
 
             }
+            int onesCount1 = mantissaB.Where((x) => x == 1).Count();
             mantissaB = ShiftRight(mantissaB, delta);
+            int onesCount2 = mantissaB.Where((x) => x == 1).Count();
+            if(a.Interactive && onesCount1 > onesCount2)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Precision lost!");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
             if(a.Interactive)
             {
                 Console.WriteLine($"{a.sign} {BitsToString(a.exponent)} {BitsToString(mantissaA)}");
@@ -283,6 +326,10 @@ namespace Second
             {
                 expA++;
                 newMantissa = ShiftRight(newMantissa, 1);
+            }
+            if(a.Interactive && expA > 255)
+            {
+                Console.WriteLine("Overflow!");
             }
             if(a.Interactive)
             {
@@ -366,7 +413,15 @@ namespace Second
                 Console.WriteLine($"Exponents differs by {delta}, shifting b mantissa right by {delta} bits");
             }
 
+            int onesCount1 = mantissaB.Where((x) => x == 1).Count();
             mantissaB = ShiftRight(mantissaB, delta);
+            int onesCount2 = mantissaB.Where((x) => x == 1).Count();
+            if(a.Interactive && onesCount1 > onesCount2)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Precision lost!");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
             if(a.Interactive)
             {
                 Console.WriteLine($"{a.sign} {BitsToString(a.exponent)} {BitsToString(mantissaA)}");
@@ -668,7 +723,23 @@ namespace Second
             return res;
         }
 
-        static List<byte> ToBinaryList(int number)
+        static List<byte> ToBinaryList(ulong number)
+        {
+            List<byte> ans = new List<byte>();
+            if(number == 0)
+            {
+                ans.Add(0);
+                return ans;
+            }
+            while(number != 0)
+            {
+                ans.Add((byte)(number % 2));
+                number /= 2;
+            }
+            return ans;
+        }
+
+        static List<byte> ToBinaryList(BigInteger number)
         {
             List<byte> ans = new List<byte>();
             if(number == 0)

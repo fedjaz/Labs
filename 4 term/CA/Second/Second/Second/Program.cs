@@ -10,9 +10,12 @@ namespace Second
     {
         static void Main(string[] args)
         {
-            Decimal32 a = new Decimal32(-1f, true);
-            Decimal32 b = new Decimal32(-3f, true);
-            Console.WriteLine($"{(a / b).ToFloat():0.####}");
+            Decimal32 a = new Decimal32(100, true);
+
+            Decimal32 b = new Decimal32(0.01f, true);
+            Decimal32 res = (a * b);
+            double f = res.ToFloat();
+            Console.WriteLine(f);
         }
     }
 }
