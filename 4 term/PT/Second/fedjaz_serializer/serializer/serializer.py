@@ -38,14 +38,13 @@ class Serializer:
         object_type = type(obj)
         if object_type == list:
             ans["type"] = "list"
-            ans["value"] = [Serializer.serialize(i) for i in obj]
+            ans["value"] = tuple([Serializer.serialize(i) for i in obj])
         elif object_type == dict:
             ans["type"] = "dict"
             ans["value"] = {}
 
             for i in obj:
                 key = Serializer.serialize(i)
-                #key = tuple((k, key[k]) for k in key)
                 value = Serializer.serialize(obj[i])
                 ans["value"][key] = value
             ans["value"] = tuple((k, ans["value"][k]) for k in ans["value"])
@@ -65,12 +64,10 @@ class Serializer:
             members = [i for i in members if i[0] in Serializer.FUNCTION_ATTRIBUTES]
             for i in members:
                 key = Serializer.serialize(i[0])
-                #key = tuple((k, key[k]) for k in key)
                 value = Serializer.serialize(i[1])
                 ans["value"][key] = value
                 if i[0] == "__code__":
                     key = Serializer.serialize("__globals__")
-                    #key = tuple((k, key[k]) for k in key)
                     ans["value"][key] = {}
                     names = i[1].__getattribute__("co_names")
                     glob = obj.__getattribute__("__globals__")
@@ -81,7 +78,6 @@ class Serializer:
                         elif name in glob and not inspect.ismodule(name) and name not in __builtins__:
                             globdict[name] = glob[name]
                     ans["value"][key] = Serializer.serialize(globdict)
-                    #ans["value"][key] = tuple((k, ans["value"][key][k]) for k in ans["value"][key])
             ans["value"] = tuple((k, ans["value"][k]) for k in ans["value"])
 
         elif isinstance(obj, (int, float, complex, bool, str)):
