@@ -1,36 +1,13 @@
 import inspect
 import re
+from fedjaz_serializer.serializer.stuff import CODE_OBJECT_ARGS, FUNCTION_ATTRIBUTES
 from pydoc import locate
 from types import CodeType, FunctionType
 
 
 class Serializer:
 
-    FUNCTION_ATTRIBUTES = [
-        "__code__",
-        "__name__",
-        "__defaults__",
-        "__closure__"
-    ]
 
-    CODE_OBJECT_ARGS = (
-        'co_argcount',
-        'co_posonlyargcount',
-        'co_kwonlyargcount',
-        'co_nlocals',
-        'co_stacksize',
-        'co_flags',
-        'co_code',
-        'co_consts',
-        'co_names',
-        'co_varnames',
-        'co_filename',
-        'co_name',
-        'co_firstlineno',
-        'co_lnotab',
-        'co_freevars',
-        'co_cellvars'
-    )
 
     @staticmethod
     def serialize(obj):
@@ -53,7 +30,7 @@ class Serializer:
             ans["value"] = tuple([Serializer.serialize(i) for i in obj])
         elif object_type == bytes:
             ans["type"] = "bytes"
-            ans["value"] = [Serializer.serialize(i) for i in obj]
+            ans["value"] = tuple([Serializer.serialize(i) for i in obj])
         elif obj is None:
             ans["type"] = "NoneType"
             ans["value"] = None
@@ -61,7 +38,7 @@ class Serializer:
             ans["type"] = "function"
             ans["value"] = {}
             members = inspect.getmembers(obj)
-            members = [i for i in members if i[0] in Serializer.FUNCTION_ATTRIBUTES]
+            members = [i for i in members if i[0] in FUNCTION_ATTRIBUTES]
             for i in members:
                 key = Serializer.serialize(i[0])
                 value = Serializer.serialize(i[1])
@@ -91,7 +68,6 @@ class Serializer:
             members = [i for i in members if not callable(i[1])]
             for i in members:
                 key = Serializer.serialize(i[0])
-                #key = tuple((k, key[k]) for k in key)
                 val = Serializer.serialize(i[1])
                 ans["value"][key] = val
             ans["value"] = tuple((k, ans["value"][k]) for k in ans["value"])
@@ -109,7 +85,6 @@ class Serializer:
         elif object_type == "dict":
             ans = {}
             for i in d["value"]:
-                #key = dict((a, b) for a, b in i)
                 val = Serializer.deserialize(i[1])
                 ans[Serializer.deserialize(i[0])] = val
         elif object_type == "tuple":
@@ -121,7 +96,7 @@ class Serializer:
             for i in d["value"]:
                 key = Serializer.deserialize(i[0])
                 if key != "__code__" and key != "__globals__":
-                    index = Serializer.FUNCTION_ATTRIBUTES.index(key)
+                    index = FUNCTION_ATTRIBUTES.index(key)
                     func[index] = (Serializer.deserialize(i[1]))
                 elif key == "__globals__":
                     globdict = Serializer.deserialize(i[1])
@@ -133,7 +108,7 @@ class Serializer:
                         codeArgKey = Serializer.deserialize(arg[0])
                         if codeArgKey != "__doc__":
                             codeArgVal = Serializer.deserialize(arg[1])
-                            index = Serializer.CODE_OBJECT_ARGS.index(codeArgKey)
+                            index = CODE_OBJECT_ARGS.index(codeArgKey)
                             code[index] = codeArgVal
 
                     code = CodeType(*code)
@@ -150,7 +125,12 @@ class Serializer:
         elif object_type == "bytes":
             ans = bytes([Serializer.deserialize(i) for i in d["value"]])
         else:
-            ans = locate(object_type)(d["value"])
+            if object_type != "bool":
+                ans = locate(object_type)(d["value"])
+            elif type(d["value"]) == bool:
+                ans = d["value"]
+            else:
+                ans = d["value"] == "True"
 
         return ans
 
