@@ -1,5 +1,5 @@
 from fedjaz_serializer.serializer.serializer import Serializer
-from fedjaz_serializer.parser.parsers.stuff import serialize_json, deserialize_json
+from fedjaz_serializer.parser.parsers.json.stuff import serialize_json, deserialize_json
 
 
 class JsonParser:
