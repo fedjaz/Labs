@@ -26,19 +26,35 @@ def deserialize_yaml(obj: str):
         parsed = []
         quote = False
         for i in splitted:
+            if i == '' or quote:
+                substr += f"\n{i}"
+                if i != '' and i[len(i) - 1] == '\"':
+                    quote = False
+                    parsed.append(deserialize_yaml(substr))
+                    substr = ""
+                continue
+            spacecount = len(i) - len(i.lstrip(' '))
             istr = i[2:]
-            spacecount = len(istr) - len(istr.lstrip(' '))
             if istr[0] == '\"':
+                if istr != "":
+                    parsed.append(deserialize_yaml(substr))
                 quote = True
+                substr = f"\n{istr}"
+                continue
 
-            if spacecount == 0:
+            if spacecount == 0 and not quote:
                 if substr == "":
-                    substr += istr
+                    substr = istr
                 else:
                     parsed.append(deserialize_yaml(substr))
+                    substr = istr
+            else:
+                substr += f"\n{istr}"
+        parsed.append(deserialize_yaml(substr))
+        return tuple(parsed)
 
 
     elif splitted[0] == "!!python/tuple []":
         return tuple()
     else:
-        return str(obj[2:])
+        return str(obj)

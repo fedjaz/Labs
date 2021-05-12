@@ -22,10 +22,14 @@ def f1(n1):
 
 
 def fact(n):
+    print(l)
     return f1(n)
 
 
 file = open("output.yml", "w")
-fileyy = open("outputyy.yml", "w")
-yaml.dump(s.serialize(fact), fileyy)
+#fileyy = open("outputyy.yml", "w")
+#yaml.dump(s.serialize(fact), fileyy)
 p.dump(fact, file)
+file = open("output.yml", "r")
+res = p.load(file)
+print(res(5))
