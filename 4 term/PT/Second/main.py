@@ -1,14 +1,9 @@
-from fedjaz_serializer.parser.parsers.json.json import JsonParser
-from fedjaz_serializer.parser.parsers.yaml.yaml import YamlParser
-from fedjaz_serializer.serializer.serializer import Serializer
-import yaml
+from fedjaz_serializer.parser.parsers.parserFactory import ParserFactory
 
-s = Serializer()
-p = YamlParser()
 
 
 d = {"a": "qwe", "b": 123, "c": 456.789}
-l = [1, "qwe", 3, 22.8, d, (1, 2, 3, d), False, None]
+l = [1, "qwe", 3, 22.8, d, (1, 2, 3, d), False]
 n = 228
 
 b = bytes([1, 1, 1, 1])
@@ -26,10 +21,9 @@ def fact(n):
     return f1(n)
 
 
-file = open("output.yml", "w")
-#fileyy = open("outputyy.yml", "w")
-#yaml.dump(s.serialize(fact), fileyy)
-p.dump(fact, file)
-file = open("output.yml", "r")
-res = p.load(file)
+parser = ParserFactory.createParser("YAML")
+file = open("output.txt", "w")
+parser.dump(fact, file)
+file = open("output.txt", "r")
+res = parser.load(file)
 print(res(5))
