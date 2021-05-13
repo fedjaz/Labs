@@ -1,19 +1,18 @@
-def serialize_json(obj) -> str:
+def serialize_toml(obj) -> str:
     if type(obj) == tuple:
-        serialized = []
+        ans = ""
         for i in obj:
-            serialized.append(f"{serialize_json(i)}")
-        ans = ", ".join(serialized)
-        return f"[{ans}]"
+            ans += f"{serialize_toml(i)}, "
+        return f"[ {ans[0:len(ans) - 1]}]"
     else:
-        return f"\"{str(obj)}\""
+        return f"\"{str(obj)}\"".replace("\n", "\\n")
 
 
-def deserialize_json(obj: str):
+def deserialize_toml(obj: str):
     if obj == '[]':
         return tuple()
     elif obj[0] == '[':
-        obj = obj[1:len(obj)-1]
+        obj = obj[1:len(obj) - 1]
         parsed = []
         depth = 0
         quote = False
@@ -26,7 +25,7 @@ def deserialize_json(obj: str):
             elif i == '\"':
                 quote = not quote
             elif i == ',' and not quote and depth == 0:
-                parsed.append(deserialize_json(substr))
+                parsed.append(deserialize_toml(substr))
                 substr = ""
                 continue
             elif i == ' ' and not quote:
@@ -34,7 +33,6 @@ def deserialize_json(obj: str):
 
             substr += i
 
-        parsed.append(deserialize_json(substr))
         return tuple(parsed)
     else:
-        return obj[1:len(obj)-1]
+        return obj[1:len(obj) - 1]

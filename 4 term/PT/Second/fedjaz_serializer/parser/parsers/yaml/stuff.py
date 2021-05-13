@@ -53,7 +53,6 @@ def deserialize_yaml(obj: str):
         parsed.append(deserialize_yaml(substr))
         return tuple(parsed)
 
-
     elif splitted[0] == "!!python/tuple []":
         return tuple()
     else:
