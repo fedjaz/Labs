@@ -1,0 +1,7 @@
+fedjaz_serializer
+fedjaz_serializer/parser
+fedjaz_serializer/parser/parsers
+fedjaz_serializer/parser/parsers/json
+fedjaz_serializer/parser/parsers/toml
+fedjaz_serializer/parser/parsers/yaml
+fedjaz_serializer/serializer
