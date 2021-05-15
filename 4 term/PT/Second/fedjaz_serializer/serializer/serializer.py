@@ -7,8 +7,6 @@ from types import CodeType, FunctionType
 
 class Serializer:
 
-
-
     @staticmethod
     def serialize(obj):
         ans = {}
