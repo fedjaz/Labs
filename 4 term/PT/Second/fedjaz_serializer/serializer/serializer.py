@@ -41,7 +41,10 @@ class Serializer:
             members = [i for i in members if i[0] in FUNCTION_ATTRIBUTES]
             for i in members:
                 key = Serializer.serialize(i[0])
-                value = Serializer.serialize(i[1])
+                if i[0] != "__closure__":
+                    value = Serializer.serialize(i[1])
+                else:
+                    value = Serializer.serialize(None)
                 ans["value"][key] = value
                 if i[0] == "__code__":
                     key = Serializer.serialize("__globals__")
@@ -95,14 +98,12 @@ class Serializer:
             glob = {"__builtins__": __builtins__}
             for i in d["value"]:
                 key = Serializer.deserialize(i[0])
-                if key != "__code__" and key != "__globals__":
-                    index = FUNCTION_ATTRIBUTES.index(key)
-                    func[index] = (Serializer.deserialize(i[1]))
-                elif key == "__globals__":
+
+                if key == "__globals__":
                     globdict = Serializer.deserialize(i[1])
                     for globkey in globdict:
                         glob[globkey] = globdict[globkey]
-                else:
+                elif key == "__code__":
                     val = i[1][1][1]
                     for arg in val:
                         codeArgKey = Serializer.deserialize(arg[0])
@@ -112,6 +113,9 @@ class Serializer:
                             code[index] = codeArgVal
 
                     code = CodeType(*code)
+                else:
+                    index = FUNCTION_ATTRIBUTES.index(key)
+                    func[index] = (Serializer.deserialize(i[1]))
 
             func[0] = code
             func.insert(1, glob)
@@ -125,12 +129,10 @@ class Serializer:
         elif object_type == "bytes":
             ans = bytes([Serializer.deserialize(i) for i in d["value"]])
         else:
-            if object_type != "bool":
-                ans = locate(object_type)(d["value"])
-            elif type(d["value"]) == bool:
-                ans = d["value"]
-            else:
+            if object_type == "bool":
                 ans = d["value"] == "True"
+            else:
+                ans = locate(object_type)(d["value"])
 
         return ans
 

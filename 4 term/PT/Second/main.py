@@ -1,9 +1,10 @@
 from fedjaz_serializer.parser.parsers.parserFactory import ParserFactory
 
 
+r = None
 
 d = {"a": "qwe", "b": 123, "c": 456.789}
-l = [1, "qwe", 3, 22.8, d, (1, 2, 3, d), False]
+l = [1, "qwe", 3, 22.8, d, (1, 2, 3, d), False, None]
 n = 228
 
 b = bytes([1, 1, 1, 1])
@@ -23,7 +24,7 @@ def fact(n):
 
 parser = ParserFactory.createParser("YAML")
 file = open("output.txt", "w")
-parser.dump(fact, file)
+parser.dump(f1, file)
 file = open("output.txt", "r")
 res = parser.load(file)
-print(res(5))
+print(res)
