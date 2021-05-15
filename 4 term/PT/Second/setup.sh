@@ -1,1 +1,1 @@
-source venv/bin/activate && python setup.py clean --all install clean --all
+python3 setup.py clean --all install clean --all

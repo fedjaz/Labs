@@ -13,5 +13,5 @@ setup(
     ],
     version="1.0.0",
     author="fedjaz",
-    scripts=["bin/fedjazserializer.py"]
+    scripts=["bin/fedjazserializer"]
 )
