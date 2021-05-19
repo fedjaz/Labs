@@ -26,17 +26,17 @@ class TestRunner:
         input_file.close()
         output_file.close()
 
-        # time_checker_thread = threading.Thread(target=self._time_checker,
-        #                                        args=(f"{self.solution_id}_{test_index}",))
-
-        container = self.client.containers.run(self.image.id,
-                                   detach=True,
-                                   mem_limit=f"{self.task.memory_limit}M",
-                                   name=f"{self.solution_id}_{test_index}",
-                                   volumes={input_global_path: {"bind": "/home/src/app/input.txt", "mode": "ro"},
-                                            output_global_path: {"bind": "/home/src/app/output.txt", "mode": "rw"},
-                                            },
-                                   )
+        self.client.containers.prune()
+        container = \
+            self.client.containers.run(self.image.id,
+                                       detach=True,
+                                       mem_limit=f"{self.task.memory_limit}M",
+                                       name=f"{self.solution_id}_{test_index}",
+                                       volumes={input_global_path: {"bind": "/home/src/app/input.txt", "mode": "ro"},
+                                                output_global_path: {"bind": "/home/src/app/output.txt", "mode": "rw"},
+                                                },
+                                       network_disabled=True
+                                       )
 
         start_time = time.time()
         report = TestReport(None, None, test_index, 256)
@@ -54,6 +54,8 @@ class TestRunner:
 
                 if result == test.output_string:
                     report.result = TestResults.OK
+                elif container.attrs["State"]["OOMKilled"]:
+                    report.result = TestResults.ML
                 elif container.attrs["State"]["ExitCode"] != 0:
                     report.result = TestResults.RE
                 else:

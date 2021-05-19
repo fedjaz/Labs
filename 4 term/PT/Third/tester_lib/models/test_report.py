@@ -6,7 +6,8 @@ class TestResults(Enum):
     WA = 2,
     TL = 3,
     ML = 4,
-    RE = 4,
+    RE = 5,
+    CE = 6,
 
 
 class TestReport:
