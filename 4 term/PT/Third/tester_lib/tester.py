@@ -7,6 +7,7 @@ from tester_lib.models.test_report import TestResults
 from tester_lib.models.task_report import TaskReport
 from tester_lib.models.code import Code, Compiler
 from tester_lib.config.gcc_config import compile_string
+from tester_lib.config.docker_config import image_rm
 import docker
 import subprocess
 
@@ -40,6 +41,8 @@ class Tester:
                 break
 
         rmtree(self.solution_id)
+
+        self.remove_image(self.solution_id)
         return task_report
 
     def build_docker_image(self):
@@ -77,3 +80,8 @@ class Tester:
         out, err = process.communicate()
         return err
 
+    def remove_image(self, name):
+        remove_str = image_rm.format(name)
+        process = subprocess.Popen(remove_str.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = process.communicate()
+        return err
