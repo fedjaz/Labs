@@ -1,0 +1,1 @@
+/home/src/app/executable.cpp < /home/src/app/input.txt > /home/src/app/output.txt

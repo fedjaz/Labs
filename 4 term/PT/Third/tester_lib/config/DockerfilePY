@@ -4,5 +4,8 @@ RUN mkdir -p /home/src/app
 WORKDIR /home/src/app
 
 COPY solution.py /home/src/app
+COPY script.sh /home/src/app
+RUN chmod +x "./script.sh"
 
-CMD ["python3", "solution.py"]
+
+CMD "./script.sh"

@@ -4,5 +4,7 @@ RUN mkdir -p /home/src/app
 WORKDIR /home/src/app
 
 COPY executable.cpp /home/src/app
+COPY script.sh /home/src/app
+RUN chmod +x "./script.sh"
 
-CMD ["/home/src/app/executable.cpp"]
+CMD "./script.sh"

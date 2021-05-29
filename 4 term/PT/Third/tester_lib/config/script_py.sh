@@ -1,0 +1,1 @@
+python3 solution.py < input.txt > output.txt
