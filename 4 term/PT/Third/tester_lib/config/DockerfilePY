@@ -3,9 +3,9 @@ FROM python:3.8
 RUN mkdir -p /home/src/app
 WORKDIR /home/src/app
 
-COPY solution.py /home/src/app
 COPY script.sh /home/src/app
 RUN chmod +x "./script.sh"
 
-
 CMD "./script.sh"
+
+COPY solution.py /home/src/app

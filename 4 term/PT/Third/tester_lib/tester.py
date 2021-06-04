@@ -1,3 +1,4 @@
+import multiprocessing
 from os import mkdir
 import os
 import tester_lib
@@ -10,13 +11,16 @@ from tester_lib.config.gcc_config import compile_string
 from tester_lib.config.docker_config import image_rm
 import docker
 import subprocess
+from multiprocessing import Process
+from multiprocessing.queues import Queue
 
 
 class Tester:
-    def __init__(self, task, code, solution_id):
+    def __init__(self, task, code, solution_id, max_processes=4):
         self.task = task
         self.code = code
         self.solution_id = solution_id
+        self.max_processes = max_processes
         self.docker_client = docker.from_env()
 
     def start_testing(self):
@@ -30,20 +34,39 @@ class Tester:
             rmtree(f"{cur_path}/{self.solution_id}")
             return task_report
 
-        test_runner = TestRunner(self.docker_client, image[0], self.task, self.solution_id)
+        lock = multiprocessing.Lock()
+        test_runner = TestRunner(self.docker_client, image[0], self.task, self.solution_id, lock)
 
         mkdir(f"{cur_path}/{self.solution_id}/IO/")
-        for i in range(0, len(self.task.tests)):
-            report = test_runner.run_test(i)
-            task_report.test_reports.append(report)
-            if report.result == TestResults.OK:
-                task_report.passed += 1
-            else:
-                task_report.total_result = report.result
+        self.docker_client.containers.prune()
+        indexes = range(0, len(self.task.tests))
+        is_failed = False
+        processes = []
+        queues = []
+        for i in range(0, len(self.task.tests), self.max_processes):
+            if is_failed:
                 break
+            slice = indexes[i:i+self.max_processes]
 
+            for index in slice:
+                queue = Queue(1, ctx=multiprocessing.get_context())
+                p = Process(target=test_runner.run_test, args=(index, queue))
+                processes.append(p)
+                queues.append(queue)
+                p.start()
+            for index in slice:
+                report = queues[index].get()
+                if not is_failed:
+                    task_report.test_reports.append(report)
+                if report.result != TestResults.OK:
+                    is_failed = True
+                    task_report.total_result = report.result
+                else:
+                    task_report.passed += 1
+
+        self.docker_client.containers.prune()
+        self.docker_client.images.prune()
         rmtree(f"{cur_path}/{self.solution_id}")
-
         self.remove_image(self.solution_id)
         return task_report
 

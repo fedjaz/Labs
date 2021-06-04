@@ -1,1 +1,0 @@
-webhook = curl --location --request POST 'https://api.telegram.org/bot1615904671:AAFbgzvPGoIbGkOziq3pSk8EJn23m4raLO4/setWebHook' --header 'Content-Type: application/json' --data-raw '{"url": "https://ac1c6a7b8b42.ngrok.io"}'

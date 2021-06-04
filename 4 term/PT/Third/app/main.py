@@ -1,6 +1,7 @@
 import os
 import random
 import string
+import time
 from json import load
 from os import mkdir
 import requests
@@ -14,18 +15,14 @@ from tester_lib.tester import Tester
 from tester_lib.models.test import Test as TesterLibTest
 from tester_lib.models.task import Task as TesterLibTask
 from tester_lib.models.code import Code as TesterLibCode, Compiler as TesterLibCompiler
-
+from multiprocessing.queues import Queue
 from app import app, db
-
-tests = []
-
-users = {}
-
-statements = []
 
 is_testing = False
 testing_last_message = ""
 testing_downloding_file = None
+
+#tests_queue = Queue()
 
 
 @app.route("/", methods=["POST"])
@@ -431,13 +428,18 @@ def proceed_message(id, username, message, file_id):
     return
 
 
-def delete_contest(user, contest):
-    #contest = Contest.query.get(user.active_contest_id)
+def testing_daemon():
+    while True:
+        (solution, task) = tests_queue.get()
 
+
+
+
+def delete_contest(user, contest):
     if contest.admin_id != user.id and user.id != admin_id:
-        send_message(id, deletecontest_not_admin_error_message)
+        send_message(user.id, deletecontest_not_admin_error_message)
     elif contest.join_key == "AAAA-AAAA-AAAA":
-        send_message(id, deletecontest_default_contest_error_message)
+        send_message(user.id, deletecontest_default_contest_error_message)
     else:
         relations = UsersContestsRelation.query \
             .filter(UsersContestsRelation.contest_id == contest.id) \
@@ -466,8 +468,10 @@ def test_solution(solution, task):
     raw_task = TesterLibTask(raw_tests, task.time_limit, task.memory_limit)
     raw_code = TesterLibCode(solution.code, TesterLibCompiler[solution.compiler])
     solution_id = f"solution_{task.id}_{Solution.query.count()}"
-    tester = Tester(raw_task, raw_code, solution_id)
+    tester = Tester(raw_task, raw_code, solution_id, max_processes=6)
+    start_time = time.time()
     report = tester.start_testing()
+    print(time.time() - start_time)
     solution.test_result = report.total_result.name
     solution.full_report = str(report)
     return solution
