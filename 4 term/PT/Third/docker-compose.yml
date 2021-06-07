@@ -4,7 +4,7 @@ services:
     contest:
         environment:
             real_path: "/home/fedjaz/tester/"
-        image: contest
+        image: fedjaz/contest
         ports:
             - "5000:5000"
         volumes:
