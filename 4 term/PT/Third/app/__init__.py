@@ -1,15 +1,14 @@
 from flask import Flask
-from config import Config
+from app.config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-
 from app.telegram_config import admin_id
 
-app = Flask(__name__)
-app.config.from_object(Config)
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+flask_app = Flask(__name__)
+flask_app.config.from_object(Config)
+db = SQLAlchemy(flask_app)
+migrate = Migrate(flask_app, db)
 
 from app import models
 from app.models import *
@@ -26,4 +25,3 @@ if default_contest is None:
     db.session.add(default_contest)
     db.session.commit()
 
-from app import main

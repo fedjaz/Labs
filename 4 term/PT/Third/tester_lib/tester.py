@@ -1,4 +1,5 @@
 import multiprocessing
+from json import dump
 from os import mkdir
 import os
 import tester_lib
@@ -13,6 +14,7 @@ import docker
 import subprocess
 from multiprocessing import Process
 from multiprocessing.queues import Queue
+from tester_lib.process_pool import TestProcessPool
 
 
 class Tester:
@@ -27,42 +29,31 @@ class Tester:
         task_report = TaskReport([], 0, len(self.task.tests), TestResults.OK, "")
         image = self.build_docker_image()
 
-        cur_path = tester_lib.__path__[0]
+        cur_path = "/home/src/contest/tester"
         if type(image) == bytes:
             task_report.total_result = TestResults.CE
             task_report.message = image.decode("ISO-8859-1")
-            rmtree(f"{cur_path}/{self.solution_id}")
+            #rmtree(f"{cur_path}/{self.solution_id}")
             return task_report
 
         lock = multiprocessing.Lock()
         test_runner = TestRunner(self.docker_client, image[0], self.task, self.solution_id, lock)
 
+        mkdir(f"{cur_path}/{self.solution_id}")
         mkdir(f"{cur_path}/{self.solution_id}/IO/")
         self.docker_client.containers.prune()
         indexes = range(0, len(self.task.tests))
-        is_failed = False
-        processes = []
-        queues = []
-        for i in range(0, len(self.task.tests), self.max_processes):
-            if is_failed:
-                break
-            slice = indexes[i:i+self.max_processes]
 
-            for index in slice:
-                queue = Queue(1, ctx=multiprocessing.get_context())
-                p = Process(target=test_runner.run_test, args=(index, queue))
-                processes.append(p)
-                queues.append(queue)
-                p.start()
-            for index in slice:
-                report = queues[index].get()
-                if not is_failed:
-                    task_report.test_reports.append(report)
-                if report.result != TestResults.OK:
-                    is_failed = True
-                    task_report.total_result = report.result
-                else:
-                    task_report.passed += 1
+        pool = TestProcessPool(self.max_processes)
+        res = pool.map(test_runner.run_test, indexes)
+        for i in res:
+            task_report.test_reports.append(i)
+
+            if i.result != TestResults.OK:
+                task_report.total_result = i.result
+                break
+            else:
+                task_report.passed += 1
 
         self.docker_client.containers.prune()
         self.docker_client.images.prune()
@@ -78,13 +69,17 @@ class Tester:
         mkdir(f"{cur_path}/{self.solution_id}")
         if self.code.compiler == Compiler.py:
             dockerfile_name = "DockerfilePY"
-            script_name = "script_py.sh"
         else:
             dockerfile_name = "DockerfileCPP"
-            script_name = "script_cpp.sh"
 
         copyfile(f"{cur_path}/config/{dockerfile_name}", f"{cur_path}/{self.solution_id}/Dockerfile")
-        copyfile(f"{cur_path}/config/{script_name}", f"{cur_path}/{self.solution_id}/script.sh")
+        copyfile(f"{cur_path}/config/runner.py", f"{cur_path}/{self.solution_id}/runner.py")
+        settings_file = open(f"{cur_path}/{self.solution_id}/settings.json", "w")
+        settings = {"compiler": str(self.code.compiler.name),
+                    "time_limit": str(self.task.time_limit),
+                    "memory_limit": str(self.task.memory_limit)}
+        dump(settings, settings_file)
+        settings_file.close()
         if self.code.compiler == Compiler.py:
             solution_file = open(f"{cur_path}/{self.solution_id}/solution.py", "w")
             solution_file.write(self.code.code)

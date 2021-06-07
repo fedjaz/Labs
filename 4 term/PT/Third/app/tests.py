@@ -1,15 +1,8 @@
-import os.path
-import types
-
-import pytest
-
-import app.main
 from tests import *
 from app import main
 from app import messages
 from app import db
-from app.models import User, Contest, UsersContestsRelation, Task, Solution
-from mock import patch
+from app.models import User, Contest, UsersContestsRelation, Solution
 
 
 def dispose_user(id):
@@ -140,6 +133,8 @@ def test_submit_cpp():
     solution_CE = f"{path}/test_files/solution_CE.cpp"
     main.testing_downloding_file = solution_CE
     main.proceed_message(228, "Tester", "", "228")
+    while main.testing_is_running:
+        time.sleep(0.1)
     solution = Solution.query.filter(Solution.task_id == task.id,
                                      Solution.user_id == 228,
                                      Solution.is_latest).first()
@@ -150,6 +145,8 @@ def test_submit_cpp():
     solution_RE = f"{path}/test_files/solution_RE.cpp"
     main.testing_downloding_file = solution_RE
     main.proceed_message(228, "Tester", "", "228")
+    while main.testing_is_running:
+        time.sleep(0.1)
     solution = Solution.query.filter(Solution.task_id == task.id,
                                      Solution.user_id == 228,
                                      Solution.is_latest).first()
@@ -160,6 +157,8 @@ def test_submit_cpp():
     solution_Tl = f"{path}/test_files/solution_TL.cpp"
     main.testing_downloding_file = solution_Tl
     main.proceed_message(228, "Tester", "", "228")
+    while main.testing_is_running:
+        time.sleep(0.1)
     solution = Solution.query.filter(Solution.task_id == task.id,
                                      Solution.user_id == 228,
                                      Solution.is_latest).first()
@@ -170,6 +169,8 @@ def test_submit_cpp():
     solution_ML = f"{path}/test_files/solution_ML.cpp"
     main.testing_downloding_file = solution_ML
     main.proceed_message(228, "Tester", "", "228")
+    while main.testing_is_running:
+        time.sleep(0.1)
     solution = Solution.query.filter(Solution.task_id == task.id,
                                      Solution.user_id == 228,
                                      Solution.is_latest).first()
@@ -180,6 +181,8 @@ def test_submit_cpp():
     solution_WA = f"{path}/test_files/solution_WA.cpp"
     main.testing_downloding_file = solution_WA
     main.proceed_message(228, "Tester", "", "228")
+    while main.testing_is_running:
+        time.sleep(0.1)
     solution = Solution.query.filter(Solution.task_id == task.id,
                                      Solution.user_id == 228,
                                      Solution.is_latest).first()
@@ -190,6 +193,8 @@ def test_submit_cpp():
     solution_OK = f"{path}/test_files/solution_OK.cpp"
     main.testing_downloding_file = solution_OK
     main.proceed_message(228, "Tester", "", "228")
+    while main.testing_is_running:
+        time.sleep(0.1)
     solution = Solution.query.filter(Solution.task_id == task.id,
                                      Solution.user_id == 228,
                                      Solution.is_latest).first()
@@ -200,6 +205,8 @@ def test_submit_cpp():
     solution_OK = f"{path}/test_files/solution_OK.cpp"
     code = open(solution_OK, "r").read()
     main.proceed_message(228, "Tester", code, "")
+    while main.testing_is_running:
+        time.sleep(0.1)
     solution = Solution.query.filter(Solution.task_id == task.id,
                                      Solution.user_id == 228,
                                      Solution.is_latest).first()
@@ -324,8 +331,8 @@ if __name__ == "__main__":
     test_registration()
     test_createcontest()
     test_createtask()
-    test_deletetask()
-    test_deletecontest()
+    test_select_correct()
+    test_submit_cpp()
 
 
 contestinfo_empty = "Информация о текущем соревновании:\n"\

@@ -9,7 +9,12 @@ class TaskReport:
     def __str__(self):
         ans = ""
         for i in self.test_reports:
-            ans += f"{i.index + 1}){i.result.name} - {i.time:.2f}s\n"
+            memory = i.memory
+            if memory < 1024:
+                memory = f"{round(memory)}KB"
+            else:
+                memory = f"{round(memory / 1024)}MB"
+            ans += f"{i.index + 1}){i.result.name} - {i.time:.2f}s, {memory}\n"
         ans += f"{self.total_result.name}({self.passed}/{self.total})\n"
         ans += self.message
         return ans

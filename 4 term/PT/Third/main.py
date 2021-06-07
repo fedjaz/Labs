@@ -1,3 +1,4 @@
+import multiprocessing
 import os
 import random
 import string
@@ -16,16 +17,18 @@ from tester_lib.models.test import Test as TesterLibTest
 from tester_lib.models.task import Task as TesterLibTask
 from tester_lib.models.code import Code as TesterLibCode, Compiler as TesterLibCompiler
 from multiprocessing.queues import Queue
-from app import app, db
+from multiprocessing import Process
+from app import flask_app, db
 
 is_testing = False
 testing_last_message = ""
 testing_downloding_file = None
+testing_is_running = False
 
-#tests_queue = Queue()
+tests_queue = Queue(100, ctx=multiprocessing.get_context())
 
 
-@app.route("/", methods=["POST"])
+@flask_app.route("/", methods=["POST"])
 def home():
     if is_testing:
         return "OK"
@@ -161,6 +164,10 @@ def proceed_message(id, username, message, file_id):
             send_message(id, task_file_error_message)
         return
     elif user.last_command == command_submit:
+        if is_testing:
+            global testing_is_running
+            testing_is_running = True
+
         if file_id != "":
             try:
                 file = download_file(file_id)
@@ -176,26 +183,10 @@ def proceed_message(id, username, message, file_id):
         contest = active_contest
         task = contest.tasks[int(user.state)]
 
-        solution = Solution(task_id=task.id,
-                            user_id=user.id,
-                            is_latest=True,
-                            code=code,
-                            compiler=user.selected_compiler)
-        latest_solution = \
-            Solution.query.filter(Solution.user_id == user.id)\
-                .filter(Solution.task_id == task.id)\
-                .filter(Solution.is_latest).first()
-
-        if latest_solution is not None:
-            latest_solution.is_latest = False
-        solution = test_solution(solution, task)
-        if len(solution.full_report) <= 4096:
-            send_message(id, solution.full_report)
-            db.session.add(solution)
-        else:
-            send_message(id, solution.test_result)
         user.last_command = command_tasks
         db.session.commit()
+        test_solution(task, code, user.selected_compiler, user.id)
+
     elif re.match(command_help_re, message):
         send_message(id, help_message)
     elif re.match(command_createtask_re, message):
@@ -428,13 +419,6 @@ def proceed_message(id, username, message, file_id):
     return
 
 
-def testing_daemon():
-    while True:
-        (solution, task) = tests_queue.get()
-
-
-
-
 def delete_contest(user, contest):
     if contest.admin_id != user.id and user.id != admin_id:
         send_message(user.id, deletecontest_not_admin_error_message)
@@ -459,22 +443,56 @@ def delete_contest(user, contest):
         db.session.commit()
 
 
-def test_solution(solution, task):
+def commit_solution(report, code, compiler, user_id, task_id):
+    user = User.query.get(user_id)
+    db.session.query(User).get(user_id)
+    latest_solution = Solution.query.filter(Solution.user_id == user_id) \
+        .filter(Solution.task_id == task_id) \
+        .filter(Solution.is_latest).first()
+
+    if latest_solution is not None:
+        latest_solution.is_latest = False
+
+    solution = Solution(task_id=task_id,
+                        user_id=user_id,
+                        is_latest=True,
+                        code=code,
+                        compiler=compiler,
+                        test_result=report.total_result.name,
+                        full_report=str(report))
+    if len(solution.full_report) <= 4096:
+        send_message(user.id, solution.full_report)
+        db.session.add(solution)
+    else:
+        send_message(user.id, solution.test_result)
+
+    db.session.add(solution)
+    db.session.commit()
+
+    if is_testing:
+        global testing_is_running
+        testing_is_running = False
+
+
+def test_solution(task, code, compiler, user_id):
     raw_tests = []
     for i in task.tests:
         raw_test = TesterLibTest(i.input_string, i.output_string)
         raw_tests.append(raw_test)
 
     raw_task = TesterLibTask(raw_tests, task.time_limit, task.memory_limit)
-    raw_code = TesterLibCode(solution.code, TesterLibCompiler[solution.compiler])
+    raw_code = TesterLibCode(code, TesterLibCompiler[compiler])
     solution_id = f"solution_{task.id}_{Solution.query.count()}"
-    tester = Tester(raw_task, raw_code, solution_id, max_processes=6)
-    start_time = time.time()
-    report = tester.start_testing()
-    print(time.time() - start_time)
-    solution.test_result = report.total_result.name
-    solution.full_report = str(report)
-    return solution
+
+    tests_queue.put((raw_task, raw_code, solution_id, 12, user_id, task.id))
+
+
+def testing_daemon(q):
+    while True:
+        (raw_task, raw_code, solution_id, max_processes, user_id, task_id) = q.get()
+        tester = Tester(raw_task, raw_code, solution_id, max_processes)
+        report = tester.start_testing()
+        commit_solution(report, raw_code.code, raw_code.compiler.name, user_id, task_id)
 
 
 def create_code():
@@ -513,3 +531,8 @@ def download_file(file_id):
     file = open(f"downloads/{file_id}", "wb")
     file.write(responce.content)
     return file.name
+
+
+daemon = Process(target=testing_daemon, args=(tests_queue, ))
+daemon.start()
+flask_app.run()

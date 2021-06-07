@@ -1,1 +1,1 @@
-image_rm = "docker image rm {0}"
+image_rm = "/var/run/docker.sock image rm {0}"
