@@ -15,7 +15,7 @@ services:
         networks:
             - contestnetwork
         volumes:
-            - pgdata:/var/lib/postgresql/data
+            - "pgdata:/var/lib/postgresql/data"
 
     nginx:
         image: fedjaz/contestnginx
@@ -30,7 +30,7 @@ services:
             real_path: /home/fedjaz/tester/
             telegram_token: "1615904671:AAFbgzvPGoIbGkOziq3pSk8EJn23m4raLO4"
             admin_id: 375504575
-            url: "https://f1965ad2838b.ngrok.io"
+            url: "https://a41401248d69.ngrok.io"
             FLASK_APP: /home/src/contest/app/__init__.py
             cores: 12
         image: fedjaz/contest
