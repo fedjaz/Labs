@@ -1,0 +1,12 @@
+FROM python:3.8
+
+RUN mkdir -p /home/src/app
+WORKDIR /home/src/app
+
+RUN pip install psutil
+
+CMD ["python3", "runner.py"]
+
+COPY solution.py /home/src/app
+COPY runner.py /home/src/app
+COPY settings.json /home/src/app

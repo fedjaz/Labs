@@ -2,14 +2,12 @@ import multiprocessing
 import os
 import random
 import string
-import time
 from json import load
 from os import mkdir
 import requests
-from app.telegram_config import telegram_token, url as telegram_url, admin_id
+from app.telegram_config import telegram_token, telegram_url, admin_id, url, cores
 from app.models import *
 from app.messages import *
-from app import default_contest
 import zipfile
 from flask import request
 from tester_lib.tester import Tester
@@ -20,12 +18,25 @@ from multiprocessing.queues import Queue
 from multiprocessing import Process
 from app import flask_app, db
 
+
 is_testing = False
 testing_last_message = ""
 testing_downloding_file = None
 testing_is_running = False
 
 tests_queue = Queue(100, ctx=multiprocessing.get_context())
+
+
+default_contest = Contest.query.filter(Contest.join_key == "AAAA-AAAA-AAAA").first()
+if default_contest is None:
+    admin_user = User(id=int(admin_id))
+    db.session.add(admin_user)
+    default_contest = Contest(admin_id=admin_id,
+                              id=1,
+                              name="Fedjaz Contest",
+                              join_key="AAAA-AAAA-AAAA")
+    db.session.add(default_contest)
+    db.session.commit()
 
 
 @flask_app.route("/", methods=["POST"])
@@ -484,7 +495,7 @@ def test_solution(task, code, compiler, user_id):
     raw_code = TesterLibCode(code, TesterLibCompiler[compiler])
     solution_id = f"solution_{task.id}_{Solution.query.count()}"
 
-    tests_queue.put((raw_task, raw_code, solution_id, 12, user_id, task.id))
+    tests_queue.put((raw_task, raw_code, solution_id, int(cores), user_id, task.id))
 
 
 def testing_daemon(q):
@@ -535,4 +546,10 @@ def download_file(file_id):
 
 daemon = Process(target=testing_daemon, args=(tests_queue, ))
 daemon.start()
-flask_app.run()
+
+data = {"url": url}
+url = f"{telegram_url}/bot{telegram_token}/setWebHook"
+
+requests.post(url, data)
+
+flask_app.run(host="0.0.0.0")

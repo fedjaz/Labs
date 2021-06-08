@@ -1,14 +1,46 @@
-version: "3.4"
+version: "3.9"
+
+networks:
+    contestnetwork:
+        name: contestnetwork
 
 services:
+    db:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_DB: contest
+            POSTGRES_USER: Telegram-bot
+            POSTGRES_PASSWORD: 123
+        networks:
+            - contestnetwork
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+
+    nginx:
+        image: fedjaz/contestnginx
+        restart: always
+        networks:
+            - contestnetwork
+        ports:
+            - "5000:2754"
+
     contest:
         environment:
-            real_path: "/home/fedjaz/tester/"
+            real_path: /home/fedjaz/tester/
+            telegram_token: "1615904671:AAFbgzvPGoIbGkOziq3pSk8EJn23m4raLO4"
+            admin_id: 375504575
+            url: "https://f1965ad2838b.ngrok.io"
+            FLASK_APP: /home/src/contest/app/__init__.py
+            cores: 12
         image: fedjaz/contest
-        ports:
-            - "5000:5000"
+        restart: always
         volumes:
             - "/var/run/docker.sock:/var/run/docker.sock"
             - "/home/fedjaz/tester/:/home/src/contest/tester/"
-        network_mode: "host"
-        privileged: true
+        networks:
+            - contestnetwork
+        depends_on:
+            - db
+volumes:
+     pgdata:

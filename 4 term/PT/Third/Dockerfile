@@ -8,6 +8,7 @@ RUN pip install -r /home/src/contest/requirements.txt
 ADD tester_lib /home/src/contest/tester_lib
 ADD app /home/src/contest/app
 ADD ./main.py /home/src/contest
+ADD ./run.sh /home/src/contest
+RUN chmod +x /home/src/contest/run.sh
 
-
-CMD ["python", "/home/src/contest/main.py"]
+CMD "/home/src/contest/run.sh"

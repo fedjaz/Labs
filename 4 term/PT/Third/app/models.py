@@ -13,7 +13,7 @@ class User(Base):
     state = db.Column(db.String(64))
     selected_compiler = db.Column(db.String(10))
     active_contest_id = db.Column(db.Integer)
-    solutions = db.relationship("Solution", backref='user', lazy=True)
+    solutions = db.relationship("Solution", backref='users', lazy=True)
 
 
 class Solution(Base):
@@ -32,7 +32,7 @@ class Solution(Base):
 
 class Contest(Base):
     __tablename__ = "contests"
-    admin_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    admin_id = db.Column(db.Integer)
     name = db.Column(db.String(64))
     join_key = db.Column(db.String(14), index=True)
     tasks = db.relationship("Task", backref="contests", lazy=True)

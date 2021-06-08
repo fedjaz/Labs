@@ -105,7 +105,4 @@ class Tester:
         return err
 
     def remove_image(self, name):
-        remove_str = image_rm.format(name)
-        process = subprocess.Popen(remove_str.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = process.communicate()
-        return err
+        self.docker_client.images.remove(name)
