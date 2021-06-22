@@ -18,19 +18,22 @@ services:
             - "pgdata:/var/lib/postgresql/data"
 
     nginx:
-        image: fedjaz/contestnginx
+        image: fedjaz/easynginx
         restart: always
         networks:
             - contestnetwork
+        environment:
+            listen: 2754
+            proxy_pass: "http://contest:5000"
         ports:
             - "5000:2754"
 
     contest:
         environment:
             real_path: /home/fedjaz/tester/
-            telegram_token: "1615904671:AAFbgzvPGoIbGkOziq3pSk8EJn23m4raLO4"
+            telegram_token: "1615904671:AAFzXSO7x8c8wi_MmQtSY-Z9BfPmH7hLRJo"
             admin_id: 375504575
-            url: "https://a41401248d69.ngrok.io"
+            url: "https://14822aeab072.ngrok.io"
             FLASK_APP: /home/src/contest/app/__init__.py
             cores: 12
         image: fedjaz/contest

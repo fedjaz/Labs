@@ -1,5 +1,7 @@
 FROM nginx:alpine
 
-COPY nginx.conf /etc/nginx
+ADD nginx.conf /etc/nginx
+ADD run.sh /etc/nginx
+RUN chmod +x /etc/nginx/run.sh
 
-CMD nginx -g 'daemon off;'
+CMD /etc/nginx/run.sh

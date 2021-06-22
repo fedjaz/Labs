@@ -1,3 +1,4 @@
+import json
 import multiprocessing
 import os
 import random
@@ -521,8 +522,9 @@ def send_message(chat_id, message):
     method = "sendMessage"
     token = telegram_token
     url = f"{telegram_url}/bot{token}/{method}"
-    data = {"chat_id": chat_id, "text": message}
-    requests.post(url, data=data)
+    data = {"chat_id": chat_id, "text": message, "reply_markup": json.dumps({"remove_keyboard": True})}
+    responce = requests.post(url, data=data)
+    print(responce.json())
 
 
 def download_file(file_id):
