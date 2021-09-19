@@ -7,161 +7,181 @@
     tools:context=".MainActivity">
 
     <TableLayout
+        android:id="@+id/tl"
         android:layout_width="wrap_content"
-        android:layout_height="398dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <TableRow
+            android:id="@+id/row1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <Button
                 android:id="@+id/unknownButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#878787"
-                tools:text="@string/unknownButton" />
+                style="@style/FunctionButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/unknownButton"
+                android:visibility="visible"
+                tools:visibility="visible" />
 
             <Button
                 android:id="@+id/radButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#878787"
-                tools:text="@string/radButton" />
+                style="@style/FunctionButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/radButton"
+                android:visibility="visible"
+                tools:visibility="visible" />
 
             <Button
                 android:id="@+id/sinButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#878787"
-                tools:text="@string/sinButton" />
+                style="@style/FunctionButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/sinButton"
+                android:visibility="visible"
+                tools:visibility="visible" />
 
             <Button
                 android:id="@+id/cosButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#878787"
+                style="@style/FunctionButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/cosButton"
                 android:visibility="visible"
-                tools:text="@string/cosButton"
                 tools:visibility="visible" />
 
             <Button
                 android:id="@+id/tanButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
+                style="@style/FunctionButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:text="@string/tanButton"
-                android:textColor="#878787" />
+                android:visibility="visible"
+                tools:visibility="visible" />
         </TableRow>
 
         <TableRow
+            android:id="@+id/row2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_height="match_parent">
 
             <Button
                 android:id="@+id/powButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/FunctionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#878787"
-                tools:text="@string/powButton" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/powButton"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/lgButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/FunctionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#878787"
-                tools:text="@string/lgButton" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/lgButton"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/lnButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/FunctionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#878787"
-                tools:text="@string/lnButton" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/lnButton"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/openBracketButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/FunctionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#878787"
-                tools:text="@string/openBracketButton" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/openBracketButton"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/closeBracketButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/FunctionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:text="@string/closeBracketButton"
-                android:textColor="#878787" />
+                android:visibility="visible" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_height="match_parent">
 
             <Button
                 android:id="@+id/sqrtButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/FunctionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#878787"
-                tools:text="@string/sqrtButton" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/sqrtButton"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/clearButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/ActionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#FF5722"
-                tools:text="@string/clearButton" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/clearButton"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/deleteButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/ActionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#FF5722"
-                tools:text="@string/deleteButton" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/deleteButton"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/percentButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/ActionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#FF5722"
-                tools:text="@string/percentButton" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/percentButton"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/divideButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/ActionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:text="@string/divideButton"
-                android:textColor="#FF5722" />
+                android:visibility="visible" />
         </TableRow>
 
         <TableRow
@@ -171,48 +191,52 @@
 
             <Button
                 android:id="@+id/factorialButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/FunctionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#878787"
-                tools:text="@string/factorialButton" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/factorialButton"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/n7Button"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/NumberButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#FF5722"
-                tools:text="@string/n7Button" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/n7Button"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/n8Button"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/NumberButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#FF5722"
-                tools:text="@string/n8Button" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/n8Button"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/n9Button"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/NumberButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#FF5722"
-                tools:text="@string/n9Button" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/n9Button"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/multiplyButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/ActionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:text="@string/multiplyButton"
-                android:textColor="#FF5722" />
+                android:visibility="visible" />
         </TableRow>
 
         <TableRow
@@ -222,48 +246,52 @@
 
             <Button
                 android:id="@+id/reverseButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/FunctionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#878787"
-                tools:text="@string/reverseButton" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/reverseButton"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/n4Button"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/NumberButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#FF5722"
-                tools:text="@string/n4Button" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/n4Button"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/n5Button"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/NumberButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#FF5722"
-                tools:text="@string/n5Button" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/n5Button"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/n6Button"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/NumberButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#FF5722"
-                tools:text="@string/n6Button" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/n6Button"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/subtractButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/ActionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:text="@string/subtractButton"
-                android:textColor="#FF5722" />
+                android:visibility="visible" />
         </TableRow>
 
         <TableRow
@@ -273,100 +301,112 @@
 
             <Button
                 android:id="@+id/piButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/FunctionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#878787"
-                tools:text="@string/piButton" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/piButton"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/n1Button"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/NumberButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#FF5722"
-                tools:text="@string/n1Button" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/n1Button"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/n2Button"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/NumberButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#FF5722"
-                tools:text="@string/n2Button" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/n2Button"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/n3Button"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/NumberButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#FF5722"
-                tools:text="@string/n3Button" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/n3Button"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/addButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/ActionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:text="@string/addButton"
-                android:textColor="#FF5722" />
+                android:visibility="visible" />
         </TableRow>
 
         <TableRow
+            android:id="@+id/row7"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <Button
-                android:id="@+id/moreOrLessButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:id="@+id/moreLessButton"
+                style="@style/FunctionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#878787"
-                tools:text="@string/moreOrLessButton" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/moreOrLessButton"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/eButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/NumberButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#FF5722"
-                tools:text="@string/eButton" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/eButton"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/n0Button"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/NumberButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#FF5722"
-                tools:text="@string/n0Button" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/n0Button"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/floatButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/NumberButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:textColor="#FF5722"
-                tools:text="@string/floatButton" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="@string/floatButton"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/equalsButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/ActionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:text="@string/addButton"
-                android:textColor="#FF5722" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/equalsButton"
+                android:visibility="visible" />
         </TableRow>
 
     </TableLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
