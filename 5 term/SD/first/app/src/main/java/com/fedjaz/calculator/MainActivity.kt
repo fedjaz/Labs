@@ -1,7 +1,10 @@
 package com.fedjaz.calculator
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -19,11 +22,13 @@ class MainActivity : AppCompatActivity() {
                     R.id.eButton,
     )
 
+    private lateinit var vibrator : Vibrator
     private var isScientific : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         setListeners()
         showLess()
     }
@@ -38,8 +43,10 @@ class MainActivity : AppCompatActivity() {
                 showMore()
                 true
             }
+            vibrator.vibrate(25)
         }
     }
+
 
     private fun showMore(){
         for(id in scientificButtons){
