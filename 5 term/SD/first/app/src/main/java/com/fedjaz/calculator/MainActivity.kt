@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.fedjaz.calculator.calculations.Calculator
 import com.fedjaz.calculator.calculations.Operations
+import kotlin.math.sin
 
 class MainActivity : AppCompatActivity() {
     private var scientificButtons: List<Int> =
@@ -104,6 +105,24 @@ class MainActivity : AppCompatActivity() {
         val clearButton = findViewById<Button>(R.id.clearButton)
         clearButton.setOnClickListener {
             calculator.clear()
+            vibrator.vibrate(25)
+        }
+
+        val sinButton = findViewById<Button>(R.id.sinButton)
+        sinButton.setOnClickListener {
+            calculator.appendFunction("sin(") { n1: Double -> sin(n1) }
+            vibrator.vibrate(25)
+        }
+
+        val openBracketButton = findViewById<Button>(R.id.openBracketButton)
+        openBracketButton.setOnClickListener {
+            calculator.appendFunction("(") { n1: Double -> n1 }
+            vibrator.vibrate(25)
+        }
+
+        val closeBracketButton = findViewById<Button>(R.id.closeBracketButton)
+        closeBracketButton.setOnClickListener {
+            calculator.complete()
             vibrator.vibrate(25)
         }
     }

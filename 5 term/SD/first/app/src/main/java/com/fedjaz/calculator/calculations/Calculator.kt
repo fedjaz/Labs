@@ -37,8 +37,47 @@ class Calculator {
         update()
     }
 
+    fun appendFunction(stringPattern: String, function: (n1: Double) -> Double){
+        if(!currentBlock.isPrimitive && currentBlock.blocks.isEmpty()){
+            val newBlock = CalculationBlock(function, stringPattern, currentBlock,
+                isPrimitive = false,
+                requiresBrackets = true
+            )
+            currentBlock.blocks.add(newBlock)
+            currentBlock = newBlock
+        }
+        else {
+            if(currentBlock.operation == Operations.NONE)
+            {
+                currentBlock.operation = Operations.MULTIPLY
+            }
+            val newBlock = CalculationBlock(function, stringPattern, currentBlock.parentBlock,
+                isPrimitive = false,
+                requiresBrackets = true
+            )
+            currentBlock.parentBlock?.blocks?.add(newBlock)
+            currentBlock = newBlock
+        }
+        update()
+    }
+
+    fun complete(){
+        if(currentBlock.requiresBrackets && currentBlock.blocks.isEmpty()){
+            return
+        }
+        if(currentBlock.parentBlock != null && currentBlock.parentBlock!!.requiresBrackets){
+            currentBlock.parentBlock!!.isCompleted = true
+            currentBlock = currentBlock.parentBlock!!
+        }
+        update()
+    }
+
     fun delete(){
-        if(!currentBlock.delete()){
+        if(currentBlock.isCompleted && currentBlock.operation == Operations.NONE){
+            currentBlock.delete()
+            currentBlock = currentBlock.blocks.last()
+        }
+        else if(!currentBlock.delete()){
             val parent = currentBlock.parentBlock ?: return
             parent.blocks.remove(currentBlock)
 

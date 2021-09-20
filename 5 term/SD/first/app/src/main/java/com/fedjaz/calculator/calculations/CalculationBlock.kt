@@ -4,7 +4,7 @@ import android.media.VolumeShaper
 
 class CalculationBlock(private var resultFunction: (Double) -> Double,
                        private var stringPattern: String,
-                       var parentBlock: CalculationBlock?) {
+                       val parentBlock: CalculationBlock?) {
 
     var operation: Operations = Operations.NONE
     var number: String = ""
@@ -12,6 +12,7 @@ class CalculationBlock(private var resultFunction: (Double) -> Double,
     var isCompleted: Boolean = false
     var isNegative: Boolean = false
     var isPrimitive: Boolean = true
+    var requiresBrackets: Boolean = false
 
     constructor(resultFunction: (Double) -> Double,
                 stringPattern: String,
@@ -20,9 +21,29 @@ class CalculationBlock(private var resultFunction: (Double) -> Double,
         this.isPrimitive = isPrimitive
     }
 
+    constructor(resultFunction: (Double) -> Double,
+                stringPattern: String,
+                parentBlock: CalculationBlock?,
+                isPrimitive: Boolean,
+                requiresBrackets: Boolean)
+            : this(resultFunction, stringPattern, parentBlock, isPrimitive){
+        this.requiresBrackets = requiresBrackets
+    }
+
     fun appendNumber(char: Char){
-        if(blocks.count() == 0){
-            number += char
+        if(isPrimitive){
+
+            if(number == "0"){
+                if(char == '0'){
+                    return
+                }
+                else{
+                    number = char.toString()
+                }
+            }
+            else{
+                number += char
+            }
         }
     }
 
@@ -35,6 +56,10 @@ class CalculationBlock(private var resultFunction: (Double) -> Double,
     fun delete() : Boolean{
         if(operation != Operations.NONE){
             operation = Operations.NONE
+            return true
+        }
+        if(isCompleted){
+            isCompleted = false
             return true
         }
         if(number != ""){
