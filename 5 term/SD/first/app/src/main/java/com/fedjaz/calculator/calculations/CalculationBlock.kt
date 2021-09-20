@@ -13,7 +13,7 @@ class CalculationBlock(private var resultFunction: (Double) -> Double,
 
     constructor(resultFunction: (Double) -> Double,
                 stringPattern: String,
-                parentBlock: CalculationBlock,
+                parentBlock: CalculationBlock?,
                 isPrimitive: Boolean) : this(resultFunction, stringPattern, parentBlock){
         this.isPrimitive = isPrimitive
     }
@@ -36,8 +36,8 @@ class CalculationBlock(private var resultFunction: (Double) -> Double,
             return true
         }
         if(number != ""){
-            number.dropLast(1)
-            return true
+            number = number.dropLast(1)
+            return number.isNotEmpty()
         }
         if(blocks.count() > 0){
             if(blocks.last().delete()){
