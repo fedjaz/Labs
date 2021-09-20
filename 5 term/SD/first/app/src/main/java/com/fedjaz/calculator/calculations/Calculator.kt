@@ -61,11 +61,11 @@ class Calculator {
 
     private fun update(){
         inputTextView?.text = mainBlock.toString()
-        resultTextView?.text = evaluate().toString()
+        resultTextView?.text = "= " + evaluate().toString()
     }
 
     fun evaluate() : Double{
-        return 0.0
+         return mainBlock.evaluate()
     }
 
     fun setListeners(inputTextView: TextView, resultTextView: TextView){
