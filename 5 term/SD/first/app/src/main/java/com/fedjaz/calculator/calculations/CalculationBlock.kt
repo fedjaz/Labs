@@ -2,8 +2,8 @@ package com.fedjaz.calculator.calculations
 
 import android.media.VolumeShaper
 
-class CalculationBlock(private var resultFunction: (Double) -> Double,
-                       private var stringPattern: String,
+class CalculationBlock(var resultFunction: (Double) -> Double,
+                       var stringPattern: String,
                        val parentBlock: CalculationBlock?) {
 
     var operation: Operations = Operations.NONE
@@ -13,6 +13,15 @@ class CalculationBlock(private var resultFunction: (Double) -> Double,
     var isNegative: Boolean = false
     var isPrimitive: Boolean = true
     var requiresBrackets: Boolean = false
+    var requiresFilling: Boolean = false
+
+    constructor(parentBlock: CalculationBlock?, requiresFilling: Boolean) : this(
+        { n: Double -> n },
+        "",
+        parentBlock
+    ){
+        this.requiresFilling = requiresFilling
+    }
 
     constructor(resultFunction: (Double) -> Double,
                 stringPattern: String,
@@ -53,6 +62,9 @@ class CalculationBlock(private var resultFunction: (Double) -> Double,
     }
 
     fun delete() : Boolean{
+        if(requiresFilling){
+            return false
+        }
         if(operation != Operations.NONE){
             operation = Operations.NONE
             return true
@@ -63,12 +75,24 @@ class CalculationBlock(private var resultFunction: (Double) -> Double,
         }
         if(number != ""){
             number = number.dropLast(1)
+            if(number.isEmpty()){
+                if(isNegative){
+                    requiresFilling = true
+                    return true
+                }
+            }
             return number.isNotEmpty()
         }
         if(blocks.count() > 0){
-            if(blocks.last().delete()){
+            if(blocks.last().delete()) {
                 blocks.dropLast(1)
             }
+            return true
+        }
+        else if(isNegative){
+            requiresFilling = true
+            stringPattern = ""
+            isCompleted = false
             return true
         }
         return false
@@ -90,35 +114,53 @@ class CalculationBlock(private var resultFunction: (Double) -> Double,
             operations.add(block.operation)
         }
 
-        var i = 0
-        while(i < operations.count() - 1){
-            val operation = operations[i]
-            if(getOrder(operation) == 2){
-                val n1 = evaluated[i]
-                val n2 = evaluated[i + 1]
-                val res = getOperation(operation)(n1, n2)
-                evaluated[i] = res
-                evaluated.removeAt(i + 1)
-                operations.removeAt(i)
-                i--
+        for(order in 3 downTo 1){
+            var i = 0
+            while(i < operations.count() - 1){
+                val operation = operations[i]
+                if(getOrder(operation) == order){
+                    val n1 = evaluated[i]
+                    val n2 = evaluated[i + 1]
+                    val res = getOperation(operation)(n1, n2)
+                    evaluated[i] = res
+                    evaluated.removeAt(i + 1)
+                    operations.removeAt(i)
+                    i--
+                }
+                i++
             }
-            i++
         }
+        return resultFunction(evaluated[0]) * if (isNegative) -1 else 1
 
-        var result = evaluated[0]
-        i = 0
-        while(i < operations.count() - 1){
-            val operation = operations[i]
-            result = getOperation(operation)(result, evaluated[i + 1])
-            i++
-        }
-        return resultFunction(result) * if (isNegative) -1 else 1
+//        var i = 0
+//        while(i < operations.count() - 1){
+//            val operation = operations[i]
+//            if(getOrder(operation) == 2){
+//                val n1 = evaluated[i]
+//                val n2 = evaluated[i + 1]
+//                val res = getOperation(operation)(n1, n2)
+//                evaluated[i] = res
+//                evaluated.removeAt(i + 1)
+//                operations.removeAt(i)
+//                i--
+//            }
+//            i++
+//        }
+//
+//        var result = evaluated[0]
+//        i = 0
+//        while(i < operations.count() - 1){
+//            val operation = operations[i]
+//            result = getOperation(operation)(result, evaluated[i + 1])
+//            i++
+//        }
+//        return resultFunction(result) * if (isNegative) -1 else 1
     }
 
     override fun toString(): String {
         var output = ""
         if(isPrimitive){
-            output += if (isNegative) "-" else "" + number
+            output += (if (isNegative) "-" else "") + number
             return output + operation.symbol
         }
         for(block in blocks){

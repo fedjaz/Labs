@@ -2,9 +2,11 @@ package com.fedjaz.calculator.calculations
 
 import android.media.VolumeShaper
 import android.opengl.Visibility
+import android.provider.Settings.Global.getString
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.TextView
+import com.fedjaz.calculator.R
 import kotlin.math.round
 
 class Calculator {
@@ -16,6 +18,13 @@ class Calculator {
 
 
     fun appendNumber(char: Char){
+        if(currentBlock.requiresFilling){
+            currentBlock.requiresFilling = false
+            currentBlock.requiresBrackets = false
+            currentBlock.isPrimitive = true
+            currentBlock.stringPattern = ""
+            currentBlock.resultFunction = {n: Double -> n}
+        }
         if(currentBlock.isCompleted){
             if(currentBlock.operation == Operations.NONE){
                 currentBlock.operation = Operations.MULTIPLY
@@ -38,6 +47,16 @@ class Calculator {
     }
 
     fun appendOperation(operation: Operations){
+        if((!currentBlock.isPrimitive && !currentBlock.isCompleted) || currentBlock == mainBlock){
+            if(operation == Operations.SUBTRACT){
+                val newBlock = CalculationBlock(currentBlock, true)
+                newBlock.isNegative = true
+                currentBlock.blocks.add(newBlock)
+                currentBlock = newBlock
+            }
+            update()
+            return
+        }
         currentBlock.operation = operation
         currentBlock.isCompleted = true
 
@@ -45,7 +64,14 @@ class Calculator {
     }
 
     fun appendFunction(stringPattern: String, function: (n1: Double) -> Double){
-        if(!currentBlock.isPrimitive && currentBlock.blocks.isEmpty()){
+        if(currentBlock.requiresFilling){
+            currentBlock.stringPattern = stringPattern
+            currentBlock.resultFunction = function
+            currentBlock.isPrimitive = false
+            currentBlock.requiresFilling = false
+            currentBlock.requiresBrackets = true
+        }
+        else if(!currentBlock.isPrimitive && currentBlock.blocks.isEmpty()){
             val newBlock = CalculationBlock(function, stringPattern, currentBlock,
                 isPrimitive = false,
                 requiresBrackets = true
@@ -124,15 +150,23 @@ class Calculator {
         }
         inputTextView?.text = mainBlock.toString()
 
-        val result = evaluate()
-
-        var resultString = String.format("= %.5f", result)
-        resultString = resultString.trimEnd('0')
+        val result = try{
+            evaluate()
+        }
+        catch (e: Exception){
+            resultTextView?.text = "Error"
+            return
+        }
+        var resultString = if(result < 1e10 && result > -1e10){
+            String.format("= %.5f", result).trimEnd('0')
+        }
+        else{
+            String.format("= %.5e", result)
+        }
         if(resultString.last() == '.'){
             resultString = resultString.dropLast(1)
         }
         resultTextView?.text = resultString
-
     }
 
     fun evaluate() : Double{

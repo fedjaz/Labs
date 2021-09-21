@@ -35,4 +35,5 @@
     <string name="n0Button">0</string>
     <string name="floatButton">.</string>
     <string name="equalsButton">=</string>
+    <string name="errorMessage">Error</string>
 </resources>

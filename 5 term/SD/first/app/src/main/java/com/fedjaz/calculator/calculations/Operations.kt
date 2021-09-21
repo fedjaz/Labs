@@ -12,11 +12,13 @@ enum class Operations(val symbol: String) {
 }
 
 fun getOrder(operation: Operations) : Int{
-    return if(operation == Operations.ADD || operation == Operations.SUBTRACT){
-        1
-    }
-    else{
-        2
+    return when (operation){
+        Operations.ADD -> 1
+        Operations.SUBTRACT -> 1
+        Operations.MULTIPLY -> 2
+        Operations.DIVIDE -> 2
+        Operations.POWER -> 3
+        Operations.NONE -> 0
     }
 }
 
