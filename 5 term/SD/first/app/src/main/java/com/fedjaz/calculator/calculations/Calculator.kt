@@ -7,6 +7,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.TextView
 import com.fedjaz.calculator.R
+import java.util.*
 import kotlin.math.round
 
 class Calculator {
@@ -17,7 +18,7 @@ class Calculator {
     private var resultTextView: TextView? = null
 
 
-    fun appendNumber(char: Char){
+    fun appendNumber(char: String){
         if(currentBlock.requiresFilling){
             currentBlock.requiresFilling = false
             currentBlock.requiresBrackets = false
@@ -132,6 +133,15 @@ class Calculator {
         update()
     }
 
+    fun percent(){
+        if(currentBlock.isPrimitive){
+            var num = currentBlock.number.toDouble()
+            num *= 0.01
+            currentBlock.number = String.format("%.5f", num).trimEnd('0')
+            update()
+        }
+    }
+
     fun clear(){
         mainBlock = CalculationBlock(defaultFunction, "", null, false)
         currentBlock = mainBlock
@@ -157,16 +167,7 @@ class Calculator {
             resultTextView?.text = "Error"
             return
         }
-        var resultString = if(result < 1e10 && result > -1e10){
-            String.format("= %.5f", result).trimEnd('0')
-        }
-        else{
-            String.format("= %.5e", result)
-        }
-        if(resultString.last() == '.'){
-            resultString = resultString.dropLast(1)
-        }
-        resultTextView?.text = resultString
+        resultTextView?.text = numToString(result)
     }
 
     fun evaluate() : Double{
@@ -189,5 +190,21 @@ class Calculator {
             return 1.0
         }
         return num * factorial(num - 1)
+    }
+
+    fun numToString(n: Double): String{
+        return if(n < 1e10 && n > -1e10){
+            val res = String.format(Locale.US,"= %.5f", n, ).trimEnd('0')
+            if (res.last() == '.'){
+                res.dropLast(1)
+            }
+            else{
+                res
+            }
+
+        }
+        else{
+            String.format("= %.5e", n)
+        }
     }
 }

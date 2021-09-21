@@ -39,10 +39,10 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
         this.requiresBrackets = requiresBrackets
     }
 
-    fun appendNumber(char: Char){
+    fun appendNumber(char: String){
         if(isPrimitive){
             if(number == "0"){
-                if(char == '0'){
+                if(char == "0"){
                     return
                 }
                 else{
@@ -50,7 +50,14 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
                 }
             }
             else{
-                number += char
+                if(number == ""){
+                    number = char
+                }
+                else{
+                    if(char != "e" && char != "pi" && !number.contains("pi", false) && !number.contains("e")){
+                        number += char
+                    }
+                }
             }
         }
     }
@@ -74,7 +81,11 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
             return true
         }
         if(number != ""){
-            number = number.dropLast(1)
+            number = when(number){
+                "pi" -> ""
+                "e" -> ""
+                else -> number.dropLast(1)
+            }
             if(number.isEmpty()){
                 if(isNegative){
                     requiresFilling = true
@@ -100,7 +111,11 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
 
     fun evaluate() : Double{
         if(isPrimitive){
-            val num = number.toDoubleOrNull() ?: return 0.0
+            val num = when (number) {
+                "e" -> Math.E
+                "pi" -> Math.PI
+                else -> number.toDoubleOrNull() ?: return 0.0
+            }
             return num * if(isNegative) -1 else 1
         }
 
@@ -131,30 +146,6 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
             }
         }
         return resultFunction(evaluated[0]) * if (isNegative) -1 else 1
-
-//        var i = 0
-//        while(i < operations.count() - 1){
-//            val operation = operations[i]
-//            if(getOrder(operation) == 2){
-//                val n1 = evaluated[i]
-//                val n2 = evaluated[i + 1]
-//                val res = getOperation(operation)(n1, n2)
-//                evaluated[i] = res
-//                evaluated.removeAt(i + 1)
-//                operations.removeAt(i)
-//                i--
-//            }
-//            i++
-//        }
-//
-//        var result = evaluated[0]
-//        i = 0
-//        while(i < operations.count() - 1){
-//            val operation = operations[i]
-//            result = getOperation(operation)(result, evaluated[i + 1])
-//            i++
-//        }
-//        return resultFunction(result) * if (isNegative) -1 else 1
     }
 
     override fun toString(): String {
@@ -171,4 +162,5 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
         output += operation.symbol
         return output
     }
+
 }

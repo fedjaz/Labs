@@ -33,13 +33,13 @@
             android:layout_weight="1">
 
             <Button
-                android:id="@+id/unknownButton"
+                android:id="@+id/degButton"
                 style="@style/FunctionButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="10dp"
                 android:layout_weight="1"
-                android:text="@string/unknownButton"
+                android:text="@string/degButton"
                 android:visibility="visible"
                 tools:visibility="visible" />
 

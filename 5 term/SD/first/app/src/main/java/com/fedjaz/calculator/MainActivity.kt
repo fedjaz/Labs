@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         for (id in buttons) {
             val button = findViewById<Button>(id)
             button.setOnClickListener {
-                calculator.appendNumber('0' + buttons.indexOf(id))
+                calculator.appendNumber(('0' + buttons.indexOf(id)).toString())
                 vibrator.vibrate(25)
             }
         }
@@ -132,6 +132,12 @@ class MainActivity : AppCompatActivity() {
             vibrator.vibrate(25)
         }
 
+        val degButton = findViewById<Button>(R.id.degButton)
+        degButton.setOnClickListener {
+            calculator.appendFunction("deg(") { n1: Double -> (Math.toDegrees(n1)) }
+            vibrator.vibrate(25)
+        }
+
         val radButton = findViewById<Button>(R.id.radButton)
         radButton.setOnClickListener {
             calculator.appendFunction("rad(") { n1: Double -> (Math.toRadians(n1)) }
@@ -183,6 +189,24 @@ class MainActivity : AppCompatActivity() {
         val floatButton = findViewById<Button>(R.id.floatButton)
         floatButton.setOnClickListener {
             calculator.setFloat()
+            vibrator.vibrate(25)
+        }
+
+        val percentButton = findViewById<Button>(R.id.percentButton)
+        percentButton.setOnClickListener {
+            calculator.percent()
+            vibrator.vibrate(25)
+        }
+
+        val eButton = findViewById<Button>(R.id.eButton)
+        eButton.setOnClickListener {
+            calculator.appendNumber("e")
+            vibrator.vibrate(25)
+        }
+
+        val piButton = findViewById<Button>(R.id.piButton)
+        piButton.setOnClickListener {
+            calculator.appendNumber("pi")
             vibrator.vibrate(25)
         }
     }
