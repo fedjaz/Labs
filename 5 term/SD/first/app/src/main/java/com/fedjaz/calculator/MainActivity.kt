@@ -11,7 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.fedjaz.calculator.calculations.Calculator
 import com.fedjaz.calculator.calculations.Operations
-import kotlin.math.sin
+import kotlin.math.*
 
 class MainActivity : AppCompatActivity() {
     private var scientificButtons: List<Int> =
@@ -111,6 +111,60 @@ class MainActivity : AppCompatActivity() {
         val sinButton = findViewById<Button>(R.id.sinButton)
         sinButton.setOnClickListener {
             calculator.appendFunction("sin(") { n1: Double -> sin(n1) }
+            vibrator.vibrate(25)
+        }
+
+        val cosButton = findViewById<Button>(R.id.cosButton)
+        cosButton.setOnClickListener {
+            calculator.appendFunction("cos(") { n1: Double -> cos(n1) }
+            vibrator.vibrate(25)
+        }
+
+        val tanButton = findViewById<Button>(R.id.tanButton)
+        tanButton.setOnClickListener {
+            calculator.appendFunction("tan(") { n1: Double -> tan(n1) }
+            vibrator.vibrate(25)
+        }
+
+        val powButton = findViewById<Button>(R.id.powButton)
+        powButton.setOnClickListener {
+            calculator.appendOperation(Operations.POWER)
+            vibrator.vibrate(25)
+        }
+
+        val radButton = findViewById<Button>(R.id.radButton)
+        radButton.setOnClickListener {
+            calculator.appendFunction("rad(") { n1: Double -> (Math.toRadians(n1)) }
+            vibrator.vibrate(25)
+        }
+
+        val lgButton = findViewById<Button>(R.id.lgButton)
+        lgButton.setOnClickListener {
+            calculator.appendFunction("lg(") { n1: Double -> (log10(n1)) }
+            vibrator.vibrate(25)
+        }
+
+        val lnButton = findViewById<Button>(R.id.lnButton)
+        lnButton.setOnClickListener {
+            calculator.appendFunction("ln(") { n1: Double -> (ln(n1)) }
+            vibrator.vibrate(25)
+        }
+
+        val sqrtButton = findViewById<Button>(R.id.sqrtButton)
+        sqrtButton.setOnClickListener {
+            calculator.appendFunction("sqrt(") { n1: Double -> (sqrt(n1)) }
+            vibrator.vibrate(25)
+        }
+
+        val reverseButton = findViewById<Button>(R.id.reverseButton)
+        reverseButton.setOnClickListener {
+            calculator.appendFunction("rev(") { n1: Double -> 1 / n1 }
+            vibrator.vibrate(25)
+        }
+
+        val factorialButton = findViewById<Button>(R.id.factorialButton)
+        factorialButton.setOnClickListener {
+            calculator.appendFunction("fact(") { n1: Double -> calculator.factorial(n1) }
             vibrator.vibrate(25)
         }
 

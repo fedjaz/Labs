@@ -1,10 +1,13 @@
 package com.fedjaz.calculator.calculations
 
+import kotlin.math.pow
+
 enum class Operations(val symbol: String) {
     ADD("+"),
     SUBTRACT("-"),
     MULTIPLY("*"),
     DIVIDE("/"),
+    POWER("^"),
     NONE("")
 }
 
@@ -23,6 +26,7 @@ fun getOperation(operation: Operations) : (Double, Double) -> Double{
         Operations.SUBTRACT -> {n1 : Double, n2: Double -> n1 - n2 }
         Operations.MULTIPLY -> {n1 : Double, n2: Double -> n1 * n2 }
         Operations.DIVIDE -> {n1 : Double, n2: Double -> n1 / n2 }
+        Operations.POWER -> {n1 : Double, n2: Double -> n1.pow(n2) }
         Operations.NONE -> { _: Double, _: Double -> 0.0 }
     }
 

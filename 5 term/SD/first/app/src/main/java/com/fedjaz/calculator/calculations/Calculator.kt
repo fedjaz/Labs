@@ -145,5 +145,15 @@ class Calculator {
         update()
     }
 
+    fun factorial(n: Double) : Double{
+        if (n < 0){
+            throw IllegalArgumentException()
+        }
 
+        val num = round(n)
+        if(num == 0.0){
+            return 1.0
+        }
+        return num * factorial(num - 1)
+    }
 }
