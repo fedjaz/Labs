@@ -33,6 +33,6 @@
     <string name="moreOrLessButton">$</string>
     <string name="eButton">e</string>
     <string name="n0Button">0</string>
-    <string name="floatButton">,</string>
+    <string name="floatButton">.</string>
     <string name="equalsButton">=</string>
 </resources>

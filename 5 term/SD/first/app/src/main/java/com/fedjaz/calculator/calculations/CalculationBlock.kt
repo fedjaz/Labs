@@ -32,7 +32,6 @@ class CalculationBlock(private var resultFunction: (Double) -> Double,
 
     fun appendNumber(char: Char){
         if(isPrimitive){
-
             if(number == "0"){
                 if(char == '0'){
                     return
@@ -49,7 +48,7 @@ class CalculationBlock(private var resultFunction: (Double) -> Double,
 
     fun setFloat(){
         if(number != "" && !number.contains(',')){
-            number += ','
+            number += '.'
         }
     }
 
@@ -58,7 +57,7 @@ class CalculationBlock(private var resultFunction: (Double) -> Double,
             operation = Operations.NONE
             return true
         }
-        if(isCompleted){
+        if(isCompleted && !isPrimitive){
             isCompleted = false
             return true
         }

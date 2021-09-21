@@ -1,7 +1,11 @@
 package com.fedjaz.calculator.calculations
 
 import android.media.VolumeShaper
+import android.opengl.Visibility
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.TextView
+import kotlin.math.round
 
 class Calculator {
     private val defaultFunction: (Double) -> (Double) = {res:Double -> res}
@@ -13,6 +17,9 @@ class Calculator {
 
     fun appendNumber(char: Char){
         if(currentBlock.isCompleted){
+            if(currentBlock.operation == Operations.NONE){
+                currentBlock.operation = Operations.MULTIPLY
+            }
             currentBlock = currentBlock.parentBlock!!
             val newBlock = CalculationBlock(defaultFunction, "", currentBlock, true)
             currentBlock.blocks.add(newBlock)
@@ -72,8 +79,16 @@ class Calculator {
         update()
     }
 
+    fun setFloat(){
+        if(currentBlock.operation != Operations.NONE || currentBlock.isCompleted){
+            return
+        }
+        currentBlock.setFloat()
+        update()
+    }
+
     fun delete(){
-        if(currentBlock.isCompleted && currentBlock.operation == Operations.NONE){
+        if(!currentBlock.isPrimitive && currentBlock.isCompleted && currentBlock.operation == Operations.NONE){
             currentBlock.delete()
             currentBlock = currentBlock.blocks.last()
         }
@@ -99,8 +114,25 @@ class Calculator {
     }
 
     private fun update(){
+        if(mainBlock.blocks.isEmpty()){
+            resultTextView?.visibility = GONE;
+            inputTextView?.text = "0"
+            return
+        }
+        else{
+            resultTextView?.visibility = VISIBLE;
+        }
         inputTextView?.text = mainBlock.toString()
-        resultTextView?.text = "= " + evaluate().toString()
+
+        val result = evaluate()
+
+        var resultString = String.format("= %.5f", result)
+        resultString = resultString.trimEnd('0')
+        if(resultString.last() == '.'){
+            resultString = resultString.dropLast(1)
+        }
+        resultTextView?.text = resultString
+
     }
 
     fun evaluate() : Double{
@@ -110,6 +142,7 @@ class Calculator {
     fun setListeners(inputTextView: TextView, resultTextView: TextView){
         this.inputTextView = inputTextView
         this.resultTextView = resultTextView
+        update()
     }
 
 

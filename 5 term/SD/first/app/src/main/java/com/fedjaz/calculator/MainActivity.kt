@@ -125,6 +125,12 @@ class MainActivity : AppCompatActivity() {
             calculator.complete()
             vibrator.vibrate(25)
         }
+
+        val floatButton = findViewById<Button>(R.id.floatButton)
+        floatButton.setOnClickListener {
+            calculator.setFloat()
+            vibrator.vibrate(25)
+        }
     }
 
     private fun showMore(){
