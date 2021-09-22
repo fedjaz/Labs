@@ -181,15 +181,33 @@ class Calculator {
     }
 
     fun factorial(n: Double) : Double{
-        if (n < 0){
+        if (n < 0 || n.isNaN()){
             throw IllegalArgumentException()
         }
 
+        if(n >= 1000){
+            return Double.POSITIVE_INFINITY
+        }
         val num = round(n)
         if(num == 0.0){
             return 1.0
         }
         return num * factorial(num - 1)
+    }
+
+    fun equals(){
+        val seq = resultTextView?.text ?: return
+        val res = seq.toString().replace("= ", "")
+        if(res.contains("Infinity") || res == "NaN" || res == "Error"){
+            return
+        }
+        clear()
+        val newBlock = CalculationBlock(defaultFunction, "", mainBlock, true)
+        newBlock.number = res
+        mainBlock.blocks.add(newBlock)
+        currentBlock = newBlock
+        update()
+        resultTextView?.visibility = GONE
     }
 
     fun numToString(n: Double): String{
@@ -204,7 +222,9 @@ class Calculator {
 
         }
         else{
-            String.format("= %.5e", n)
+            val res = String.format("= %.5e", n).replace("+", "").split('e', ).toMutableList()
+            res[0] = res[0].trimEnd('0', '.')
+            res.joinToString("e")
         }
     }
 }

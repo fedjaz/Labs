@@ -209,6 +209,12 @@ class MainActivity : AppCompatActivity() {
             calculator.appendNumber("pi")
             vibrator.vibrate(25)
         }
+
+        val equalsButton = findViewById<Button>(R.id.equalsButton)
+        equalsButton.setOnClickListener {
+            calculator.equals()
+            vibrator.vibrate(25)
+        }
     }
 
     private fun showMore(){

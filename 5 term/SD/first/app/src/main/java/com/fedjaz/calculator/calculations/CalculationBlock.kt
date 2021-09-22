@@ -54,8 +54,13 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
                     number = char
                 }
                 else{
-                    if(char != "e" && char != "pi" && !number.contains("pi", false) && !number.contains("e")){
+                    if(char != "pi" && char != "e" && !number.contains("pi", false) && number[0] != 'e'){
                         number += char
+                    }
+                    else if(char == "e"){
+                        if(!number.contains("e")){
+                            number += char
+                        }
                     }
                 }
             }
@@ -74,6 +79,9 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
         }
         if(operation != Operations.NONE){
             operation = Operations.NONE
+            if(isPrimitive){
+                isCompleted = false
+            }
             return true
         }
         if(isCompleted && !isPrimitive){
