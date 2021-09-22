@@ -137,7 +137,7 @@ class Calculator {
         if(currentBlock.isPrimitive){
             var num = currentBlock.number.toDouble()
             num *= 0.01
-            currentBlock.number = String.format("%.5f", num).trimEnd('0')
+            currentBlock.number = numToString(num)
             update()
         }
     }
@@ -152,6 +152,7 @@ class Calculator {
     private fun update(){
         if(mainBlock.blocks.isEmpty()){
             resultTextView?.visibility = GONE;
+            resultTextView?.text = "0"
             inputTextView?.text = "0"
             return
         }
@@ -167,7 +168,7 @@ class Calculator {
             resultTextView?.text = "Error"
             return
         }
-        resultTextView?.text = numToString(result)
+        resultTextView?.text = "= " + numToString(result)
     }
 
     fun evaluate() : Double{
@@ -208,11 +209,12 @@ class Calculator {
         currentBlock = newBlock
         update()
         resultTextView?.visibility = GONE
+        resultTextView?.text = inputTextView?.text
     }
 
     fun numToString(n: Double): String{
         return if(n < 1e10 && n > -1e10){
-            val res = String.format(Locale.US,"= %.5f", n, ).trimEnd('0')
+            val res = String.format(Locale.US,"%.5f", n, ).trimEnd('0')
             if (res.last() == '.'){
                 res.dropLast(1)
             }
@@ -222,7 +224,7 @@ class Calculator {
 
         }
         else{
-            val res = String.format("= %.5e", n).replace("+", "").split('e', ).toMutableList()
+            val res = String.format(Locale.US, "%.5e", n).split('e', ).toMutableList()
             res[0] = res[0].trimEnd('0', '.')
             res.joinToString("e")
         }
