@@ -224,7 +224,7 @@ class Calculator {
 
         }
         else{
-            val res = String.format(Locale.US, "%.5e", n).split('e', ).toMutableList()
+            val res = String.format(Locale.US, "%.5e", n).replace("+", "").split('e', ).toMutableList()
             res[0] = res[0].trimEnd('0', '.')
             res.joinToString("e")
         }
