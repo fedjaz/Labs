@@ -1,6 +1,9 @@
 package com.fedjaz.calculator
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Vibrator
@@ -9,6 +12,9 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
+import androidx.appcompat.content.res.AppCompatResources
 import com.fedjaz.calculator.calculations.Calculator
 import com.fedjaz.calculator.calculations.Operations
 import kotlin.math.*
@@ -39,6 +45,19 @@ class MainActivity : AppCompatActivity() {
         showLess()
     }
 
+    private fun setCompatibleImage(button: Button, id: Int, coeff: Double){
+
+        val bitmap = BitmapFactory.decodeResource(applicationContext.resources, id)
+        val widthCoeff = button.width.toDouble() / bitmap.width
+        val width = (button.width * coeff).toInt()
+        val height = (bitmap.height * widthCoeff * coeff).toInt()
+
+        val newDrawable = BitmapDrawable(applicationContext.resources, Bitmap.createScaledBitmap(bitmap, width, height, true))
+
+        button.setCompoundDrawablesWithIntrinsicBounds(newDrawable, null, null, null)
+        button.setPadding((button.width - width) / 2, 0, 0, 0)
+    }
+
     private fun setListeners() {
         val lessButton = findViewById<Button>(R.id.moreLessButton)
         lessButton.setOnClickListener {
@@ -51,6 +70,10 @@ class MainActivity : AppCompatActivity() {
             }
             vibrator.vibrate(25)
         }
+        lessButton.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            setCompatibleImage(lessButton, R.mipmap.moreless_foreground, 0.6)
+        }
+
         val buttons = listOf<Int>(
             R.id.n0Button,
             R.id.n1Button,
@@ -77,11 +100,17 @@ class MainActivity : AppCompatActivity() {
             calculator.appendOperation(Operations.ADD)
             vibrator.vibrate(25)
         }
+        addButton.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            setCompatibleImage(addButton, R.mipmap.add_foreground, 0.3)
+        }
 
         val subtractButton = findViewById<Button>(R.id.subtractButton)
         subtractButton.setOnClickListener {
             calculator.appendOperation(Operations.SUBTRACT)
             vibrator.vibrate(25)
+        }
+        subtractButton.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            setCompatibleImage(subtractButton, R.mipmap.subtract_foreground, 0.3)
         }
 
         val multiplyButton = findViewById<Button>(R.id.multiplyButton)
@@ -89,17 +118,26 @@ class MainActivity : AppCompatActivity() {
             calculator.appendOperation(Operations.MULTIPLY)
             vibrator.vibrate(25)
         }
+        multiplyButton.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            setCompatibleImage(multiplyButton, R.mipmap.multiply_foreground, 0.3)
+        }
 
         val divideButton = findViewById<Button>(R.id.divideButton)
         divideButton.setOnClickListener {
             calculator.appendOperation(Operations.DIVIDE)
             vibrator.vibrate(25)
         }
+        divideButton.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            setCompatibleImage(divideButton, R.mipmap.divide_foreground, 0.3)
+        }
 
         val deleteButton = findViewById<Button>(R.id.deleteButton)
         deleteButton.setOnClickListener {
             calculator.delete()
             vibrator.vibrate(25)
+        }
+        deleteButton.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            setCompatibleImage(deleteButton, R.mipmap.remove_foreground, 0.5)
         }
 
         val clearButton = findViewById<Button>(R.id.clearButton)
@@ -131,6 +169,9 @@ class MainActivity : AppCompatActivity() {
             calculator.appendOperation(Operations.POWER)
             vibrator.vibrate(25)
         }
+        powButton.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            setCompatibleImage(powButton, R.mipmap.power_foreground, 0.4)
+        }
 
         val degButton = findViewById<Button>(R.id.degButton)
         degButton.setOnClickListener {
@@ -161,17 +202,26 @@ class MainActivity : AppCompatActivity() {
             calculator.appendFunction("sqrt(") { n1: Double -> (sqrt(n1)) }
             vibrator.vibrate(25)
         }
+        sqrtButton.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            setCompatibleImage(sqrtButton, R.mipmap.sqrt_foreground, 0.4)
+        }
 
         val reverseButton = findViewById<Button>(R.id.reverseButton)
         reverseButton.setOnClickListener {
             calculator.appendFunction("rev(") { n1: Double -> 1 / n1 }
             vibrator.vibrate(25)
         }
+        reverseButton.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            setCompatibleImage(reverseButton, R.mipmap.reverse_foreground, 0.4)
+        }
 
         val factorialButton = findViewById<Button>(R.id.factorialButton)
         factorialButton.setOnClickListener {
             calculator.appendFunction("fact(") { n1: Double -> calculator.factorial(n1) }
             vibrator.vibrate(25)
+        }
+        factorialButton.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            setCompatibleImage(factorialButton, R.mipmap.factorial_foreground, 0.4)
         }
 
         val openBracketButton = findViewById<Button>(R.id.openBracketButton)
@@ -197,6 +247,9 @@ class MainActivity : AppCompatActivity() {
             calculator.percent()
             vibrator.vibrate(25)
         }
+        percentButton.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            setCompatibleImage(percentButton, R.mipmap.percent_foreground, 0.4)
+        }
 
         val eButton = findViewById<Button>(R.id.eButton)
         eButton.setOnClickListener {
@@ -206,7 +259,7 @@ class MainActivity : AppCompatActivity() {
 
         val piButton = findViewById<Button>(R.id.piButton)
         piButton.setOnClickListener {
-            calculator.appendNumber("pi")
+            calculator.appendNumber("π")
             vibrator.vibrate(25)
         }
 
@@ -214,6 +267,9 @@ class MainActivity : AppCompatActivity() {
         equalsButton.setOnClickListener {
             calculator.equals()
             vibrator.vibrate(25)
+        }
+        equalsButton.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            setCompatibleImage(equalsButton, R.mipmap.equals_foreground, 0.3)
         }
     }
 

@@ -48,6 +48,9 @@ class Calculator {
     }
 
     fun appendOperation(operation: Operations){
+        if(currentBlock.requiresFilling){
+            return
+        }
         if((!currentBlock.isPrimitive && !currentBlock.isCompleted) || currentBlock == mainBlock){
             if(operation == Operations.SUBTRACT){
                 val newBlock = CalculationBlock(currentBlock, true)
@@ -198,12 +201,16 @@ class Calculator {
 
     fun equals(){
         val seq = resultTextView?.text ?: return
-        val res = seq.toString().replace("= ", "")
+        var res = seq.toString().replace("= ", "")
         if(res.contains("Infinity") || res == "NaN" || res == "Error"){
             return
         }
         clear()
         val newBlock = CalculationBlock(defaultFunction, "", mainBlock, true)
+        if(res[0] == '-'){
+            newBlock.isNegative = true
+            res = res.drop(1)
+        }
         newBlock.number = res
         mainBlock.blocks.add(newBlock)
         currentBlock = newBlock

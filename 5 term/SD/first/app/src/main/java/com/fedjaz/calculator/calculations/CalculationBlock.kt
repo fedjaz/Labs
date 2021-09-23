@@ -54,7 +54,7 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
                     number = char
                 }
                 else{
-                    if(char != "pi" && char != "e" && !number.contains("pi", false) && number[0] != 'e'){
+                    if(char != "π" && char != "e" && !number.contains("π", false) && number[0] != 'e'){
                         number += char
                     }
                     else if(char == "e"){
@@ -90,7 +90,7 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
         }
         if(number != ""){
             number = when(number){
-                "pi" -> ""
+                "π" -> ""
                 "e" -> ""
                 else -> number.dropLast(1)
             }
@@ -121,7 +121,7 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
         if(isPrimitive){
             val num = when (number) {
                 "e" -> Math.E
-                "pi" -> Math.PI
+                "π" -> Math.PI
                 else -> number.toDoubleOrNull() ?: return 0.0
             }
             return num * if(isNegative) -1 else 1
