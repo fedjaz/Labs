@@ -110,7 +110,7 @@ class Calculator {
     }
 
     fun setFloat(){
-        if(currentBlock.operation != Operations.NONE || currentBlock.isCompleted){
+        if(currentBlock.operation != Operations.NONE || currentBlock.isCompleted || currentBlock.number.contains('.')){
             return
         }
         currentBlock.setFloat()
