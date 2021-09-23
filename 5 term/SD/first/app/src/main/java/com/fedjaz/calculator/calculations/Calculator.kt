@@ -1,12 +1,9 @@
 package com.fedjaz.calculator.calculations
 
-import android.media.VolumeShaper
-import android.opengl.Visibility
-import android.provider.Settings.Global.getString
+import android.annotation.SuppressLint
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.TextView
-import com.fedjaz.calculator.R
 import java.util.*
 import kotlin.math.round
 
@@ -152,15 +149,16 @@ class Calculator {
         update()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun update(){
         if(mainBlock.blocks.isEmpty()){
-            resultTextView?.visibility = GONE;
+            resultTextView?.visibility = GONE
             resultTextView?.text = "0"
             inputTextView?.text = "0"
             return
         }
         else{
-            resultTextView?.visibility = VISIBLE;
+            resultTextView?.visibility = VISIBLE
         }
         inputTextView?.text = mainBlock.toString()
 
@@ -174,7 +172,7 @@ class Calculator {
         resultTextView?.text = "= " + numToString(result)
     }
 
-    fun evaluate() : Double{
+    private fun evaluate() : Double{
          return mainBlock.evaluate()
     }
 
@@ -219,9 +217,9 @@ class Calculator {
         resultTextView?.text = inputTextView?.text
     }
 
-    fun numToString(n: Double): String{
+    private fun numToString(n: Double): String{
         return if(n < 1e10 && n > -1e10){
-            val res = String.format(Locale.US,"%.5f", n, ).trimEnd('0')
+            val res = String.format(Locale.US,"%.5f", n).trimEnd('0')
             if (res.last() == '.'){
                 res.dropLast(1)
             }
@@ -231,7 +229,7 @@ class Calculator {
 
         }
         else{
-            val res = String.format(Locale.US, "%.5e", n).replace("+", "").split('e', ).toMutableList()
+            val res = String.format(Locale.US, "%.5e", n).replace("+", "").split('e' ).toMutableList()
             res[0] = res[0].trimEnd('0', '.')
             res.joinToString("e")
         }
