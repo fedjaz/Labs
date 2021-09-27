@@ -1,0 +1,49 @@
+<resources>
+    <string name="degButton">deg</string>
+    <string name="radButton">rad</string>
+    <string name="sinButton">sin</string>
+    <string name="cosButton">cos</string>
+    <string name="tanButton">tan</string>
+    <string name="powButton">pow</string>
+    <string name="lgButton">lg</string>
+    <string name="lnButton">ln</string>
+    <string name="openBracketButton">(</string>
+    <string name="closeBracketButton">)</string>
+    <string name="sqrtButton">sqrt</string>
+    <string name="clearButton">C</string>
+    <string name="deleteButton">rm</string>
+    <string name="percentButton">%</string>
+    <string name="divideButton">/</string>
+    <string name="factorialButton">X!</string>
+    <string name="n7Button">7</string>
+    <string name="n8Button">8</string>
+    <string name="n9Button">9</string>
+    <string name="multiplyButton">x</string>
+    <string name="reverseButton">1/x</string>
+    <string name="n4Button">4</string>
+    <string name="n5Button">5</string>
+    <string name="n6Button">6</string>
+    <string name="piButton">π</string>
+    <string name="subtractButton">-</string>
+    <string name="n1Button">1</string>
+    <string name="n2Button">2</string>
+    <string name="n3Button">3</string>
+    <string name="addButton">+</string>
+    <string name="moreOrLessButton">$</string>
+    <string name="eButton">e</string>
+    <string name="n0Button">0</string>
+    <string name="floatButton">.</string>
+    <string name="equalsButton">=</string>
+    <string name="errorMessage">Error</string>
+    <string name="activation">Activation</string>
+    <string name="activate">Activate</string>
+    <string name="activationHint">Enter activation code</string>
+    <string name="step1">1. Go to </string>
+    <string name="step1URL">http://aleksyy.ddns.net:60500</string>
+    <string name="step2">2. Enter your Device ID and buy licence key</string>
+    <string name="step3">3. Enter licence key in the field below and click Activate</string>
+    <string name="deviceIDText">Device ID:</string>
+    <string name="copy">Copy</string>
+    <string name="publicKey">MIIDRzCCAjkGByqGSM44BAEwggIsAoIBAQDR+2AaIELyMqxcHK1xqprr2rG7kvaD8BzUdqWEWLnkcuAiAy1Res5hPWNHb4w75Zh9B/9aQYhXzaQQkh3MUQRv7xpfo4vyoFIxM0pxnD6gzu24vTAU7PbVz2DzwpfGtz7/+L+rwNgqJq22MQKK1E3a6R8WzGWqOSSthYp7aIIm/g8eSwt89zhxVa8IvtGRUzHKdG2WRWtbyH36IG/dcNvh6pWyP84A10y2w/hKN3wNgWnNvL3+1E3QGRUaYUHUxd1t3/Ovj/HQwSxiGEFTwzodFXXM+q1jqSlmsqYVFwZfKyntzOYIZ4WNJexeWy/mm6TfsIffz8PiUsuZYfwdRzs9AiEAoVOiTMEt6cfBT5y5cAhuEDaX0I14GOTW8O7iL4Y1ufMCggEAeh/qT+NwLjKL75n36NW9afo4sTEqybJ5sY28XR8fZwKkaDebM/tad+wgD/ueaTiehLjWIgyoL5jDTgtzu5xTbiDSOa6KcrbF8ExhrVZjTY7//W0UdHcuJXoMklMSfP+7P8Wpdvw+p8NP5ovKEnm6LC7GysKiyHZkBjOvjkL3Kvm1p1HJNup4tTt3X8b5YZ9Oebd1ExoWSzDCvvtH11TqSuaKTf7MAi0ootGx1TMM8O2rSgTPkQOmos+4Qrp0rHZZ6SWmqhloWbHtitwvegT2J/GYdBzriJQqKoFjwUcmYXGZnl/xT1b43Ajh5Je/IeQwFMlMOVl+QNo9z7b3xEQJ7QOCAQYAAoIBAQC9MgMw5vYnCsez75MuJeSKacdmKeOpuoSsFazXFXbzvbZwpMUUva7sj7MUkoHiTKO1MP2kt5FFvIaO2LIx9Pxsuo6uClzJfZhDdHc2uwACVV6AX2ptuFOd9oHtwAkdjjDlr3RdDVOCv2KTyImqbymIx2GKLZ3OQzHwgVyw3esL4if/brsbaoqloBsoo/l/o6iEuP5ZLiKzRzg0/X9R94ni8OPzloEJseCI9pGPVsZksQ5xuXK+iO1P+HX/lNu3qiscchcWIY6G4WUB8NwrtlLb/f+wyc57z8dItVkDMj20VytKmoTD5AShhfXz9P06i8x3uiPIW6sHEdJUxr7sdmgV</string>
+    <string name="privateKey">MIICZQIBADCCAjkGByqGSM44BAEwggIsAoIBAQDR+2AaIELyMqxcHK1xqprr2rG7kvaD8BzUdqWEWLnkcuAiAy1Res5hPWNHb4w75Zh9B/9aQYhXzaQQkh3MUQRv7xpfo4vyoFIxM0pxnD6gzu24vTAU7PbVz2DzwpfGtz7/+L+rwNgqJq22MQKK1E3a6R8WzGWqOSSthYp7aIIm/g8eSwt89zhxVa8IvtGRUzHKdG2WRWtbyH36IG/dcNvh6pWyP84A10y2w/hKN3wNgWnNvL3+1E3QGRUaYUHUxd1t3/Ovj/HQwSxiGEFTwzodFXXM+q1jqSlmsqYVFwZfKyntzOYIZ4WNJexeWy/mm6TfsIffz8PiUsuZYfwdRzs9AiEAoVOiTMEt6cfBT5y5cAhuEDaX0I14GOTW8O7iL4Y1ufMCggEAeh/qT+NwLjKL75n36NW9afo4sTEqybJ5sY28XR8fZwKkaDebM/tad+wgD/ueaTiehLjWIgyoL5jDTgtzu5xTbiDSOa6KcrbF8ExhrVZjTY7//W0UdHcuJXoMklMSfP+7P8Wpdvw+p8NP5ovKEnm6LC7GysKiyHZkBjOvjkL3Kvm1p1HJNup4tTt3X8b5YZ9Oebd1ExoWSzDCvvtH11TqSuaKTf7MAi0ootGx1TMM8O2rSgTPkQOmos+4Qrp0rHZZ6SWmqhloWbHtitwvegT2J/GYdBzriJQqKoFjwUcmYXGZnl/xT1b43Ajh5Je/IeQwFMlMOVl+QNo9z7b3xEQJ7QQjAiEAjlQn+DHhRSYUOglnrfcJptIW3S8DAneCfMZ+W1Zjq/M=</string>
+</resources>
