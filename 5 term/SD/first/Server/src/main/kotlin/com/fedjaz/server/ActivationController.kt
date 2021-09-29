@@ -19,7 +19,7 @@ class ActivationController {
 
     @GetMapping("/download/full")
     fun downloadFull(): ResponseEntity<Resource>{
-        val file = File(System.getProperty("user.dir") + "/src/main/resources/static/downloads/calculator-full.apk")
+        val file = File("Downloads/calculator-full.apk")
         val inputStreamResource = InputStreamResource(FileInputStream(file))
         val headers = HttpHeaders()
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=calculator-full.apk")
@@ -32,7 +32,7 @@ class ActivationController {
 
     @GetMapping("/download/demo")
     fun downloadDemo(): ResponseEntity<Resource>{
-        val file = File(System.getProperty("user.dir") + "/src/main/resources/static/downloads/calculator-demo.apk")
+        val file = File("Downloads/calculator-demo.apk")
         val inputStreamResource = InputStreamResource(FileInputStream(file))
         val headers = HttpHeaders()
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=calculator-demo.apk")
