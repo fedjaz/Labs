@@ -27,7 +27,6 @@ class Activation(var context: Context) {
     }
 
     fun checkKey(key: String) : Boolean{
-        val kkk = createKey(getDeviceID())
         val keyBytes = android.util.Base64.decode(
             key,
             Base64.NO_WRAP
@@ -71,21 +70,5 @@ class Activation(var context: Context) {
         val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
         val version = pInfo.versionName
         return "demo" in version
-    }
-
-    fun createKey(did: String) : String{
-        val privateKeyBytes = android.util.Base64.decode(
-            context.resources.getString(R.string.privateKey),
-            Base64.NO_WRAP
-        )
-
-        val keyFactory = KeyFactory.getInstance("DSA")
-        val privateKey = keyFactory.generatePrivate(PKCS8EncodedKeySpec(privateKeyBytes))
-
-        val signature = Signature.getInstance("SHA256withDSA")
-        signature.initSign(privateKey)
-        signature.update(did.toByteArray())
-        val keyBytes = signature.sign()
-        return Base64.encodeToString(keyBytes, Base64.NO_WRAP)
     }
 }
