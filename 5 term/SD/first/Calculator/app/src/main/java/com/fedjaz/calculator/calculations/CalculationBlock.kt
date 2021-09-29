@@ -1,6 +1,7 @@
 package com.fedjaz.calculator.calculations
 
 import android.media.VolumeShaper
+import java.lang.ArithmeticException
 
 class CalculationBlock(var resultFunction: (Double) -> Double,
                        var stringPattern: String,
@@ -46,7 +47,7 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
                     return
                 }
                 else{
-                    number = char.toString()
+                    number = char
                 }
             }
             else{
@@ -68,7 +69,7 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
     }
 
     fun setFloat(){
-        if(number != "" && !number.contains(',')){
+        if(number != "" && number != "e" && number != "π"){
             number += '.'
         }
     }
@@ -144,6 +145,9 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
                 if(getOrder(operation) == order){
                     val n1 = evaluated[i]
                     val n2 = evaluated[i + 1]
+                    if(operation == Operations.DIVIDE && n2 == 0.0){
+                        throw ArithmeticException()
+                    }
                     val res = getOperation(operation)(n1, n2)
                     evaluated[i] = res
                     evaluated.removeAt(i + 1)
