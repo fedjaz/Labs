@@ -24,18 +24,4 @@ class Activation {
         val keyBytes = signature.sign()
         return Base64.getEncoder().encodeToString(keyBytes)
     }
-
-    private fun gen(){
-        val keyPairGen = KeyPairGenerator.getInstance("DSA")
-        keyPairGen.initialize(2048)
-        val keys = keyPairGen.genKeyPair()
-
-        val privateKey = keys.private
-        val publicKey = keys.public
-
-        val privateString = Base64.getEncoder().encodeToString(privateKey.encoded)
-        val publicString = Base64.getEncoder().encodeToString(publicKey.encoded)
-        println(privateString)
-        println(publicString)
-    }
 }

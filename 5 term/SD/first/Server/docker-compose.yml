@@ -1,0 +1,28 @@
+version: "3.9"
+
+networks:
+    calculator-network:
+        name: calculator-network
+
+services:
+    nginx:
+        image: fedjaz/easynginx
+        restart: always
+        networks:
+            - calculator-network
+        environment:
+            listen: 2754
+            proxy_pass: "http://calculator-server:8080"
+        ports:
+            - "60500:2754"
+
+    calculator-server:
+        environment:
+            privateKey: 
+
+        image: fedjaz/calculator-server
+        restart: always
+        networks:
+            - calculator-network
+        volumes:
+            - /home/fedjaz/Downloads/:/Downloads/
