@@ -82,7 +82,7 @@ namespace Second
             }
             ans += 1;
             byte exp = (byte)BitsToInt(exponent);
-            if(exp == 127)
+            if(exp == 0)
             {
                 return 0;
             }
@@ -160,19 +160,20 @@ namespace Second
                 }
    
             }
-
+            byte[] newMantissa1 = new byte[23];
             newMantissa = ShiftLeft(newMantissa, shift);
             
+
             if(a.Interactive)
             {
                 Console.WriteLine($"Normalized mantissa is {BitsToString(newMantissa)}");
             }
-            byte[] newMantissa1 = new byte[23];
+            
             Array.Copy(newMantissa, 25, newMantissa1, 0, 23);
-            int onesCount2 = newMantissa.Where((x) => x == 1).Count();
+            int onesCount2 = newMantissa1.Where((x) => x == 1).Count();
             if(a.Interactive)
             {
-                if(onesCount1 != onesCount2)
+                if(onesCount1 != onesCount2 + 1)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Precision lost!");

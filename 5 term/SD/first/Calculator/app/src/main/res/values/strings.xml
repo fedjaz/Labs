@@ -1,0 +1,48 @@
+<resources>
+    <string name="degButton">deg</string>
+    <string name="radButton">rad</string>
+    <string name="sinButton">sin</string>
+    <string name="cosButton">cos</string>
+    <string name="tanButton">tan</string>
+    <string name="powButton">pow</string>
+    <string name="lgButton">lg</string>
+    <string name="lnButton">ln</string>
+    <string name="openBracketButton">(</string>
+    <string name="closeBracketButton">)</string>
+    <string name="sqrtButton">sqrt</string>
+    <string name="clearButton">C</string>
+    <string name="deleteButton">rm</string>
+    <string name="percentButton">%</string>
+    <string name="divideButton">/</string>
+    <string name="factorialButton">X!</string>
+    <string name="n7Button">7</string>
+    <string name="n8Button">8</string>
+    <string name="n9Button">9</string>
+    <string name="multiplyButton">x</string>
+    <string name="reverseButton">1/x</string>
+    <string name="n4Button">4</string>
+    <string name="n5Button">5</string>
+    <string name="n6Button">6</string>
+    <string name="piButton">π</string>
+    <string name="subtractButton">-</string>
+    <string name="n1Button">1</string>
+    <string name="n2Button">2</string>
+    <string name="n3Button">3</string>
+    <string name="addButton">+</string>
+    <string name="moreOrLessButton">$</string>
+    <string name="eButton">e</string>
+    <string name="n0Button">0</string>
+    <string name="floatButton">.</string>
+    <string name="equalsButton">=</string>
+    <string name="errorMessage">Error</string>
+    <string name="activation">Activation</string>
+    <string name="activate">Activate</string>
+    <string name="activationHint">Enter activation code</string>
+    <string name="step1">1. Go to </string>
+    <string name="step1URL">http://aleksyy.ddns.net:60500</string>
+    <string name="step2">2. Enter your Device ID and buy licence key</string>
+    <string name="step3">3. Enter licence key in the field below and click Activate</string>
+    <string name="deviceIDText">Device ID:</string>
+    <string name="copy">Copy</string>
+    <string name="publicKey">MIIDQjCCAjUGByqGSM44BAEwggIoAoIBAQCPeTXZuarpv6vtiHrPSVG28y7FnjuvNxjo6sSWHz79NgbnQ1GpxBgzObgJ58KuHFObp0dbhdARrbi0eYd1SYRpXKwOjxSzNggooi/6JxEKPWKpk0U0CaD+aWxGWPhL3SCBnDcJoBBXsZWtzQAjPbpUhLYpH51kjviDRIZ3l5zsBLQ0pqwudemYXeI9sCkvwRGMn/qdgYHnM423krcw17njSVkvaAmYchU5Feo9a4tGU8YzRY+AOzKkwuDycpAlbk4/ijsIOKHEUOThjBopo33fXqFD3ktm/wSQPtXPFiPhWNSHxgjpfyEc2B3KI8tuOAdl+CLjQr5ITAV2OTlgHNZnAh0AuvaWpoV499/e5/pnyXfHhe8ysjO65YDAvNVpXQKCAQAWplxYIEhQcE51AqOXVwQNNNo6NHjBVNTkpcAtJC7gT5bmHkvQkEq9rI837rHgnzGC0jyQQ8tkL4gAQWDt+coJsyB2p5wypifyRz6Rh5uixOdEvSCBVEy1W4AsNo0fqD7UielOD6BojjJCilx4xHjGjQUntxyaOrsLC+EsRGiWOefTznTbEBplqiuH9kxoJts+xy9LVZmDS7TtsC98kOmkltOlXVNb6/xF1PYZ9j897buHOSXC8iTgdzEpbaiH7B5HSPh++1/et1SEMWsiMt7lU92vAhErDR8C2jCXMiT+J67ai51LKSLZuovjntnhA6Y8UoELxoi34u1DFuHvF9veA4IBBQACggEACcWZTWoiir6BW47qVqkKJHSZoSyL0DdtEar6O2nAKYLajWPSnNbTJgsrau3S3L7GGtdUsgCajZRDcOaj4HPq4tY82CuJy4BzS4J5cRDjmGNTVbL4WWqWrhbCfUQgcgcPjbcBWH5gwWI4Tit5qyOribUM7tjQpCDOGQVk0nGLVpjKm2sV1xD4XHIJaJ2c0V0gxG9PqQCYfJJLSytiuzV/v7scaemzj5fIIywf26BQSct36fgwwaT7aEpWljKEOzy8oqzxrfUhyBeLP5/Pmr5Uf1PlE29hIWrO5DOUyMz/3yMUafH6dsnWapiaCaTXid5Jv1hom1ROOxdBAFqPGPa31w==</string>
+</resources>
