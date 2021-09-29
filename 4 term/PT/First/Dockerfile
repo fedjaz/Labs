@@ -1,4 +1,4 @@
-FROM continuumio/miniconda
+FROM continuumio/anaconda3
 
 RUN mkdir -p /home/src/app
 WORKDIR /home/src/app
