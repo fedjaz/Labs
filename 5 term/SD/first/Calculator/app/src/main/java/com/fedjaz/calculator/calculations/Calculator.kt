@@ -107,7 +107,7 @@ class Calculator {
     }
 
     fun setFloat(){
-        if(currentBlock.operation != Operations.NONE || currentBlock.isCompleted || currentBlock.number.contains('.')){
+        if(currentBlock.operation != Operations.NONE || currentBlock.isCompleted || currentBlock.number.contains('.') || currentBlock.number.contains('e')){
             return
         }
         currentBlock.setFloat()
@@ -166,6 +166,10 @@ class Calculator {
             evaluate()
         }
         catch (e: Exception){
+            resultTextView?.text = "Error"
+            return
+        }
+        if(result.isNaN()){
             resultTextView?.text = "Error"
             return
         }

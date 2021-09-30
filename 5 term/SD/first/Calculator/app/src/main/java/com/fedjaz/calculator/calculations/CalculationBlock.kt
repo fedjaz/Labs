@@ -55,13 +55,16 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
                     number = char
                 }
                 else{
-                    if(char != "π" && char != "e" && !number.contains("π", false) && number[0] != 'e'){
+                    if(char != "π" && char != "π" && !number.contains("π", false) && number[0] != 'e'){
                         number += char
                     }
                     else if(char == "e"){
-                        if(!number.contains("e")){
+                        if(!number.contains("e") && number.last() != '.'){
                             number += char
                         }
+                    }
+                    else if(number.length > 1 && number.subSequence(0, 2) == "πe" && char != "π"){
+                        number += char
                     }
                 }
             }
@@ -120,10 +123,10 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
 
     fun evaluate() : Double{
         if(isPrimitive){
-            val num = when (number) {
+            val num = when (val newNum = number.replace("π", Math.PI.toString())) {
                 "e" -> Math.E
                 "π" -> Math.PI
-                else -> number.toDoubleOrNull() ?: return 0.0
+                else -> newNum.toDoubleOrNull() ?: return 0.0
             }
             return num * if(isNegative) -1 else 1
         }
