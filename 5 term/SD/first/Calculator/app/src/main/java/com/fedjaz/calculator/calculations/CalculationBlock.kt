@@ -55,7 +55,7 @@ class CalculationBlock(var resultFunction: (Double) -> Double,
                     number = char
                 }
                 else{
-                    if(char != "π" && char != "π" && !number.contains("π", false) && number[0] != 'e'){
+                    if(char != "π" && char != "e" && !number.contains("π", false) && number[0] != 'e'){
                         number += char
                     }
                     else if(char == "e"){
