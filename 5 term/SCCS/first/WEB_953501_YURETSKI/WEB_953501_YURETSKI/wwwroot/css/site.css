@@ -1,0 +1,14 @@
+﻿header, footer {
+    background-color: #343a40
+}
+
+.nav-color {
+    color: rgba(255, 255, 255, 0.5)
+}
+
+.spacer {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 4px solid rgba(0, 0, 0, 0.2);
+}
