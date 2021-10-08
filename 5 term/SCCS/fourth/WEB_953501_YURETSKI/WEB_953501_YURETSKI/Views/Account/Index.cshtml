@@ -1,0 +1,53 @@
+﻿@using WEB_953501_YURETSKI.Models
+
+@model RegisterResult
+
+<div class="row mt-3 mb-3">
+    <img src="@Url.Action("GetAvatar", "Account")" class="img-thumbnail col-md-5" />
+    <div class="row col-6 ml-3">
+        <div>
+            <h2 class="row col">@Model.FirstName @Model.LastName</h2>
+            <h2 class="row col">@Model.Email</h2>
+            <form method="post" asp-controller="Account" asp-action="ChangePassword">
+                <h5 class="row col mt-5">Задать новый пароль</h5>
+                <div>
+                    <label class="form-label" for="OldPassword">Старый пароль</label>
+                    <input class="form-control col @(Model.OldPasswordError != "" ? "is-invalid" : "")" name="OldPassword" id="OldPassword" type="password" placeholder="Старый пароль" />
+                    <div class="invalid-feedback">
+                        @Model.OldPasswordError
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label" for="Password">Пароль</label>
+                    <input class="form-control col @(Model.PasswordError != "" ? "is-invalid" : "")" name="Password" id="Password" type="password" placeholder="Пароль" />
+                    <div class="invalid-feedback">
+                        @Model.PasswordError
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label" for="PasswordConfirm">Подтвердите пароль</label>
+                    <input class="form-control col @(Model.PasswordError != "" ? "is-invalid" : "")" name="PasswordConfirm" id="PasswordConfirm" type="password" placeholder="Подтверждение" />
+                    <div class="invalid-feedback">
+                        @Model.PasswordError
+                    </div>
+                </div>
+                <div class="row col mt-2">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<form method="post" enctype="multipart/form-data" asp-controller="Account" asp-action="Index">
+    <h5 class="row">Загрузить новый аватар</h5>
+    <div class="row">
+        <div>
+            <label class="form-label" for="Avatar">Аватар</label>
+            <input type="file" class="form-control" id="Avatar" name="Avatar">
+        </div>
+    </div>
+    <div class="row mt-2 mb-2">
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </div>
+</form>
