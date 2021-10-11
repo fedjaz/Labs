@@ -1,0 +1,15 @@
+﻿@using WEB_953501_YURETSKI.Entities
+
+@model Food
+
+<div class="card col-4">
+    <img class="card-img-top" src="@Url.Action("GetImage", "Product", Model)" />
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <p class="card-text">@Model.Description</p>
+        <button type="button" class="btn btn-primary" asp-controller="Cart" asp-action="Add" asp-route-id="@Model.Id"><i class="fas fa-shopping-cart nav-color"></i> В корзину</button>
+        <h5 class="card-title">@Model.Price руб.</h5>
+    </div>
+</div>
+
+
