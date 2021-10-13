@@ -14,12 +14,12 @@ namespace WEB_953501_YURETSKI.Models
             ListModelView<T> output = new ListModelView<T>();
             output.Pages = (int)Math.Ceiling((double)items.Count / itemsPerPage);
 
-            page = Math.Max(page, 0);
+            page = Math.Max(page, 1);
             page = Math.Min(page, output.Pages);
             output.Current = page;
 
 
-            output.AddRange(items.Skip(page).Take(itemsPerPage));
+            output.AddRange(items.Skip((page - 1) * itemsPerPage).Take(itemsPerPage));
 
             return output;
         }

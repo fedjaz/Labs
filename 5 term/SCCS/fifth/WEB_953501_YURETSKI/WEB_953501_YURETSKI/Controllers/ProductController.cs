@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WEB_953501_YURETSKI.Data;
@@ -20,20 +21,44 @@ namespace WEB_953501_YURETSKI.Controllers
             this.dbContext = dbContext;
         }
 
-        public async Task<IActionResult> Index(int pageNo = 1, string category = "all")
+        public IActionResult Index(int pageNo = 1, string category = "Все")
         {
             List<Food> foods;
-            if(category == "all")
+            if(category == "Все")
             {
                 foods = dbContext.Foods.ToList();
             }
             else
             {
-                foods = dbContext.Categories.FirstOrDefault(c => c.Name == category).Foods.ToList();
+                Category cat = dbContext.Categories.FirstOrDefault(c => c.Name == category);
+                foods = dbContext.Foods.Where(f => f.CategoryId == cat.Id).ToList();
             }
             ListModelView<Food> page = ListModelView<Food>.CreatePage(foods, itemsPerPage, pageNo);
 
+            foreach(Food food in page)
+            {
+                food.Category = dbContext.Categories.FirstOrDefault(c => c.Id == food.CategoryId);
+            }
+
+            ViewData["Category"] = category;
+            ViewData["Categories"] = GetCategories();
             return View(page);
+        }
+
+        public IActionResult GetImage(int imageId)
+        {
+            string base64Image = dbContext.Images.FirstOrDefault(i => i.Id == imageId).Base64Image;
+            return File(new MemoryStream(Convert.FromBase64String(base64Image)), "image/png");
+        }
+
+        public List<string> GetCategories()
+        {
+            List<string> categories = new List<string>();
+            foreach(Category category in dbContext.Categories)
+            {
+                categories.Add(category.Name);
+            }
+            return categories;
         }
 
         string FileToBase64(string file)

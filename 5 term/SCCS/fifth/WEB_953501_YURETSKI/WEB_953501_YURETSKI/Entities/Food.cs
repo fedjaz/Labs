@@ -8,6 +8,7 @@
         public float Price {  get; set; }
         public int CategoryId {  get; set; }
         public Category Category {  get; set; }
-        public string Base64Image {  get; set; }
+        public int ImageId {  get; set; }
+        public Image Image {  get; set; }
     }
 }

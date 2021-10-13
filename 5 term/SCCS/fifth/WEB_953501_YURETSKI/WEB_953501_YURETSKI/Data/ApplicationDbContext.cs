@@ -11,6 +11,7 @@ namespace WEB_953501_YURETSKI.Data
     {
         public DbSet<Entities.Category> Categories {  get; set; }
         public DbSet<Entities.Food> Foods {  get; set; }
+        public DbSet<Entities.Image> Images {  get; set; } 
         
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

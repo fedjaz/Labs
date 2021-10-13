@@ -50,10 +50,11 @@ namespace WEB_953501_YURETSKI
             services.AddRazorPages();
 
             services.AddTransient(s => new Services.EmailConfimation(Configuration.GetSection("EmailConfirmation")["Username"], Configuration.GetSection("EmailConfirmation")["Password"]));
+            services.AddTransient<Tools.DBInitializer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Tools.DBInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -81,6 +82,8 @@ namespace WEB_953501_YURETSKI
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
+            dbInitializer.Initialize().Wait();
         }
     }
 }
