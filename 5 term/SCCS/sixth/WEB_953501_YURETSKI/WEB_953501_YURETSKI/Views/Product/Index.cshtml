@@ -1,0 +1,36 @@
+﻿@using Microsoft.AspNetCore.Http
+@using System.Net
+@using System.Net.Http
+@using WEB_953501_YURETSKI.Models
+@using WEB_953501_YURETSKI.Entities
+@using Newtonsoft.Json
+
+@model ListModelView<Food>
+
+<div class="row mt-5 mb-5">
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Категории
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            @{
+                List<string> categories = ViewData["categories"] as List<string>;
+                categories.Insert(0, "Все");
+                foreach(string category in categories)
+                {
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Product" asp-route-category="@category">@category</a>
+                }
+            }
+        </div>
+    </div>
+    @foreach(Food item in Model)
+    {
+        <partial name="_ProductPartial" model="@item" />
+    }
+</div>
+
+<pager current="@Model.Current" 
+        pages="@Model.Pages"
+        controller="Product"
+        action="Index"
+        category="@ViewData["Category"]"></pager>
