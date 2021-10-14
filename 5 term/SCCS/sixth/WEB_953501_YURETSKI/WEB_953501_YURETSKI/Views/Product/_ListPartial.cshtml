@@ -1,0 +1,8 @@
+﻿@using WEB_953501_YURETSKI.Entities
+
+@model WEB_953501_YURETSKI.Models.ListModelView<Food>
+
+@foreach(Food item in Model)
+{
+    <partial name="_ProductPartial" model="@item" />
+}

@@ -10,15 +10,15 @@
         <div class="dropdown-toggle mr-10" id="dropdownMenuButton"
                 data-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">
-            <img src="@Url.Action("GetAvatar", "Account")" width="30"
-                    alt="User" class="rounded" />
+            <img img-action="GetAvatar" img-controller="Account" width="30"
+                            alt="User" class="rounded"/>
         </div>
-        <div class="dropdown-menu mr-10"
+        <div class="dropdown-menu dropdown-menu-right"
                 aria-labelledby="dropdownMenuButton">
             <div class="dropdown-item-text">
                 <a asp-controller="Account" asp-action="Index">
-                    <img src="@Url.Action("GetAvatar", "Account")" width="50"
-                            alt="User" class="rounded" />
+                    <img img-action="GetAvatar" img-controller="Account" width="50"
+                            alt="User" class="rounded"/>
                 </a>
                 <div>
                     @{

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using WEB_953501_YURETSKI.Data;
 using WEB_953501_YURETSKI.Entities;
 using WEB_953501_YURETSKI.Models;
+using WEB_953501_YURETSKI.Extensions;
 
 namespace WEB_953501_YURETSKI.Controllers
 {
@@ -19,6 +20,12 @@ namespace WEB_953501_YURETSKI.Controllers
         public ProductController(ApplicationDbContext dbContext)
         {
             this.dbContext = dbContext;
+        }
+
+        public IActionResult GetPager(int pageNo, int pages, string category)
+        {
+            PagerData pagerData = new PagerData() { Current = pageNo, Pages = pages, Category = category };
+            return PartialView("_PagerPartial", pagerData);
         }
 
         public IActionResult Index(int pageNo = 1, string category = "Все")
@@ -42,7 +49,15 @@ namespace WEB_953501_YURETSKI.Controllers
 
             ViewData["Category"] = category;
             ViewData["Categories"] = GetCategories();
-            return View(page);
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_ListPartial", page);
+            }
+            else
+            {
+                return View(page);
+            }
         }
 
         public IActionResult GetImage(int imageId)

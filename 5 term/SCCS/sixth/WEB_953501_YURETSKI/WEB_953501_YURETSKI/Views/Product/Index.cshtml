@@ -14,7 +14,7 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             @{
-                List<string> categories = ViewData["categories"] as List<string>;
+                List<string> categories = ViewData["Categories"] as List<string>;
                 categories.Insert(0, "Все");
                 foreach(string category in categories)
                 {
@@ -23,14 +23,16 @@
             }
         </div>
     </div>
-    @foreach(Food item in Model)
-    {
-        <partial name="_ProductPartial" model="@item" />
-    }
+    <div class="row col-11" id="list">
+        <partial name="_ListPartial" model="@Model" />
+    </div>
 </div>
 
-<pager current="@Model.Current" 
-        pages="@Model.Pages"
-        controller="Product"
-        action="Index"
-        category="@ViewData["Category"]"></pager>
+<div id="product-pager">
+    <partial name="_PagerPartial" model="@(new PagerData(){Pages = Model.Pages, Current = Model.Current, Category = @ViewData["Category"] as string})" />
+</div>
+<script>
+    var page = @Model.Current;
+    var pages = @Model.Pages;
+    var category = "@Html.Raw(ViewData["Category"])";
+</script>

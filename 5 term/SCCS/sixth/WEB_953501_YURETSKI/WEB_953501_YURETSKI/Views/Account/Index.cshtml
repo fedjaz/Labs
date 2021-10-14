@@ -3,7 +3,7 @@
 @model RegisterResult
 
 <div class="row mt-3 mb-3">
-    <img src="@Url.Action("GetAvatar", "Account")" class="img-thumbnail col-md-5" />
+    <img img-controller="Account" img-action="GetAvatar" class="img-thumbnail col-md-5" />
     <div class="row col-6 ml-3">
         <div>
             <h2 class="row col">@Model.FirstName @Model.LastName</h2>

@@ -15,7 +15,7 @@ namespace WEB_953501_YURETSKI.TagHelpers
         public string Action { get; set; }
         public string Category { get; set; }
 
-        private Microsoft.AspNetCore.Routing.LinkGenerator linkGenerator;
+        private LinkGenerator linkGenerator;
 
         public PagerTagHelper(LinkGenerator linkGenerator)
         {
