@@ -50,7 +50,7 @@ namespace WEB_953501_YURETSKI.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(IFormFile Avatar)
         {
-            string base64Avatar = Tools.ImageConverter.ImageToBase64(Avatar);
+            string base64Avatar = Tools.ImageConverter.ImageToBase64(Avatar, true);
             if(base64Avatar == "" || !signInManager.IsSignedIn(User))
             {
                 return await Index();
@@ -256,7 +256,7 @@ namespace WEB_953501_YURETSKI.Controllers
             }
             else
             {
-                string base64avatar = Tools.ImageConverter.ImageToBase64(model.Avatar);
+                string base64avatar = Tools.ImageConverter.ImageToBase64(model.Avatar, true);
 
                 ApplicationUser user = new ApplicationUser()
                 {
