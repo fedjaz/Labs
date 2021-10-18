@@ -1,0 +1,60 @@
+﻿@using WEB_953501_YURETSKI.Models
+
+@model RegisterResult
+
+<form method="post" asp-controller="Account" asp-action"Register" enctype="multipart/form-data">
+    <h2>Регистрация</h2>
+    <div class="row mb-3">
+        <div class="col-sm-4">
+            <label class="form-label" for="FirstName">Имя</label>
+            <input class="form-control @(Model.FirstNameError != "" ? "is-invalid" : "")" name="FirstName" id="FirstName" type="text" placeholder="Имя" value="@(Model.FirstNameError == "" ? Model.FirstName : "")"/>
+            <div class="invalid-feedback">
+                @Model.FirstNameError
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <label class="form-label" for="LastName">Фамилия</label>
+            <input class="form-control @(Model.LastNameError != "" ? "is-invalid" : "")" name="LastName" id="LastName" type="text" placeholder="Фамилия"  value="@(Model.LastNameError == "" ? Model.LastName : "")" />
+            <div class="invalid-feedback">
+                @Model.LastNameError
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-sm-8">
+            <label class="form-label" for="Email">Email</label>
+            <input class="form-control @(Model.EmailError != "" ? "is-invalid" : "")" name="Email" id="Email" type="email" placeholder="Email" value="@(Model.EmailError == "" ? Model.Email : "")"/>
+            <div class="invalid-feedback">
+                @Model.EmailError
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-sm-4">
+            <label class="form-label" for="Password">Пароль</label>
+            <input class="form-control @(Model.PasswordError != "" ? "is-invalid" : "")" name="Password" id="Password" type="password" placeholder="Пароль" />
+            <div class="invalid-feedback">
+                @Model.PasswordError
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <label class="form-label" for="PasswordConfirm">Подтвердите пароль</label>
+            <input class="form-control @(Model.PasswordError != "" ? "is-invalid" : "")" name="PasswordConfirm" id="PasswordConfirm" type="password" placeholder="Подтверждение" />
+            <div class="invalid-feedback">
+                @Model.PasswordError
+            </div>
+        </div>
+
+    </div>
+    <div class="row mb-3">
+        <div class="col-sm-4">
+            <label class="form-label" for="Avatar">Аватар</label>
+            <input type="file" class="form-control" id="Avatar" name="Avatar">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+        </div>
+    </div>
+</form>
