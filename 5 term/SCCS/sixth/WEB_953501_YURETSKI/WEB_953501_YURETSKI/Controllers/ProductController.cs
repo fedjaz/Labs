@@ -28,6 +28,8 @@ namespace WEB_953501_YURETSKI.Controllers
             return PartialView("_PagerPartial", pagerData);
         }
 
+        [Route("Product")]
+        [Route("Product/Page_{pageNo}")]
         public IActionResult Index(int pageNo = 1, string category = "Все")
         {
             List<Food> foods;
