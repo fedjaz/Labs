@@ -16,6 +16,7 @@ namespace WEB_953501_YURETSKI.Components
             new MenuItem{Controller = "Home", Action = "Lab2", Text = "Лр 2"},
             new MenuItem{Controller = "Home", Action = "Lab3", Text = "Лр 3"},
             new MenuItem{Controller = "Account", Action = "Index", Text = "Лр 4"},
+            new MenuItem{Controller = "Home", Action = "Lab5", Text = "Лр 5"},
             new MenuItem{Controller = "Product", Action = "Index", Text = "Каталог"},
             new MenuItem{IsPage = true, Area = "Admin", Page = "/Index", Text = "Администрирование"}
         };
