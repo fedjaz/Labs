@@ -46,5 +46,17 @@ namespace WEB_953501_YURETSKI.Controllers
 
             return View();
         }
+
+        public IActionResult Lab5()
+        {
+            return RedirectToAction("Index", "Product");
+        }
+
+        public IActionResult Lab6()
+        {
+            ViewData["Text"] = "Лабораторная работа 3";
+
+            return View();
+        }
     }
 }
