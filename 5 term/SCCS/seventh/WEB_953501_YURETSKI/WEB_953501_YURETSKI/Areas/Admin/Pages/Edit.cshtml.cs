@@ -48,6 +48,7 @@ namespace WEB_953501_YURETSKI.Areas.Admin.Pages
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            Food defaultFood = await _context.Foods.FirstOrDefaultAsync(f => f.Id == Food.Id);
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -58,7 +59,12 @@ namespace WEB_953501_YURETSKI.Areas.Admin.Pages
                 string base64 = Tools.ImageConverter.ImageToBase64(Image);
                 Food.Image = new Image() { Base64Image = base64 };
             }
+            else
+            {
+                Food.ImageId = defaultFood.ImageId;
+            }
 
+            _context.Entry(defaultFood).State = EntityState.Detached;
             _context.Attach(Food).State = EntityState.Modified;
 
             try

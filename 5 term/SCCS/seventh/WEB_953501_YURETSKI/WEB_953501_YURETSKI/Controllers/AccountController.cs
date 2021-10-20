@@ -179,7 +179,7 @@ namespace WEB_953501_YURETSKI.Controllers
 
         public async Task<IActionResult> GetAvatar()
         {
-            FileStreamResult defaultAvatar = File(environment.WebRootFileProvider.GetFileInfo("/images/default.png").CreateReadStream(), "image/png");
+            FileStreamResult defaultAvatar = File(environment.WebRootFileProvider.GetFileInfo("/images/defaultAvatar.png").CreateReadStream(), "image/png");
             if (signInManager.IsSignedIn(User))
             {
                 ApplicationUser user = await userManager.FindByEmailAsync(User.Identity.Name);

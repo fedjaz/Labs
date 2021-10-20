@@ -36,13 +36,14 @@ namespace WEB_953501_YURETSKI.Controllers
             List<Food> foods;
             if(category == "Все")
             {
-                foods = dbContext.Foods.ToList();
+                foods = dbContext.Foods.Include(f => f.Category).ToList();
             }
             else
             {
                 Category cat = dbContext.Categories.FirstOrDefault(c => c.Name == category);
                 foods = dbContext.Foods.Where(f => f.CategoryId == cat.Id).Include(f => f.Category).ToList();
             }
+            foods.Sort((f1, f2) => f1.Category.Name.CompareTo(f2.Category.Name));
 
             ListModelView<Food> page = ListModelView<Food>.CreatePage(foods, itemsPerPage, pageNo);
 
@@ -64,7 +65,6 @@ namespace WEB_953501_YURETSKI.Controllers
         {
             string base64Image = dbContext.Images.FirstOrDefault(i => i.Id == imageId).Base64Image;
             return File(Tools.ImageConverter.Base64ToImage(base64Image), "image/png");
-            //return File(new MemoryStream(Convert.FromBase64String(base64Image)), "image/png");
         }
 
         public List<string> GetCategories()
@@ -75,14 +75,6 @@ namespace WEB_953501_YURETSKI.Controllers
                 categories.Add(category.Name);
             }
             return categories;
-        }
-
-        string FileToBase64(string file)
-        {
-            Bitmap bitmap = new Bitmap(file);
-            byte[] bytes = (byte[])new ImageConverter().ConvertTo(bitmap, typeof(byte[]));
-
-            return Convert.ToBase64String(bytes);
         }
     }
 }
