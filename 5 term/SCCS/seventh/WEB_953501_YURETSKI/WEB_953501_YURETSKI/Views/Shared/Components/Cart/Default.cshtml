@@ -1,5 +1,9 @@
-﻿<a asp-controller="Cart" asp-action="Index" class="navbar-text ml-auto">
-    00,0 руб
+﻿@using WEB_953501_YURETSKI.Models
+
+@model Cart
+
+<a asp-controller="Cart" asp-action="Index" class="navbar-text ml-auto">
+    @(Model.Price.ToString("0.00")) руб
     <i class="fas fa-shopping-cart nav-color"></i>
-    (0)
+    (@Model.Count)
 </a>

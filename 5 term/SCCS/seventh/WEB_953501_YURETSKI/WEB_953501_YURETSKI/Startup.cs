@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
@@ -7,12 +8,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WEB_953501_YURETSKI.Data;
+using WEB_953501_YURETSKI.Extensions;
 using WEB_953501_YURETSKI.Models;
+using WEB_953501_YURETSKI.Services;
 
 namespace WEB_953501_YURETSKI
 {
@@ -25,16 +29,12 @@ namespace WEB_953501_YURETSKI
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-
-            //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
             {
@@ -49,12 +49,17 @@ namespace WEB_953501_YURETSKI
             services.AddControllersWithViews();
             services.AddRazorPages();
 
-            services.AddTransient(s => new Services.EmailConfimation(Configuration.GetSection("EmailConfirmation")["Username"], Configuration.GetSection("EmailConfirmation")["Password"]));
+            services.AddTransient(s => new EmailConfimation(Configuration.GetSection("EmailConfirmation")["Username"], Configuration.GetSection("EmailConfirmation")["Password"]));
             services.AddTransient<Tools.DBInitializer>();
+            services.AddSingleton(new HttpContextAccessor());
+            services.AddScoped<Cart>(sp => CartService.GetCart(sp));
+
+            services.AddDistributedMemoryCache();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Tools.DBInitializer dbInitializer)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Tools.DBInitializer dbInitializer, ILoggerFactory logger)
         {
             if (env.IsDevelopment())
             {
@@ -75,6 +80,10 @@ namespace WEB_953501_YURETSKI
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseSession();
+
+            app.UseFileLogging();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -84,6 +93,8 @@ namespace WEB_953501_YURETSKI
             });
 
             dbInitializer.Initialize().Wait();
+
+            logger.AddFile("Logs/log-{Date}.txt");
         }
     }
 }

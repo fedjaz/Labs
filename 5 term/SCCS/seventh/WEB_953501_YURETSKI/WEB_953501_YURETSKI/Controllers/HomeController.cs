@@ -42,9 +42,25 @@ namespace WEB_953501_YURETSKI.Controllers
         public IActionResult Lab3()
         {
             ViewData["Text"] = "Лабораторная работа 3";
-            ViewData["List"] = new SelectList(demoList, "ListItemValue", "ListItemText");
 
             return View();
+        }
+
+        public IActionResult Lab5()
+        {
+            return RedirectToAction("Index", "Product");
+        }
+
+        public IActionResult Lab6()
+        {
+            ViewData["Text"] = "Лабораторная работа 6";
+
+            return View();
+        }
+
+        public IActionResult Lab7()
+        {
+            return RedirectToAction("Index", "Cart");
         }
     }
 }

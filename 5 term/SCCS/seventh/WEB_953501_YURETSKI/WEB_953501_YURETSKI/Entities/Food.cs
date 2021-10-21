@@ -1,4 +1,6 @@
-﻿namespace WEB_953501_YURETSKI.Entities
+﻿using WEB_953501_YURETSKI.Models;
+
+namespace WEB_953501_YURETSKI.Entities
 {
     public class Food
     {
