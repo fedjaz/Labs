@@ -1,0 +1,27 @@
+﻿@page "/apidemo"
+@inject HttpClient client
+
+<div class="container">
+    <h3>Список объектов</h3>
+    <div class="container">
+        <FoodsList @bind-Foods="@Foods" SelectedObjectChanged="ShowDetails"></FoodsList>
+        <FoodDetails @bind-Food="SelectedFood"></FoodDetails>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<ListViewModel> Foods { get; set; }
+    [Parameter] 
+    public DetailsViewModel SelectedFood { get; set; } 
+
+    protected override async Task OnInitializedAsync()
+    {
+        Foods = await client.GetFromJsonAsync<IEnumerable<ListViewModel>>("api/foods");
+    } 
+
+    async void ShowDetails(int id)
+    {
+        SelectedFood = await client.GetFromJsonAsync<DetailsViewModel>($"api/Foods/{id}"); 
+    }
+}

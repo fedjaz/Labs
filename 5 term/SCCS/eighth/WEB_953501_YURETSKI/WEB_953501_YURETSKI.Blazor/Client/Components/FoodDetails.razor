@@ -1,0 +1,22 @@
+﻿@if(Food != null)
+{
+    <img src="@ImageUrl" class="img-thumbnail" width="150" />
+    <div>
+        <p>@Food.Name - @Food.Description</p>
+        <div class="badge badge-info">@Food.Price руб.</div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public DetailsViewModel Food { get; set; }
+    [Parameter]
+    public EventCallback<DetailsViewModel> FoodChanged { get; set; }
+    string ImageUrl
+    {
+        get
+        {
+            return $"api/Foods/GetImage?imageId={Food.ImageId}";
+        }
+    }
+}
