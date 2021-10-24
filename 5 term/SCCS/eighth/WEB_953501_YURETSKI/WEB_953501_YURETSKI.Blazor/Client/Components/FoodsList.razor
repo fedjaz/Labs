@@ -1,0 +1,35 @@
+﻿@if(Foods != null)
+{
+    <div class="list-group">
+        @{
+            foreach(ListViewModel food in Foods)
+            {
+                <button type="button" class="list-group-item list-group-item-action 
+                @(SelectedId == food.Id ? "active" : "")" 
+                @onclick="@(e => Selected(food.Id))" >
+                    @food.Name
+                </button>
+            }
+        }
+    </div>
+}
+else
+{
+    <p>Загрузка..</p>
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<ListViewModel> Foods { get; set; }
+    [Parameter]
+    public EventCallback<IEnumerable<ListViewModel>> FoodsChanged { get; set; }
+    [Parameter]
+    public EventCallback<int> SelectedObjectChanged { get; set; }
+    int SelectedId = 0;
+
+    void Selected(int id)
+    {
+        SelectedId = id;
+        SelectedObjectChanged.InvokeAsync(id);
+    }
+}

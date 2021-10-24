@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> signInManager
+@inject UserManager<ApplicationUser> userManager
+
+@{if(signInManager.IsSignedIn(User))
+{
+    @await Component.InvokeAsync("Cart", Model)
+    <div class="dropdown ml-3 mr-5 nav-color">
+        <div class="dropdown-toggle mr-10" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+            <img img-action="GetAvatar" img-controller="Account" width="30"
+                            alt="User" class="rounded"/>
+        </div>
+        <div class="dropdown-menu dropdown-menu-right"
+                aria-labelledby="dropdownMenuButton">
+            <div class="dropdown-item-text">
+                <a asp-controller="Account" asp-action="Index">
+                    <img img-action="GetAvatar" img-controller="Account" width="50"
+                            alt="User" class="rounded"/>
+                </a>
+                <div>
+                    @{
+                        ApplicationUser user = await userManager.FindByEmailAsync(User.Identity.Name);
+                        <span>@user.FirstName @user.LastName</span>
+                    }
+                </div>
+            </div>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" asp-controller="Cart" asp-action="Index">Мои товары</a>
+            <a class="dropdown-item" asp-controller="Account" asp-action="Logout">Выйти</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="navbar-nav ml-auto">
+        <a class="nav-item nav-link" asp-controller="Account" asp-action="Login">Войти</a>
+        <a class="nav-item nav-link" asp-controller="Account" asp-action="Register">Зарегистрироваться</a>
+    </div> 
+}}

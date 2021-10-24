@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Http
+@using WEB_953501_YURETSKI.Entities
+
+@model Food
+@{
+    HttpRequest request = ViewContext.HttpContext.Request;
+    string returnUrl = request.Path + request.QueryString.ToUriComponent();;
+}
+<div class="card col-3 mr-2 ml-2">
+    <img class="card-img-top" src="@Url.Action("GetImage", "Product", new {imageId = @Model.ImageId})" />
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <p class="card-text">@Model.Description</p>
+        <p class="mt-2">
+            <a class="btn btn-primary" asp-action="Add" asp-controller="Cart" 
+            asp-route-id="@Model.Id" asp-route-returnUrl="@returnUrl">
+                <i class="fa fa-shopping-cart"></i>
+                В корзину
+            </a>
+        </p>
+        <h5 class="card-title">@Model.Price руб.</h5>
+        <p class="card-text">@Model.Category.Name</p>
+    </div>
+</div>
