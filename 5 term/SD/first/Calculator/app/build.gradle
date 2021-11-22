@@ -4,14 +4,6 @@ plugins {
 }
 
 android {
-    signingConfigs {
-        CalculatorConfig {
-            storeFile file('C:\\Users\\fedjaz\\keystores\\keystore.jks')
-            storePassword 'aeduy13uv'
-            keyAlias 'CalculatorKey'
-            keyPassword 'aeduy13uv'
-        }
-    }
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
